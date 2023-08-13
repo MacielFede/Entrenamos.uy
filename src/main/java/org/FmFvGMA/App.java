@@ -16,8 +16,7 @@ public class App
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                MainWindow main = new MainWindow();
-                main.show();
+                new MainWindow();
             }
         });
 
