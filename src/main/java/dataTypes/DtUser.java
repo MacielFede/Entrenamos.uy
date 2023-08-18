@@ -1,15 +1,15 @@
 package dataTypes;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class DtUser {
 	protected String nickname;
 	protected String name;
 	protected String lastName;
 	protected String email;
-	protected Timestamp bornDate; 
+	protected Date bornDate; 
 	
-	public DtUser(String nickname, String name, String lastName, String email, Timestamp bornDate) {
+	public DtUser(String nickname, String name, String lastName, String email, Date bornDate) {
 		super();
 		this.nickname = nickname;
 		this.name = name;
@@ -34,7 +34,7 @@ public class DtUser {
 		return email;
 	}
 
-	public Timestamp getBornDate() {
+	public Date getBornDate() {
 		return bornDate;
 	}
 

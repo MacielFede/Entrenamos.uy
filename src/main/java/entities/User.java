@@ -1,7 +1,6 @@
 package entities;
 
-import java.sql.Timestamp;
-
+import java.util.Date;
 import javax.persistence.*;
 
 import dataTypes.DtUser;
@@ -14,13 +13,14 @@ public abstract class User {
 	protected String name;
 	protected String lastName;
 	protected String email;
-	protected Timestamp bornDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	protected Date bornDate;
 	
 	public User() {
 		super();
 	}
 	
-	public User(String nickname, String name, String lastName, String email, Timestamp bornDate) {
+	public User(String nickname, String name, String lastName, String email, Date bornDate) {
 		super();
 		this.name = name;
 		this.lastName = lastName;
@@ -54,10 +54,10 @@ public abstract class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public Timestamp getBornDate() {
+	public Date getBornDate() {
 		return bornDate;
 	}
-	public void setBornDate(Timestamp bornDate) {
+	public void setBornDate(Date bornDate) {
 		this.bornDate = bornDate;
 	}
 	

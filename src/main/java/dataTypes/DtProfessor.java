@@ -1,6 +1,7 @@
 package dataTypes;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class DtProfessor extends DtUser{
 	//private Map<String, DtClass> relatedClasses;
@@ -17,7 +18,7 @@ public class DtProfessor extends DtUser{
 			String name, 
 			String lastName, 
 			String email, 
-			Timestamp bornDate) {
+			Date bornDate) {
 		super(nickname, name, lastName, email, bornDate);
 		/*this.relatedClasses = relatedClasses;*/
 		this.description = description;

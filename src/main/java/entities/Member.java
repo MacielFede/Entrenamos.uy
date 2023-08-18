@@ -1,7 +1,7 @@
 package entities;
 
-import java.sql.Timestamp;
 //import java.util.*;
+import java.util.Date;
 
 import javax.persistence.Entity;
 
@@ -16,7 +16,7 @@ public class Member extends User{
 		super();
 	}
 	
-	public Member(String nickname, String name, String surname, String email, Timestamp bornDate) {
+	public Member(String nickname, String name, String surname, String email, Date bornDate) {
 		super(nickname, name, surname, email, bornDate);
 		//this.enrollments = new TreeList<Enrollment>();
 	}

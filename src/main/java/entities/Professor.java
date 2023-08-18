@@ -1,6 +1,6 @@
 package entities;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Entity;
 
@@ -18,7 +18,7 @@ public class Professor extends User{
 		super();
 	}
 	
-	public Professor(String description, String biography, String webPage, String nickname, String name, String surname, String email, Timestamp bornDate) {
+	public Professor(String description, String biography, String webPage, String nickname, String name, String surname, String email, Date bornDate) {
 		super(nickname, name, surname, email, bornDate);
 		//this.sportInstitutions = new TreeMap<String, SportInstitution>();
 		this.description = description;

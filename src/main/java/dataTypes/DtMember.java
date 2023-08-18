@@ -1,10 +1,10 @@
 package dataTypes;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class DtMember extends DtUser{
 	//private Map<String, DtClass> relatedClasses;
-	public DtMember(/* Map<String, DtClass> relatedClasses ,*/ String nickname, String name, String lastName, String email, Timestamp bornDate) {
+	public DtMember(/* Map<String, DtClass> relatedClasses ,*/ String nickname, String name, String lastName, String email, Date bornDate) {
 		super(nickname, name, lastName, email, bornDate);
 		/*this.relatedClasses = relatedClasses;*/
 	}
