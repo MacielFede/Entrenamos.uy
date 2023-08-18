@@ -1,7 +1,9 @@
 target/
+
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+!*/persistence.xml
 
 ### IntelliJ IDEA ###
 /.idea
@@ -16,6 +18,8 @@ target/
 *.form
 
 ### Eclipse ###
+.metadata/
+src/main/java/META-INF/
 .apt_generated
 .classpath
 .factorypath
