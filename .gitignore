@@ -42,3 +42,4 @@ build/
 .DS_Store
 /.idea/dictionaries/
 /src/main/META-INF/persistence.xml
+**/persistence.xml
