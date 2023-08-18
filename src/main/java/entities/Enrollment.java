@@ -1,9 +1,10 @@
 package entities;
 
+import dataTypes.DtEnrollment;
 import repository.EnrollmentId;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @IdClass(EnrollmentId.class)
@@ -17,11 +18,11 @@ public class Enrollment {
     private Class aClass;
     private Float cost;
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp enrollmentDate;
+    private Date enrollmentDate;
 
     public Enrollment() {
     }
-    public Enrollment(Member user, Class aClass, Timestamp enrollmentDate, Float cost) {
+    public Enrollment(Member user, Class aClass, Date enrollmentDate, Float cost) {
         this.user = user;
         this.aClass = aClass;
         this.enrollmentDate = enrollmentDate;
@@ -54,11 +55,15 @@ public class Enrollment {
         this.aClass = aClass;
     }
 
-    public Timestamp getEnrollmentDate() {
+    public Date getEnrollmentDate() {
         return enrollmentDate;
     }
 
-    public void setEnrollmentDate(Timestamp enrollmentDate) {
+    public void setEnrollmentDate(Date enrollmentDate) {
         this.enrollmentDate = enrollmentDate;
+    }
+
+    public DtEnrollment getData() {
+        return new DtEnrollment(this.user.getData(), this.cost, this.enrollmentDate);
     }
 }

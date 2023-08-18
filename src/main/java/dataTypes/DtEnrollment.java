@@ -1,15 +1,15 @@
 package dataTypes;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class DtEnrollment {
     // The DtEnrollment hasn't visibility over Class. The visibility is Class -> Enrollment -> Member
-    private DtMember user;
+    private final DtMember user;
 
-    private Float cost;
-    private Timestamp enrollmentDate;
+    private final Float cost;
+    private final Date enrollmentDate;
 
-    public DtEnrollment(DtMember user, Float cost, Timestamp enrollmentDate) {
+    public DtEnrollment(DtMember user, Float cost, Date enrollmentDate) {
         this.user = user;
         this.cost = cost;
         this.enrollmentDate = enrollmentDate;
@@ -23,7 +23,7 @@ public class DtEnrollment {
         return cost;
     }
 
-    public Timestamp getEnrollmentDate() {
+    public Date getEnrollmentDate() {
         return enrollmentDate;
     }
 }

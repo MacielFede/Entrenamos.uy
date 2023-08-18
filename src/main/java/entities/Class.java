@@ -1,10 +1,12 @@
 package entities;
 
 import dataTypes.DtClass;
+import dataTypes.DtEnrollment;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Map;
+import java.util.TreeMap;
 
 @Entity
 public class Class {
@@ -13,12 +15,12 @@ public class Class {
     private String name;
     // I put date and startTime together because Timestamp already contains date and time
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp dateAndTime;
+    private Date dateAndTime;
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp registerDate;
+    private Date registerDate;
     private String url;
     @OneToMany(mappedBy = "aClass",cascade = CascadeType.ALL)
-    // The String in the map represent the users id.
+    // The String in the map represent the users' id.
     private Map<String, Enrollment> enrollments;
 
     public Class() {}
@@ -31,7 +33,7 @@ public class Class {
         this.enrollments = enrollments;
     }
 
-    public Class(String name, Timestamp dateAndTime, Timestamp registerDate, String url, Map<String, Enrollment> enrollments) {
+    public Class(String name, Date dateAndTime, Date registerDate, String url, Map<String, Enrollment> enrollments) {
         this.name = name;
         this.dateAndTime = dateAndTime;
         this.registerDate = registerDate;
@@ -47,19 +49,19 @@ public class Class {
         this.name = name;
     }
 
-    public Timestamp getDateAndTime() {
+    public Date getDateAndTime() {
         return dateAndTime;
     }
 
-    public void setDateAndTime(Timestamp dateAndTime) {
+    public void setDateAndTime(Date dateAndTime) {
         this.dateAndTime = dateAndTime;
     }
 
-    public Timestamp getRegisterDate() {
+    public Date getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(Timestamp registerDate) {
+    public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
     }
 
@@ -73,5 +75,11 @@ public class Class {
 
     public void createEnrollment(User user) {}
 
-    public DtClass getData(){ return new DtClass(this.name, this.url, this.dateAndTime, this.registerDate); }
+    public DtClass getData(){
+        Map<String, DtEnrollment> dtE = new TreeMap<>();
+        for(Map.Entry<String, Enrollment> enrollment : this.enrollments.entrySet()){
+            dtE.put(enrollment.getKey(), enrollment.getValue().getData());
+        }
+        return new DtClass(this.name, this.registerDate, this.dateAndTime,this.url , dtE);
+    }
 }

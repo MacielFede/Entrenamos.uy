@@ -1,20 +1,19 @@
 package dataTypes;
 
-import entities.Enrollment;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Map;
 
 public class DtClass {
 
-    private String name;
-    private Timestamp dateAndTime;
-    private Timestamp registerDate;
-    private String url;
+    private final String name;
+    private final Date dateAndTime;
+    private final Date registerDate;
+    private final String url;
     // The String in the map represent the users id.
-    private Map<String, DtEnrollment> enrollments;
+    private final Map<String, DtEnrollment> enrollments;
 
-    public DtClass(String name, Timestamp dateAndTime, Timestamp registerDate, String url, Map<String, DtEnrollment> enrollments) {
+    public DtClass(String name, Date dateAndTime, Date registerDate, String url, Map<String, DtEnrollment> enrollments) {
         this.name = name;
         this.dateAndTime = dateAndTime;
         this.registerDate = registerDate;
@@ -26,11 +25,11 @@ public class DtClass {
         return name;
     }
 
-    public Timestamp getDateAndTime() {
+    public Date getDateAndTime() {
         return dateAndTime;
     }
 
-    public Timestamp getRegisterDate() {
+    public Date getRegisterDate() {
         return registerDate;
     }
 
