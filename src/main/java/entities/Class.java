@@ -1,5 +1,7 @@
 package entities;
 
+import dataTypes.DtClass;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Map;
