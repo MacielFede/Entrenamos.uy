@@ -43,3 +43,4 @@ build/
 /.idea/dictionaries/
 /src/main/META-INF/persistence.xml
 **/persistence.xml
+src/main/META-INF/persistence.xml
