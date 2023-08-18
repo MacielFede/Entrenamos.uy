@@ -3,7 +3,8 @@ package entities;
 import repository.EnrollmentId;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity
 @IdClass(EnrollmentId.class)
@@ -17,12 +18,12 @@ public class Enrollment {
     private Class aClass;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date enrollmentDate;
+    private Timestamp enrollmentDate;
 
     public Enrollment() {
     }
 
-    public Enrollment(User user, Class aClass, Date enrollmentDate) {
+    public Enrollment(User user, Class aClass, Timestamp enrollmentDate) {
         this.user = user;
         this.aClass = aClass;
         this.enrollmentDate = enrollmentDate;
