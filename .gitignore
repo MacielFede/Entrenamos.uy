@@ -41,4 +41,6 @@ build/
 ### Mac OS ###
 .DS_Store
 /.idea/dictionaries/
-/src/main/META-INF/persistance.xml
+/src/main/META-INF/persistence.xml
+**/persistence.xml
+src/main/META-INF/persistence.xml
