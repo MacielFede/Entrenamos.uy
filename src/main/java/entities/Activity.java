@@ -26,7 +26,7 @@ public class Activity {
     private Float price;
     @Temporal(TemporalType.TIMESTAMP)
     private Date registryDate;
-    @OneToMany(mappedBy = "name",cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private Map<String, Class> classes;
 
 
@@ -102,5 +102,5 @@ public class Activity {
         return new Class();
     }
 
-    public DtActivity getData(){return new DtActivity(this.name, this.description, this.duration, this.price, this.registryDate, this.classes);}
+    public DtActivity getData(){return new DtActivity(this.name, this.description, this.duration, this.price, this.registryDate);}
 }

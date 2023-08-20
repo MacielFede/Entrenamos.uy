@@ -15,16 +15,14 @@ public class DtActivity {
         private final  Integer duration;
         private final  Float price;
         private final  Date registryDate;
-        private final Map<String, Class> classes;
 
-        public DtActivity(String name, String description, Integer duration, Float price, Date registryDate, Map<String, Class> classes)
+        public DtActivity(String name, String description, Integer duration, Float price, Date registryDate)
         {
             this.name           = name;
             this.description    = description;
             this.duration       = duration;
             this.price          = price;
             this.registryDate   = registryDate;
-            this.classes        = classes;
         }
 
     public String getName() {
@@ -47,7 +45,4 @@ public class DtActivity {
         return registryDate;
     }
 
-    public Map<String, Class> getClasses() {
-        return classes;
-    }
 }
