@@ -1,11 +1,6 @@
 package dataTypes;
 
-import entities.Class;
 
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.util.Map;
 import java.util.Date;
 
 public class DtActivity {
