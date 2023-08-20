@@ -1,8 +1,10 @@
 package entities;
 
 import java.util.Date;
+import java.util.Map;
 import javax.persistence.*;
 
+import dataTypes.DtClass;
 import dataTypes.DtUser;
 
 @Entity
@@ -69,5 +71,5 @@ public abstract class User {
 	
 	public abstract DtUser getData();
 	
-	//public abstract Map<String, DtClass> getRelatedClasses();
+	public abstract Map<String, DtClass> getRelatedClasses();
 }

@@ -1,11 +1,6 @@
 package entities;
 
-import dataTypes.DtClass;
 import dataTypes.DtActivity;
-
-
-import org.hibernate.mapping.Array;
-import org.hibernate.mapping.List;
 
 import javax.persistence.*;
 import javax.persistence.Id;
@@ -15,92 +10,92 @@ import java.util.Date;
 
 import java.util.Map;
 
-
 @Entity
 public class Activity {
-    @Id
-    private String name;
+	@Id
+	private String name;
+	private String description;
+	private Integer duration;
+	private Float price;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date registryDate;
+	@OneToMany(cascade = CascadeType.ALL)
+	private Map<String, Class> classes;
 
-    private String description;
-    private Integer duration;
-    private Float price;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date registryDate;
-    @OneToMany(cascade = CascadeType.ALL)
-    private Map<String, Class> classes;
+	public Activity() {
+	}
 
+	public Activity(String name, String description, Integer duration, Float price, Map<String, Class> classes) {
+		this.name = name;
+		this.description = description;
+		this.duration = duration;
+		this.price = price;
+		this.classes = classes;
+	}
 
-    public Activity(){}
+	// GETTERS
+	public String getName() {
+		return name;
+	}
 
-    public Activity(String name, String description, Integer duration, Float price,Map<String, Class> classes)
-    {
-        this.name           = name;
-        this.description    = description;
-        this.duration       = duration;
-        this.price          = price;
-        this.classes        = classes;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    // GETTERS
-    public String getName() {
-        return name;
-    }
+	public Integer getDuration() {
+		return duration;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public Float getPrice() {
+		return price;
+	}
 
-    public Integer getDuration() {
-        return duration;
-    }
+	public Date getregistryDate() {
+		return registryDate;
+	}
 
-    public Float getPrice() {
-        return price;
-    }
+	public Map<String, Class> getClasses() {
+		return classes;
+	}
 
-    public Date getregistryDate() {
-        return registryDate;
-    }
+	// SETTERS
 
-    public Map<String, Class> getClasses() {
-        return classes;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    // SETTERS
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setDuration(Integer duration) {
+		this.duration = duration;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setPrice(Float price) {
+		this.price = price;
+	}
 
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
+	public void setregistryDate(Date registryDate) {
+		this.registryDate = registryDate;
+	}
 
-    public void setPrice(Float price) {
-        this.price = price;
-    }
+	// METHODS
+	public boolean existsClass(String name) {
+		// programar logica
+		return false;
+	}
 
-    public void setregistryDate(Date registryDate) {
-        this.registryDate = registryDate;
-    }
+	public Map<String, Class> getAssociatedClasses() {
+		return classes;
+	}
 
-    // METHODS
-    public boolean existsClass(String name) {
-        //programar logica
-        return false;
-    }
-    public Map<String, Class> getAssociatedClasses(){
-        return classes;
-    }
+	public Class getClass(String className) {
+		// programar logica
+		return new Class();
+	}
 
-    public Class getClass(String className){
-        //programar logica
-        return new Class();
-    }
-
-    public DtActivity getData(){return new DtActivity(this.name, this.description, this.duration, this.price, this.registryDate);}
+	public DtActivity getData() {
+		return new DtActivity(this.name, this.description, this.duration, this.price, this.registryDate);
+	}
 }
