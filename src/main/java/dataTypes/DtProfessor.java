@@ -1,13 +1,12 @@
 package dataTypes;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 public class DtProfessor extends DtUser{
 	//private Map<String, DtClass> relatedClasses;
-	private String description;
-	private String biography;
-	private String webPage;
+	private final String description;
+	private final String biography;
+	private final String webPage;
 	
 	public DtProfessor(
 			/* Map<String, DtClass> relatedClasses ,*/ 
