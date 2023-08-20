@@ -12,7 +12,7 @@ public class Enrollment {
     // Here Enrollment has visibility over Class because of the hibernate way of defining associations
     @Id
     @ManyToOne
-    private Member user;
+    private User user;
     @Id
     @ManyToOne
     private Class aClass;
@@ -22,7 +22,7 @@ public class Enrollment {
 
     public Enrollment() {
     }
-    public Enrollment(Member user, Class aClass, Date enrollmentDate, Float cost) {
+    public Enrollment(User user, Class aClass, Date enrollmentDate, Float cost) {
         this.user = user;
         this.aClass = aClass;
         this.enrollmentDate = enrollmentDate;
@@ -38,12 +38,12 @@ public class Enrollment {
     }
 
 
-    public Member getMember() {
+    public User getMember() {
         return user;
     }
 
 
-    public void setMember(Member user) {
+    public void setMember(User user) {
         this.user = user;
     }
 

@@ -2,7 +2,7 @@ package handlers;
 
 import java.util.Map;
 
-import dataTypes.DtSportInstitute;
+import dataTypes.DtInstitute;
 
 public class InstituteService {
 	private static InstituteService instance = null;
@@ -15,13 +15,13 @@ public class InstituteService {
 		return instance;
 	}
 	
-	public DtSportInstitute getInstituteByName(String name) {
-		DtSportInstitute DtU = null;
+	public DtInstitute getInstituteByName(String name) {
+		DtInstitute DtU = null;
 		return DtU;
 	}
 	
-	public Map<String, DtSportInstitute> getAllInstitutes() {
-		Map<String, DtSportInstitute> lDtU = null;
+	public Map<String, DtInstitute> getAllInstitutes() {
+		Map<String, DtInstitute> lDtU = null;
 		return lDtU;
 	}
 }

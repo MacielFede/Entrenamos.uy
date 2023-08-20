@@ -2,7 +2,7 @@ package handlers;
 
 import java.util.Map;
 
-import dataTypes.DtSportInstitute;
+import dataTypes.DtActivity;
 
 public class ActivityService {
 	private static ActivityService instance = null;
@@ -15,13 +15,13 @@ public class ActivityService {
 		return instance;
 	}
 	
-	public DtSportInstitute getActivityByName(String name) {
-		DtSportInstitute dti = null;
+	public DtActivity getActivityByName(String name) {
+		DtActivity dti = null;
 		return dti;
 	}
 	
-	public Map<String, DtSportInstitute> getAllActivity() {
-		Map<String, DtSportInstitute> l = null;
+	public Map<String, DtActivity> getAllActivity() {
+		Map<String, DtActivity> l = null;
 		return l;
 	}
 }

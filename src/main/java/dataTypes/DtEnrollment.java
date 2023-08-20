@@ -4,18 +4,18 @@ import java.util.Date;
 
 public class DtEnrollment {
     // The DtEnrollment hasn't visibility over Class. The visibility is Class -> Enrollment -> Member
-    private final DtMember user;
+    private final DtUser user;
 
     private final Float cost;
     private final Date enrollmentDate;
 
-    public DtEnrollment(DtMember user, Float cost, Date enrollmentDate) {
+    public DtEnrollment(DtUser user, Float cost, Date enrollmentDate) {
         this.user = user;
         this.cost = cost;
         this.enrollmentDate = enrollmentDate;
     }
 
-    public DtMember getMember() {
+    public DtUser getMember() {
         return user;
     }
 

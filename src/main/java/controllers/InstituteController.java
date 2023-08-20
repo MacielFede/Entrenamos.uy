@@ -4,8 +4,7 @@ import java.util.Map;
 
 import dataTypes.DtActivity;
 import dataTypes.DtClass;
-import dataTypes.DtSportActivity;
-import dataTypes.DtSportInstitute;
+import dataTypes.DtInstitute;
 import interfaces.InstituteInterface;
 
 public class InstituteController implements InstituteInterface {
@@ -15,7 +14,7 @@ public class InstituteController implements InstituteInterface {
 	}
 	
 	@Override
-	public Map<String, DtSportInstitute> listSportInstitutes() {
+	public Map<String, DtInstitute> listSportInstitutes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -34,13 +33,13 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public Map<String, DtSportActivity> listSportsActivitiesRanking() {
+	public Map<String, DtActivity> listSportsActivitiesRanking() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean addNewSportActivity(DtSportActivity sportActivity, Integer idInstitute) {
+	public boolean addNewSportActivity(DtActivity sportActivity, Integer idInstitute) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -58,13 +57,13 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public DtSportActivity getActivity(String activityName) {
+	public DtActivity getActivity(String activityName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DtSportInstitute chooseSportInstitute(String name) {
+	public DtInstitute chooseSportInstitute(String name) {
 		// TODO Auto-generated method stub
 		return null;
 	}
