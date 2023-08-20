@@ -18,8 +18,8 @@ public class Professor extends User{
 		super();
 	}
 	
-	public Professor(String description, String biography, String webPage, String nickname, String name, String surname, String email, Date bornDate) {
-		super(nickname, name, surname, email, bornDate);
+	public Professor(String description, String biography, String webPage, String nickname, String name, String lastName, String email, Date bornDate) {
+		super(nickname, name, lastName, email, bornDate);
 		//this.sportInstitutions = new TreeMap<String, SportInstitution>();
 		this.description = description;
 		this.biography = biography;

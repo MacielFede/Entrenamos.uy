@@ -16,8 +16,8 @@ public class Member extends User{
 		super();
 	}
 	
-	public Member(String nickname, String name, String surname, String email, Date bornDate) {
-		super(nickname, name, surname, email, bornDate);
+	public Member(String nickname, String name, String lastName, String email, Date bornDate) {
+		super(nickname, name, lastName, email, bornDate);
 		//this.enrollments = new TreeList<Enrollment>();
 	}
 	/*
