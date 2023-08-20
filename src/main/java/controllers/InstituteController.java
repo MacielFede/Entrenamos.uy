@@ -1,6 +1,6 @@
 package controllers;
 
-import java.util.List;
+import java.util.Map;
 
 import dataTypes.DtActivity;
 import dataTypes.DtClass;
@@ -15,26 +15,26 @@ public class InstituteController implements InstituteInterface {
 	}
 	
 	@Override
-	public List<DtSportInstitute> listSportInstitutes() {
+	public Map<String, DtSportInstitute> listSportInstitutes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public List<DtActivity> selectInstitution(String institutionName) {
+	public Map<String, DtActivity> selectInstitution(String institutionName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<DtClass> chooseActivity(DtActivity activity) {
+	public Map<String, DtClass> chooseActivity(DtActivity activity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<DtSportActivity> listSportsActivitiesRanking() {
+	public Map<String, DtSportActivity> listSportsActivitiesRanking() {
 		// TODO Auto-generated method stub
 		return null;
 	}

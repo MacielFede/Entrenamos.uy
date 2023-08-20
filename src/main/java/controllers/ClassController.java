@@ -1,6 +1,6 @@
 package controllers;
 
-import java.util.List;
+import java.util.Map;
 
 import dataTypes.DtClass;
 import dataTypes.DtUser;
@@ -24,7 +24,7 @@ public class ClassController implements ClassInterface {
 	}
 
 	@Override
-	public List<DtClass> listClassesBySportActivity(Integer idSportActivity) {
+	public Map<String, DtClass> listClassesBySportActivity(Integer idSportActivity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -36,7 +36,7 @@ public class ClassController implements ClassInterface {
 	}
 
 	@Override
-	public List<DtClass> listClassesDictationRanking() {
+	public Map<String, DtClass> listClassesDictationRanking() {
 		// TODO Auto-generated method stub
 		return null;
 	}

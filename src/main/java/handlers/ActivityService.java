@@ -1,6 +1,6 @@
 package handlers;
 
-import java.util.List;
+import java.util.Map;
 
 import dataTypes.DtSportInstitute;
 
@@ -20,8 +20,8 @@ public class ActivityService {
 		return dti;
 	}
 	
-	public List<DtSportInstitute> getAllActivity() {
-		List<DtSportInstitute> l = null;
+	public Map<String, DtSportInstitute> getAllActivity() {
+		Map<String, DtSportInstitute> l = null;
 		return l;
 	}
 }

@@ -1,6 +1,6 @@
 package handlers;
 
-import java.util.List;
+import java.util.Map;
 
 import dataTypes.DtUser;
 
@@ -25,8 +25,8 @@ public class UserService {
 		return DtU;
 	}
 	
-	public List<DtUser> getAllUsers() {
-		List<DtUser> lDtU = null;
+	public Map<String, DtUser> getAllUsers() {
+		Map<String, DtUser> lDtU = null;
 		return lDtU;
 	}
 }

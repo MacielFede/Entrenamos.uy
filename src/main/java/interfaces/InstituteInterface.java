@@ -1,6 +1,6 @@
 package interfaces;
 
-import java.util.List;
+import java.util.Map;
 
 import dataTypes.DtActivity;
 import dataTypes.DtClass;
@@ -8,10 +8,10 @@ import dataTypes.DtSportActivity;
 import dataTypes.DtSportInstitute;
 
 public interface InstituteInterface {
-	public List<DtSportInstitute> listSportInstitutes();
-	public List<DtActivity> selectInstitution(String institutionName);
-	public List<DtClass> chooseActivity(DtActivity activity);
-	public List<DtSportActivity> listSportsActivitiesRanking();
+	public Map<String, DtSportInstitute> listSportInstitutes();
+	public Map<String, DtActivity> selectInstitution(String institutionName);
+	public Map<String, DtClass> chooseActivity(DtActivity activity);
+	public Map<String, DtSportActivity> listSportsActivitiesRanking();
 	public boolean addNewSportActivity(DtSportActivity sportActivity, Integer idInstitute);
 	public boolean modiFySportInstitute(String desc, String url);
 	public boolean registerInstitution(String name, String description, String url);

@@ -1,6 +1,6 @@
 package handlers;
 
-import java.util.List;
+import java.util.Map;
 
 import dataTypes.DtClass;
 
@@ -20,8 +20,8 @@ public class ClassService {
 		return dtc;
 	}
 	
-	public List<DtClass> getAllClasses() {
-		List<DtClass> l = null;
+	public Map<String, DtClass> getAllClasses() {
+		Map<String, DtClass> l = null;
 		return l;
 	}
 }
