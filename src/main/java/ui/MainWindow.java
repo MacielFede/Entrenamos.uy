@@ -1,30 +1,41 @@
 package ui;
 
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainWindow extends JFrame{
+public class MainWindow extends JFrame {
 
-    private JPanel mainPanel;
-    private JMenuBar sidebar;
-    private JMenu homeMenu;
+    private final JMenuBar sidebar;
+    private JMenu [] sidebarElements;
+    private Container mainContainer;
 
-    public MainWindow(){
-        // Here we create the main frame and set:
-        // - a title for the title bar
-        // - its behavior when the user clicks the red X
-        // - its size
-        // - the location where the window appears (center of the screen)
-        // finally we display the window
+    private JPanel activePanel;
+    private final JPanel homePanel = new JPanel();
+    private final JPanel professorPanel = new JPanel();
+
+    public MainWindow() {
+        /* Here we create the main frame and set:
+        * - a title for the title bar
+        * - its behavior when the user clicks the red X
+        * - its size
+        * - the location where the window appears (center of the screen)
+        finally we display the window */
         this.setTitle("No pierdan la volunta wachos");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setSize(800,500);
+        this.setSize(800, 500);
         this.setLocationRelativeTo(null);
+        mainContainer = this.getContentPane();
+        mainContainer.setBackground(Color.WHITE); //contrasting bg
+        sidebar = createSidebar();
+        initializePanels();
+        mainContainer.add(sidebar,
+                BorderLayout.LINE_START);
+        mainContainer.add(professorPanel, BorderLayout.CENTER);
         this.setVisible(true);
-        this.setContentPane(mainPanel);
-        initialize();
-//        Sidebar sidebar = new Sidebar();
-//        scrollPanel.getViewport().add(sidebar);
         // The code bellow should be run every time the main windows (the app) closes to close the database conection
 //        this.addWindowListener(new WindowAdapter() {
 //            @Override
@@ -34,123 +45,75 @@ public class MainWindow extends JFrame{
 //            }
 //        });
     }
+    private void initializePanels(){
+        // In this method we should create and set every panel design and set the variables for easy access
+        homePanel.add(new JLabel("Hola perra"));
+        homePanel.setBackground(Color.RED);
+        professorPanel.add(new JLabel("Hola zorra"));
+        professorPanel.setBackground(Color.GREEN);
 
-    private void initialize(){
-        sidebar = new JMenuBar();
-        sidebar.setLayout(new GridLayout(0,1));
-        homeMenu = new JMenu("Inicio");
-        sidebar.add(homeMenu);
-        this.setJMenuBar(sidebar);
+        // Don't forget to initialize the active panel
+        activePanel = professorPanel;
     }
-}
 
-
-import java.awt.*;
-        import java.awt.event.*;
-        import javax.swing.*;
-
-/**
- * @author ges
- * @author kwalrath
- */
-/* MenuLayoutDemo.java requires no other files. */
-
-public class MenuLayoutDemo {
-    public JMenuBar createMenuBar() {
+    private JMenuBar createSidebar() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.PAGE_AXIS));
-        menuBar.add(createMenu("Menu 1"));
-        menuBar.add(createMenu("Menu 2"));
-        menuBar.add(createMenu("Menu 3"));
+        // I do this because the "Inicio" JMenu will only display the home screen and will never change
+        JMenu home = createMenu("Inicio");
+        home.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                // Here we change the active JPanel and go directly to the home screen
+                if(activePanel == null || activePanel != homePanel){ changeActivePanel(homePanel); }
+            }
+            // I have to implement this 2 methods to this to work
+            @Override
+            public void menuDeselected(MenuEvent e) {}
+            @Override
+            public void menuCanceled(MenuEvent e) {}
 
-        menuBar.setBorder(BorderFactory.createMatteBorder(0,0,0,1,
+        });
+        sidebarElements = new JMenu[]{home, createMenu("Profesores"), createMenu("Miembros"),
+                createMenu("Clases"), createMenu("Instituciones"), createMenu("Actividades"), createMenu("Rankings")};
+        for (JMenu sidebarElement: sidebarElements){
+            menuBar.add(sidebarElement);
+        }
+        menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1,
                 Color.BLACK));
         return menuBar;
     }
 
-    // used by createMenuBar
-    public JMenu createMenu(String title) {
+    private JMenu createMenu(String title) {
         JMenu m = new HorizontalMenu(title);
-        m.add("Menu item #1 in " + title);
-        m.add("Menu item #2 in " + title);
-        m.add("Menu item #3 in " + title);
-
-        JMenu submenu = new HorizontalMenu("Submenu");
-        submenu.add("Submenu item #1");
-        submenu.add("Submenu item #2");
-        m.add(submenu);
-
+        m.setAlignmentX(-1);
+        // Here we should add all the submenu needed (we could use a Switch statement so that if the title is ... we add some JMenuItem
+        // I think this is the best to not have boilerplate code.
+        // So, everytime we need a JMenuItem in a menu, we only need to add it here (with its respective action listener which you can add in its constructor)
+        // ! Remember, the "Inicio" JMenu will not have submenus.
+        List<JMenuItem> subMenus = new ArrayList<>();
+        switch (title){
+            case "Profesores" -> {
+                JMenuItem listProfessors = new JMenuItem("Listar profesores");
+                listProfessors.addActionListener(e -> {
+                    changeActivePanel(professorPanel);
+                });
+                subMenus.add(listProfessors);
+            }
+            default -> System.out.println("You didn't add a JMenuItem");
+        }
+        for(JMenuItem item: subMenus){
+            m.add(item);
+        }
         return m;
     }
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("MenuLayoutDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-        MenuLayoutDemo demo = new MenuLayoutDemo();
-        Container contentPane = frame.getContentPane();
-        contentPane.setBackground(Color.WHITE); //contrasting bg
-        contentPane.add(demo.createMenuBar(),
-                BorderLayout.LINE_START);
-
-        //Display the window.
-        frame.setSize(300, 150);
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
-
-    class HorizontalMenu extends JMenu {
-        HorizontalMenu(String label) {
-            super(label);
-            JPopupMenu pm = getPopupMenu();
-            pm.setLayout(new BoxLayout(pm, BoxLayout.LINE_AXIS));
-        }
-
-        public Dimension getMinimumSize() {
-            return getPreferredSize();
-        }
-
-        public Dimension getMaximumSize() {
-            return getPreferredSize();
-        }
-
-        public void setPopupMenuVisible(boolean b) {
-            boolean isVisible = isPopupMenuVisible();
-            if (b != isVisible) {
-                if ((b==true) && isShowing()) {
-                    //Set location of popupMenu (pulldown or pullright).
-                    //Perhaps this should be dictated by L&F.
-                    int x = 0;
-                    int y = 0;
-                    Container parent = getParent();
-                    if (parent instanceof JPopupMenu) {
-                        x = 0;
-                        y = getHeight();
-                    } else {
-                        x = getWidth();
-                        y = 0;
-                    }
-                    getPopupMenu().show(this, x, y);
-                } else {
-                    getPopupMenu().setVisible(false);
-                }
-            }
-        }
+    private void changeActivePanel(JPanel newPanel){
+        // This method changes the active panel with the one chosen by the user
+        mainContainer.remove(activePanel);
+        mainContainer.add(newPanel, BorderLayout.CENTER);
+        mainContainer.revalidate();
+        mainContainer.repaint();
+        activePanel = newPanel;
     }
 }
