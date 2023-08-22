@@ -71,9 +71,9 @@ public class RankingPanel extends JPanel{
 		model.fireTableDataChanged(); 
 	}
 	
-	protected void addRowToTable(int position, Object[] data) {
+	protected void addRowToTable(Object[] data) {
 		DefaultTableModel model = (DefaultTableModel) this.rankingTable.getModel();
-		model.insertRow(position, data);
+		model.addRow(data);
 		model.fireTableDataChanged(); 
 		
 		
