@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +9,8 @@ import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtInstitute;
 import interfaces.InstituteInterface;
+import services.ActivityService;
+import services.ServiceFactory;
 
 public class InstituteController implements InstituteInterface {
 	public InstituteController() {
@@ -35,8 +39,14 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public List<DtActivity> listSportsActivitiesRanking() {
-		// TODO Auto-generated method stub
-		return null;
+		ServiceFactory serviceFactory = ServiceFactory.getInstance();
+		ActivityService activityService = serviceFactory.getActivityService();
+		List<DtActivity> activities = new ArrayList<DtActivity>();
+		for(DtActivity dt : activityService.getAllActivity().values()) {
+			activities.add(dt);
+		}
+		activities.sort(Comparator.comparingInt(DtActivity::getClassesQuantity).reversed());
+		return activities;
 	}
 
 	@Override

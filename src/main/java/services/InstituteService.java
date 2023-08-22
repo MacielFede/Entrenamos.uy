@@ -1,18 +1,18 @@
-package handlers;
+package services;
 
 import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import dataTypes.DtInstitute;
 
 public class InstituteService {
-	private static InstituteService instance = null;
+	@PersistenceContext
+    private EntityManager entityManager;
 	
-	private InstituteService(){}
-	
-	public static InstituteService getInstance() {
-		if (instance == null)
-			instance = new InstituteService();
-		return instance;
+	public InstituteService(EntityManager entityManagers){
+		this.entityManager = entityManager;
 	}
 	
 	public DtInstitute getInstituteByName(String name) {
