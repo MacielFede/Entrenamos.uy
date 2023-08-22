@@ -3,6 +3,9 @@ package ui;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+
+import ui.Panels.SportActivitiesRankingPanel;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
@@ -20,7 +23,7 @@ public class MainWindow extends JFrame {
     
     private final JPanel homePanel = new JPanel();
     private final JPanel professorPanel = new JPanel();
-    private final JPanel sportActivitiesRankingPanel = new JPanel();
+    private final SportActivitiesRankingPanel sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
     private final JPanel classesTaughtRankingPanel = new JPanel();
 
     public MainWindow() {
@@ -73,8 +76,6 @@ public class MainWindow extends JFrame {
         // In this method we should create and set every panel design and set the variables for easy access
         homePanel.add(new JLabel("Hola perra"));
         homePanel.setBackground(Color.RED);
-        sportActivitiesRankingPanel.setBackground(Color.BLACK);
-        sportActivitiesRankingPanel.add(new JLabel("Ranking de actividades deportivas"));
         classesTaughtRankingPanel.setBackground(Color.BLACK);
         classesTaughtRankingPanel.add(new JLabel("Ranking de clases dictadas"));
         professorPanel.add(new JLabel("Hola zorra"));
