@@ -4,21 +4,28 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 public class RankingPanel extends JPanel{
-	protected JTable rankingTable;
+	protected JTable 	rankingTable;
+	private 	int		maxVisibleRows;
 
 	public RankingPanel() {
 		setLayout(new GridBagLayout());
 	}
+
+	public void setMaxVisibleRows(int maxVisibleRows) {
+		this.maxVisibleRows = maxVisibleRows;
+	}
 	
-	protected void createTable(Object[] tableHeaders, int visibleRows) {
+	protected void createTable(Object[] tableHeaders, int alignment) {
 		GridBagConstraints gbcTable = new GridBagConstraints();
 		gbcTable.gridx = 0;
 		gbcTable.gridy = 1;
@@ -26,9 +33,16 @@ public class RankingPanel extends JPanel{
 		gbcTable.fill = GridBagConstraints.HORIZONTAL;
 		gbcTable.insets = new Insets(0, 15, 0, 15);
 		
-		DefaultTableModel model = new DefaultTableModel(tableHeaders, visibleRows);
+		DefaultTableModel model = new DefaultTableModel(tableHeaders, 0);
 		model.setColumnIdentifiers(tableHeaders);
 		rankingTable = new JTable(model);
+		
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(alignment);
+        for (int i = 0; i < rankingTable.getColumnCount(); i++) {
+        	rankingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+		
 		this.add(new JScrollPane(rankingTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), gbcTable);
 	}
 	
@@ -55,5 +69,17 @@ public class RankingPanel extends JPanel{
 		}
 		DefaultTableModel model = (DefaultTableModel) this.rankingTable.getModel();
 		model.fireTableDataChanged(); 
+	}
+	
+	protected void addRowToTable(int position, Object[] data) {
+		DefaultTableModel model = (DefaultTableModel) this.rankingTable.getModel();
+		model.insertRow(position, data);
+		model.fireTableDataChanged(); 
+		
+		
+		int numRows = model.getRowCount();
+        int rowHeight = rankingTable.getRowHeight();
+        int preferredHeight = rowHeight * Math.min(numRows, maxVisibleRows);
+        rankingTable.setPreferredScrollableViewportSize(new Dimension(rankingTable.getPreferredSize().width, preferredHeight));
 	}
 }
