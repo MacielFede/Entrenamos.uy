@@ -46,8 +46,12 @@ public class RankingPanel extends JPanel{
 	
 	protected void setColumnWidths(Object[] tableHeaders, int[] minColumnWidths, int[] maxColumnWidths) {
 		for(int i=0; i<tableHeaders.length; i++) {
-			this.rankingTable.getColumn(tableHeaders[i]).setMaxWidth(maxColumnWidths[i]); 
-			this.rankingTable.getColumn(tableHeaders[i]).setMinWidth(minColumnWidths[i]); 
+			if(minColumnWidths[i] != 0) {
+				this.rankingTable.getColumn(tableHeaders[i]).setMinWidth(minColumnWidths[i]); 
+			}
+			if(maxColumnWidths[i] != 0) {
+				this.rankingTable.getColumn(tableHeaders[i]).setMaxWidth(maxColumnWidths[i]); 
+			}
 		}
 		DefaultTableModel model = (DefaultTableModel) this.rankingTable.getModel();
 		model.fireTableDataChanged(); 
