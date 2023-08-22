@@ -1,5 +1,7 @@
 package ui;
 
+import ui.panels.ModifyUserDataPanel;
+
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
@@ -16,6 +18,8 @@ public class MainWindow extends JFrame {
     private JPanel activePanel;
     private final JPanel homePanel = new JPanel();
     private final JPanel professorPanel = new JPanel();
+
+    private final JPanel modifyUserDataPanel = new ModifyUserDataPanel();
 
     public MainWindow() {
         /* Here we create the main frame and set:
@@ -34,7 +38,7 @@ public class MainWindow extends JFrame {
         initializePanels();
         mainContainer.add(sidebar,
                 BorderLayout.LINE_START);
-        mainContainer.add(professorPanel, BorderLayout.CENTER);
+        mainContainer.add(homePanel, BorderLayout.CENTER);
         this.setVisible(true);
         // The code bellow should be run every time the main windows (the app) closes to close the database conection
 //        this.addWindowListener(new WindowAdapter() {
@@ -51,9 +55,8 @@ public class MainWindow extends JFrame {
         homePanel.setBackground(Color.RED);
         professorPanel.add(new JLabel("Hola zorra"));
         professorPanel.setBackground(Color.GREEN);
-
         // Don't forget to initialize the active panel
-        activePanel = professorPanel;
+        activePanel = homePanel;
     }
 
     private JMenuBar createSidebar() {
@@ -65,7 +68,7 @@ public class MainWindow extends JFrame {
             @Override
             public void menuSelected(MenuEvent e) {
                 // Here we change the active JPanel and go directly to the home screen
-                if(activePanel == null || activePanel != homePanel){ changeActivePanel(homePanel); }
+                changeActivePanel(homePanel);
             }
             // I have to implement this 2 methods to this to work
             @Override
@@ -74,8 +77,8 @@ public class MainWindow extends JFrame {
             public void menuCanceled(MenuEvent e) {}
 
         });
-        sidebarElements = new JMenu[]{home, createMenu("Profesores"), createMenu("Miembros"),
-                createMenu("Clases"), createMenu("Instituciones"), createMenu("Actividades"), createMenu("Rankings")};
+        sidebarElements = new JMenu[]{home, createMenu("Usuarios"), createMenu("Clases"),
+                createMenu("Instituciones"), createMenu("Actividades"), createMenu("Rankings")};
         for (JMenu sidebarElement: sidebarElements){
             menuBar.add(sidebarElement);
         }
@@ -91,8 +94,20 @@ public class MainWindow extends JFrame {
         // I think this is the best to not have boilerplate code.
         // So, everytime we need a JMenuItem in a menu, we only need to add it here (with its respective action listener which you can add in its constructor)
         // ! Remember, the "Inicio" JMenu will not have submenus.
-        List<JMenuItem> subMenus = new ArrayList<>();
+        List<JComponent> subMenus = new ArrayList<>();
         switch (title){
+            case "Usuarios" -> {
+                JMenu professors = new HorizontalMenu("Profesores");
+                JMenu members = new HorizontalMenu("Miembros");
+                JMenuItem modifyUserInfo = new JMenuItem("Modificar informacion basica");
+                modifyUserInfo.addActionListener(e -> {
+                    System.out.println("Ejecuto el cambio de panel");
+                    changeActivePanel(modifyUserDataPanel);
+                });
+                subMenus.add(modifyUserInfo);
+                subMenus.add(professors);
+                subMenus.add(members);
+            }
             case "Profesores" -> {
                 JMenuItem listProfessors = new JMenuItem("Listar profesores");
                 listProfessors.addActionListener(e -> {
@@ -102,7 +117,7 @@ public class MainWindow extends JFrame {
             }
             default -> System.out.println("You didn't add a JMenuItem");
         }
-        for(JMenuItem item: subMenus){
+        for(JComponent item: subMenus){
             m.add(item);
         }
         return m;
@@ -110,6 +125,7 @@ public class MainWindow extends JFrame {
 
     private void changeActivePanel(JPanel newPanel){
         // This method changes the active panel with the one chosen by the user
+        if (activePanel == null || activePanel.equals(newPanel)) { return; }
         mainContainer.remove(activePanel);
         mainContainer.add(newPanel, BorderLayout.CENTER);
         mainContainer.revalidate();
