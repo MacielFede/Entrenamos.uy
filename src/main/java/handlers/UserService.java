@@ -1,5 +1,7 @@
 package handlers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import dataTypes.DtUser;
@@ -28,5 +30,10 @@ public class UserService {
 	public Map<String, DtUser> getAllUsers() {
 		Map<String, DtUser> lDtU = null;
 		return lDtU;
+	}
+
+	public String[] getAllUsersNickname(){
+		List<String> nicknames = new ArrayList<>();
+		return nicknames.toArray(new String[0]);
 	}
 }

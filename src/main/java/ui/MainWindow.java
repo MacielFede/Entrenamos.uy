@@ -30,7 +30,7 @@ public class MainWindow extends JFrame {
         finally we display the window */
         this.setTitle("No pierdan la volunta wachos");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setSize(800, 500);
+        this.setMinimumSize(new Dimension(800, 500));
         this.setLocationRelativeTo(null);
         mainContainer = this.getContentPane();
         mainContainer.setBackground(Color.WHITE); //contrasting bg
@@ -101,7 +101,6 @@ public class MainWindow extends JFrame {
                 JMenu members = new HorizontalMenu("Miembros");
                 JMenuItem modifyUserInfo = new JMenuItem("Modificar informacion basica");
                 modifyUserInfo.addActionListener(e -> {
-                    System.out.println("Ejecuto el cambio de panel");
                     changeActivePanel(modifyUserDataPanel);
                 });
                 subMenus.add(modifyUserInfo);
