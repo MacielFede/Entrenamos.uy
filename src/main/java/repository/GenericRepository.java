@@ -16,7 +16,7 @@ public class GenericRepository<T> {
 		this.entityClass = entityClass;
 	}
 	
-	public T findById(Object id, String[] IncludeProperties) {
+	public T findById(Object id, String keyAttributeName, String[] IncludeProperties) {
 		/* To obtain the class with all the associated classes (Joins) in a single 
 		query we mark it in "IncludeProperties" saving the name of each attribute that we want */
 		if(IncludeProperties != null) {
@@ -26,7 +26,7 @@ public class GenericRepository<T> {
 			for(String propertyName : IncludeProperties) {
 				root.fetch(propertyName, JoinType.LEFT);
 			}
-			query.select(root).where(builder.equal(root.get("id"), id));
+			query.select(root).where(builder.equal(root.get(keyAttributeName), id));
 			return entityManager.createQuery(query).getSingleResult();
 		}
 		else {
@@ -57,15 +57,15 @@ public class GenericRepository<T> {
 		entityManager.merge(entity);
 	}
 
-	public void delete(Object id) {
-		T entity = findById(id);
+	public void delete(Object id, String keyAtributeName) {
+		T entity = findById(id, keyAtributeName);
 		if (entity != null) {
 			entityManager.remove(entity);
 		}
 	}
 	
-	public T findById(Object id) {
-		return this.findById(id, null);
+	public T findById(Object id, String keyAtributeName) {
+		return this.findById(id, keyAtributeName, null);
 	}
 	public List<T> findAll(){
 		return this.findAll(null);
