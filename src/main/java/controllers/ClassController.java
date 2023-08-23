@@ -1,12 +1,17 @@
 package controllers;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import dataTypes.DtClass;
 import dataTypes.DtUser;
 import interfaces.ClassInterface;
+import services.ActivityService;
+import services.ServiceFactory;
 
 public class ClassController implements ClassInterface {
+	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	
 	public ClassController() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -24,9 +29,10 @@ public class ClassController implements ClassInterface {
 	}
 
 	@Override
-	public Map<String, DtClass> listClassesBySportActivity(Integer idSportActivity) {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, DtClass> listClassesBySportActivity(String nameActivity) {
+		ActivityService activityService = serviceFactory.getActivityService();
+		Map<String, DtClass> activities = activityService.getClassesByActivity(nameActivity);
+		return activities;
 	}
 
 	@Override

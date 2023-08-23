@@ -9,6 +9,9 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.swing.JComboBox;
 
@@ -19,8 +22,16 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import dataTypes.DtActivity;
+import dataTypes.DtClass;
+import dataTypes.DtInstitute;
+import interfaces.ClassInterface;
+import interfaces.ControllerFactory;
+import interfaces.InstituteInterface;
+
 public class ClassTeachingConsultationPanel extends JPanel{
 	private JTable classDataTable;
+	private JScrollPane tableScrollPane;
 	private JComboBox<String> institutesComboBox 	= new JComboBox<String>();
 	private JComboBox<String> activitiesComboBox 	= new JComboBox<String>();
 	private JComboBox<String> classesComboBox		= new JComboBox<String>();
@@ -29,11 +40,21 @@ public class ClassTeachingConsultationPanel extends JPanel{
 	private String selectedInstitute 				= nonSelectedOption;
 	private String selectedActivity					= nonSelectedOption;
 	private String selectedClass					= nonSelectedOption;
+	private Map<String, DtInstitute> institutes 	= new TreeMap<String, DtInstitute>();
+	private Map<String, DtActivity> activities 		= new TreeMap<String, DtActivity>();
+	private Map<String, DtClass> classes 			= new TreeMap<String, DtClass>();
+	
+	private InstituteInterface instituteController 	= ControllerFactory.getInstance().getInstituteInterface();
+	private ClassInterface classController 			= ControllerFactory.getInstance().getClassInterface();
 
 	public ClassTeachingConsultationPanel() {
 		initialize();
 		setListeners();
-		agregarElementosPrueba();
+		addBaseElements();
+		institutes = instituteController.listSportInstitutes();
+		if(institutes != null) {
+			addItemsToComboBox(institutesComboBox, institutes.keySet());
+		}
 	}
 	
 	private void initialize() {
@@ -47,18 +68,26 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		createDataTable();
 	}
 	
-	private void agregarElementosPrueba() {
-		institutesComboBox.addItem(nonSelectedOption);
-		activitiesComboBox.addItem(nonSelectedOption);
-		classesComboBox.addItem(nonSelectedOption);
-		for(int i=0; i < 5; i++) {
-			institutesComboBox.addItem("Instituto " + i);
-		}
-		for(int i=0; i < 5; i++) {
-			activitiesComboBox.addItem("Actividad deportiva " + i);
-		}
-		for(int i=0; i < 5; i++) {
-			classesComboBox.addItem("Clase " + i);
+	private void addBaseElements() {
+		institutesComboBox.addItem(selectedInstitute);
+		selectedInstitute = nonSelectedOption;
+		institutesComboBox.setSelectedItem(selectedInstitute);
+		activitiesComboBox.addItem(selectedActivity);
+		selectedActivity = nonSelectedOption;
+		activitiesComboBox.setSelectedItem(selectedActivity);
+		classesComboBox.addItem(selectedClass);
+		selectedClass = nonSelectedOption;
+		classesComboBox.setSelectedItem(selectedClass);
+	}
+	
+	private void resetComboBox(JComboBox<String> comboBox) {
+		comboBox.removeAllItems();
+		comboBox.addItem(nonSelectedOption);
+	}
+	
+	private void addItemsToComboBox(JComboBox<String> comboBox, Set<String> values) {
+		for(String value : values) {
+			comboBox.addItem(value);
 		}
 	}
 	
@@ -66,20 +95,27 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		institutesComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	if(!institutesComboBox.getSelectedItem().toString().equals(selectedInstitute)) {
+            	if(institutesComboBox.getSelectedItem() != null && !institutesComboBox.getSelectedItem().toString().equals(selectedInstitute)) {
             		if(institutesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
                 		activitiesComboBox.setEnabled(false);
+                		resetComboBox(classesComboBox);
                 		classesComboBox.setEnabled(false);
                 	}
                 	else {
+                		activities = instituteController.selectInstitution(institutesComboBox.getSelectedItem().toString());
+                		resetComboBox(activitiesComboBox);
+                		if(activities != null) {
+                			addItemsToComboBox(activitiesComboBox, activities.keySet());
+                		}
                 		activitiesComboBox.setEnabled(true);
+                		resetComboBox(classesComboBox);
                 		classesComboBox.setEnabled(false);
                 	}
             		selectedActivity = nonSelectedOption;
             		activitiesComboBox.setSelectedItem(selectedActivity);
             		selectedClass = nonSelectedOption;
             		classesComboBox.setSelectedItem(selectedClass);
-            		classDataTable.setVisible(false);
+            		tableScrollPane.setVisible(false);
                 	selectedInstitute = institutesComboBox.getSelectedItem().toString();
             	}
             }
@@ -88,16 +124,21 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		activitiesComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	if(!activitiesComboBox.getSelectedItem().toString().equals(selectedActivity)) {
+            	if(activitiesComboBox.getSelectedItem() != null && !activitiesComboBox.getSelectedItem().toString().equals(selectedActivity)) {
             		if(activitiesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
                 		classesComboBox.setEnabled(false);
                 	}
                 	else {
+                		classes = classController.listClassesBySportActivity(activitiesComboBox.getSelectedItem().toString());
+                		resetComboBox(classesComboBox);
+                		if(classes != null) {
+                			addItemsToComboBox(classesComboBox, classes.keySet());
+                		}
                 		classesComboBox.setEnabled(true);
                 	}
             		selectedClass = nonSelectedOption;
             		classesComboBox.setSelectedItem(selectedClass);
-            		classDataTable.setVisible(false);
+            		tableScrollPane.setVisible(false);
             		selectedActivity = activitiesComboBox.getSelectedItem().toString();
             	}
             }
@@ -106,12 +147,12 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		classesComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	if(!classesComboBox.getSelectedItem().toString().equals(selectedClass)) {
+            	if(classesComboBox.getSelectedItem() != null &&!classesComboBox.getSelectedItem().toString().equals(selectedClass)) {
             		if(classesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
-            			classDataTable.setVisible(false);
+            			tableScrollPane.setVisible(false);
                 	}
                 	else {
-                		classDataTable.setVisible(true);
+                		tableScrollPane.setVisible(true);
                 	}
             		selectedClass = classesComboBox.getSelectedItem().toString();
             	}
@@ -121,7 +162,7 @@ public class ClassTeachingConsultationPanel extends JPanel{
 	
 	private void setPanelLayout() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{91, 0, 80, 83, 0, 14, -62};
+		gridBagLayout.columnWidths = new int[]{71, 0, 80, 83, 0, 14, -62};
 		gridBagLayout.rowHeights = new int[]{38, 38, 38, 0, 10, 143, 53, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
@@ -165,8 +206,6 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		DefaultTableModel model = new DefaultTableModel(0, tableHeaders.length);
 		model.setColumnIdentifiers(tableHeaders);
 		
-	    
-		
 		classDataTable = new JTable(model);
 		
 		DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
@@ -175,7 +214,7 @@ public class ClassTeachingConsultationPanel extends JPanel{
         cellRenderer.setHorizontalAlignment(SwingConstants.LEFT);
 		classDataTable.getColumnModel().getColumn(1).setCellRenderer(cellRenderer);
 		
-		JScrollPane scrollPane = new JScrollPane(classDataTable);
+		tableScrollPane = new JScrollPane(classDataTable);
 		
 		GridBagConstraints gbc_table = new GridBagConstraints();
 		gbc_table.gridwidth = 4;
@@ -191,7 +230,7 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		Dimension preferredSize = new Dimension(classDataTable.getPreferredSize().width, totalHeight);
 		classDataTable.setPreferredScrollableViewportSize(preferredSize);
 		
-		add(scrollPane, gbc_table);
-		//classDataTable.setVisible(false);
+		add(tableScrollPane, gbc_table);
+		tableScrollPane.setVisible(false);
 	}
 }

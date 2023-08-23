@@ -7,7 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import dataTypes.DtActivity;
+import dataTypes.DtClass;
 import entities.Activity;
+import entities.Institute;
 import repository.GenericRepository;
 
 public class ActivityService {
@@ -23,6 +25,15 @@ public class ActivityService {
 	public DtActivity getActivityByName(String name) {
 		DtActivity dti = null;
 		return dti;
+	}
+	
+	public Map<String, DtClass> getClassesByActivity(String nameActivity){
+		Map<String, DtClass> classes = new TreeMap<String, DtClass>();
+		for(entities.Class a : activityRepository.findById(nameActivity, "name", new String[] {"classes"}).getClasses().values()){
+			classes.put(a.getName(), a.getData());
+		}
+		entityManager.close();
+		return classes;
 	}
 	
 	public Map<String, DtActivity> getAllActivity() {
