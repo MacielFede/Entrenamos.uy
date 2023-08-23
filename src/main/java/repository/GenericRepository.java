@@ -17,8 +17,11 @@ public class GenericRepository<T> {
 	}
 	
 	public T findById(Object id, String keyAttributeName, String[] IncludeProperties) {
-		/* To obtain the class with all the associated classes (Joins) in a single 
-		query we mark it in "IncludeProperties" saving the name of each attribute that we want */
+		/* 
+		To obtain the class with all the associated classes (Joins) in a single 
+		query we mark it in "IncludeProperties" saving the name of each attribute that we want.
+		Also to use this operation we have to specify the name of the entity key.
+		*/
 		if(IncludeProperties != null) {
 			CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 			CriteriaQuery<T> query = builder.createQuery(entityClass);
