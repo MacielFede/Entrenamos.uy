@@ -1,4 +1,4 @@
-package ui.panels;
+package ui.Panels;
 
 import dataTypes.DtUser;
 import interfaces.ControllerFactory;
@@ -38,21 +38,25 @@ public class ModifyUserDataPanel extends JPanel {
 
     private void fetchUserList(){
         selectUserComboBox = new JComboBox<>(uc.listUsersByNickname());
-        selectUserComboBox.setSelectedItem("<Nicknames>");
     }
 
     private void fetchSelectedUserData(String nickname){
         DtUser userChosen = uc.chooseUser(nickname);
+        if(Objects.isNull(userChosen)){
+            return;
+        }
         // Sets the inputs with the user information
         emailTextField.setText(userChosen.getEmail());
         nameTextField.setText(userChosen.getName());
         nameTextField.setEnabled(true);
+        nameTextField.setEditable(true);
         lastnameTextField.setText(userChosen.getLastName());
         lastnameTextField.setEnabled(true);
+        lastnameTextField.setEditable(true);
         // Here I put the day -1 because I need the index of the item to be selected in the array
-        dayComboBox.setSelectedIndex(userChosen.getBornDate().getDay() -1);
+        dayComboBox.setSelectedIndex(Integer.parseInt(userChosen.getBornDate().toString().substring(8,10)) -1);
         dayComboBox.setEnabled(true);
-        monthComboBox.setSelectedIndex(userChosen.getBornDate().getMonth() -1);
+        monthComboBox.setSelectedIndex(userChosen.getBornDate().getMonth());
         monthComboBox.setEnabled(true);
         activeUserYearBorn = userChosen.getBornDate().getYear();
         changeYearComboBox("START");
@@ -67,17 +71,24 @@ public class ModifyUserDataPanel extends JPanel {
         String name = nameTextField.getText();
         String lastname = lastnameTextField.getText();
         String email = emailTextField.getText();
-        int year = Integer.parseInt((String) yearComboBox.getSelectedItem());
-        int month = Integer.parseInt((String) monthComboBox.getSelectedItem());
-        int day = Integer.parseInt((String) dayComboBox.getSelectedItem());
+        int year = Integer.parseInt(String.valueOf(yearComboBox.getSelectedItem()));
+        int month = Integer.parseInt(String.valueOf(monthComboBox.getSelectedItem()));
+        int day = Integer.parseInt(String.valueOf(dayComboBox.getSelectedItem()));
         Date bornDate = new Date(year, month, day);
-        uc.updateUserInfo(new DtUser(nickname, name, lastname, email, bornDate));
-        restartUseCase();
+        try{
+            uc.updateUserInfo(new DtUser(nickname, name, lastname, email, bornDate));
+            JOptionPane.showMessageDialog(this, "El usuario fue actualizado con éxito!",
+                    "Modificar información de usuario", JOptionPane.INFORMATION_MESSAGE);
+            restartUseCase();
+            selectUserComboBox.setSelectedIndex(0);
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(this, e.getMessage(),
+                    "Modificar información de usuario", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void restartUseCase(){
         // Restarts the use case
-        selectUserComboBox.setSelectedItem("<Nicknames>");
         nameTextField.setText("");
         nameTextField.setEditable(false);
         lastnameTextField.setText("");
@@ -85,11 +96,8 @@ public class ModifyUserDataPanel extends JPanel {
         emailTextField.setText("");
         saveButton.setEnabled(false);
         cancelButton.setEnabled(false);
-        yearComboBox.setSelectedItem("");
         yearComboBox.setEnabled(false);
-        monthComboBox.setSelectedItem("");
         monthComboBox.setEnabled(false);
-        dayComboBox.setSelectedItem("");
         dayComboBox.setEnabled(false);
     }
 
@@ -98,9 +106,9 @@ public class ModifyUserDataPanel extends JPanel {
         java.util.List<String> yearArray = new ArrayList<>();
         yearArray.add("-10");
         if(operation.equals("ADD")){
-            activeUserYearBorn-= 10;
-        }else if(operation.equals("SUBTRACT")){
             activeUserYearBorn+= 10;
+        }else if(operation.equals("SUBTRACT")){
+            activeUserYearBorn-= 10;
         }
         // If it enters not any of the above if statement, it means is the start of the panel, where we need to set the JComboBox
         // activeUserYearBorn should already be initialized and set with the user info
@@ -109,68 +117,72 @@ public class ModifyUserDataPanel extends JPanel {
         }
         yearArray.add("+10");
         yearComboBox.setModel(new DefaultComboBoxModel<>(yearArray.toArray(new String[0])));
+        yearComboBox.setSelectedIndex(6);
     }
 
     private void initialize(){
         setLayout(null);
-        title.setBounds(50, 0, 358, 30);
+        title.setBounds(206, 10, 358, 30);
         title.setFont(new Font("Arial", Font.PLAIN, 20));
         title.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        selectUser.setBounds(20, 39, 171, 20);
+        selectUser.setBounds(140, 71, 171, 20);
         selectUser.setFont(new Font("Arial", Font.PLAIN, 14));
         selectUser.setLabelFor(selectUserComboBox);
 
-        selectUserComboBox.setBounds(191, 40, 217, 21);
+        selectUserComboBox.setBounds(459, 72, 217, 21);
         selectUserComboBox.setToolTipText("Nicknames de los usuarios");
-        selectUserComboBox.setSelectedItem("<Nicknames>");
         selectUserComboBox.addItemListener(e -> {
             String nick = String.valueOf(selectUserComboBox.getSelectedItem());
-            if(nick.equals("<Nicknames>")) { return; }
+            if(nick.equals("<Nicknames>") && !emailTextField.getText().isEmpty()) {
+                restartUseCase();
+                return;
+            }
             fetchSelectedUserData(nick);
         });
 
-        separator.setBounds(20, 70, 391, 2);
+        separator.setBounds(50, 104, 626, 2);
 
-        saveButton.setBounds(106, 269, 85, 21);
+        saveButton.setBounds(226, 374, 85, 21);
         saveButton.setEnabled(false);
         saveButton.addActionListener(e -> {
             updateUserInfo();
         });
 
-        cancelButton.setBounds(246, 269, 85, 21);
+        cancelButton.setBounds(356, 374, 85, 21);
         cancelButton.setEnabled(false);
         cancelButton.addActionListener(e -> {
             restartUseCase();
+            selectUserComboBox.setSelectedIndex(0);
         });
 
-        nameTextField.setBounds(20, 116, 119, 19);
+        nameTextField.setBounds(89, 139, 141, 19);
         nameTextField.setColumns(10);
         nameTextField.setEditable(false);
 
-        emailTextField.setBounds(20, 187, 119, 19);
+        emailTextField.setBounds(89, 272, 141, 19);
         emailTextField.setEditable(false);
         emailTextField.setColumns(10);
 
-        lastnameTextField.setBounds(222, 116, 119, 19);
+        lastnameTextField.setBounds(431, 139, 140, 19);
         lastnameTextField.setColumns(10);
         lastnameTextField.setEditable(false);
 
-        nameLabel.setBounds(20, 93, 45, 13);
+        nameLabel.setBounds(89, 116, 141, 13);
         nameLabel.setLabelFor(nameTextField);
 
-        lastnameLabel.setBounds(222, 93, 94, 13);
+        lastnameLabel.setBounds(431, 116, 140, 13);
         lastnameLabel.setLabelFor(lastnameTextField);
 
-        emailLabel.setBounds(20, 164, 45, 13);
+        emailLabel.setBounds(89, 249, 141, 13);
         emailLabel.setLabelFor(emailTextField);
 
-        dayComboBox.setBounds(222, 210, 29, 21);
+        dayComboBox.setBounds(431, 272, 70, 21);
         dayComboBox.setEnabled(false);
 
-        monthComboBox.setBounds(262, 210, 29, 21);
+        monthComboBox.setBounds(511, 273, 70, 21);
         monthComboBox.setEnabled(false);
 
-        yearComboBox.setBounds(302, 210, 29, 21);
+        yearComboBox.setBounds(591, 273, 70, 21);
         yearComboBox.setEnabled(false);
         yearComboBox.addItemListener(e -> {
             if(Objects.equals(String.valueOf(yearComboBox.getSelectedItem()), "-10")) {
@@ -180,10 +192,10 @@ public class ModifyUserDataPanel extends JPanel {
             }
         });
 
-        bornDateDetailLabel.setBounds(222, 183, 94, 13);
+        bornDateDetailLabel.setBounds(431, 247, 94, 13);
         bornDateDetailLabel.setLabelFor(dayComboBox);
 
-        bornDateLabel.setBounds(222, 164, 94, 13);
+        bornDateLabel.setBounds(431, 228, 94, 13);
         bornDateLabel.setLabelFor(bornDateDetailLabel);
 
         add(separator);

@@ -1,6 +1,6 @@
 package ui;
 
-import ui.panels.ModifyUserDataPanel;
+import ui.Panels.ModifyUserDataPanel;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -26,7 +26,7 @@ public class MainWindow extends JFrame {
     private SportActivitiesRankingPanel sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
     private JPanel classesTaughtRankingPanel = new JPanel();
 
-    private JPanel modifyUserDataPanel = new ModifyUserDataPanel();
+    private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
 
     public MainWindow() {
         /* Here we create the main frame and set:
@@ -133,12 +133,10 @@ public class MainWindow extends JFrame {
     	switch (title){
             // We must initialize again the panel to save, because
             case "Usuarios" -> {
-                modifyUserDataPanel = new ModifyUserDataPanel();
                 JMenuItem modifyUserInfo = createMenuItem("Modificar informacion del usuario", popupMenu, modifyUserDataPanel);
                 popupMenu.add(modifyUserInfo);
             }
         case "Rankings" -> {
-	        	sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
                 JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
 	        	JMenuItem classesTaughtRanking = createMenuItem("Clases dictadas", popupMenu, classesTaughtRankingPanel);
 	        	popupMenu.add(sportActivitiesRanking);
@@ -162,19 +160,27 @@ public class MainWindow extends JFrame {
 
     private void changeActivePanel(JPanel newPanel){
         // This method changes the active panel with the one chosen by the user
-        if (activePanel == null || activePanel.equals(newPanel)) { return; }
-        mainContainer.remove(activePanel);
-        mainContainer.add(newPanel, BorderLayout.CENTER);
-        mainContainer.revalidate();
-        mainContainer.repaint();
-        activePanel = newPanel;
-        activePanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (currentPopupMenu != null) {
-                    currentPopupMenu.setVisible(false);
-                }
+        if(!activePanel.getClass().equals(newPanel.getClass())) {
+            mainContainer.remove(activePanel);
+            mainContainer.add(newPanel, BorderLayout.CENTER);
+            mainContainer.revalidate();
+            mainContainer.repaint();
+            activePanel = newPanel;
+
+            if(newPanel instanceof SportActivitiesRankingPanel) {
+                this.sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
+            } else if (newPanel instanceof ModifyUserDataPanel) {
+                this.modifyUserDataPanel = new ModifyUserDataPanel();
             }
-        });
+
+            activePanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (currentPopupMenu != null) {
+                        currentPopupMenu.setVisible(false);
+                    }
+                }
+            });
+        }
     }
 }
