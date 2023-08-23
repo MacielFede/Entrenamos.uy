@@ -37,7 +37,7 @@ public class SportActivitiesRankingPanel extends RankingPanel{
 							i, 
 							dt.getName(), 
 							dt.getDescription(), 
-							dt.getPrice(), 
+							"$" + dt.getPrice().toString(), 
 							dt.getClassesQuantity()
 						});
 			i++;

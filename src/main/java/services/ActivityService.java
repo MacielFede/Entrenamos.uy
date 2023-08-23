@@ -27,9 +27,10 @@ public class ActivityService {
 	
 	public Map<String, DtActivity> getAllActivity() {
 		Map<String, DtActivity> activities = new TreeMap<String, DtActivity>();
-		for(Activity a : activityRepository.findAll()){
+		for(Activity a : activityRepository.findAll(new String[] {"classes"})){
 			activities.put(a.getName(), a.getData());
 		}
+		entityManager.close();
 		return activities;
 	}
 }
