@@ -22,12 +22,11 @@ public class MainWindow extends JFrame {
     private JPanel activePanel;
     private JPopupMenu currentPopupMenu;
 
-    private final JPanel homePanel = new JPanel();
-    private final JPanel professorPanel = new JPanel();
-    private final SportActivitiesRankingPanel sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
-    private final JPanel classesTaughtRankingPanel = new JPanel();
+    private JPanel homePanel = new JPanel();
+    private SportActivitiesRankingPanel sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
+    private JPanel classesTaughtRankingPanel = new JPanel();
 
-    private final JPanel modifyUserDataPanel = new ModifyUserDataPanel();
+    private JPanel modifyUserDataPanel = new ModifyUserDataPanel();
 
     public MainWindow() {
         /* Here we create the main frame and set:
@@ -63,8 +62,6 @@ public class MainWindow extends JFrame {
         homePanel.setBackground(Color.RED);
         classesTaughtRankingPanel.setBackground(Color.BLACK);
         classesTaughtRankingPanel.add(new JLabel("Ranking de clases dictadas"));
-        professorPanel.add(new JLabel("Hola zorra"));
-        professorPanel.setBackground(Color.GREEN);
         // Don't forget to initialize the active panel
         activePanel = homePanel;
         activePanel.addMouseListener(new MouseAdapter() {
@@ -134,12 +131,15 @@ public class MainWindow extends JFrame {
     private JPopupMenu createSubMenu(String title) {
     	JPopupMenu popupMenu = new JPopupMenu();
     	switch (title){
+            // We must initialize again the panel to save, because
             case "Usuarios" -> {
+                modifyUserDataPanel = new ModifyUserDataPanel();
                 JMenuItem modifyUserInfo = createMenuItem("Modificar informacion del usuario", popupMenu, modifyUserDataPanel);
                 popupMenu.add(modifyUserInfo);
             }
         case "Rankings" -> {
-	        	JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
+	        	sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
+                JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
 	        	JMenuItem classesTaughtRanking = createMenuItem("Clases dictadas", popupMenu, classesTaughtRankingPanel);
 	        	popupMenu.add(sportActivitiesRanking);
 	        	popupMenu.add(classesTaughtRanking);

@@ -27,7 +27,7 @@ public class ModifyUserDataPanel extends JPanel {
     private final JLabel emailLabel = new JLabel("Email");
     private JComboBox<Integer> dayComboBox = new JComboBox<>(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31});
     private JComboBox<Integer> monthComboBox = new JComboBox<>(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12});
-    private JComboBox<String> yearComboBox = new JComboBox<>(new String[]{"-10","1","2","3","4","5", "+10"});
+    private JComboBox<String> yearComboBox = new JComboBox<>(new String[]{});
     private final JLabel bornDateDetailLabel = new JLabel("dd / mm / aa");
     private final JLabel bornDateLabel = new JLabel("Fecha de nacimiento");
     public ModifyUserDataPanel(){
@@ -38,6 +38,7 @@ public class ModifyUserDataPanel extends JPanel {
 
     private void fetchUserList(){
         selectUserComboBox = new JComboBox<>(uc.listUsersByNickname());
+        selectUserComboBox.setSelectedItem("<Nicknames>");
     }
 
     private void fetchSelectedUserData(String nickname){

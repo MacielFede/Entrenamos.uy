@@ -1,31 +1,36 @@
 package controllers;
 
 import dataTypes.DtUser;
-import entities.User;
-import handlers.UserService;
 import interfaces.UserInterface;
-import org.w3c.dom.UserDataHandler;
+import services.ServiceFactory;
+import services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class UserController implements UserInterface {
-	private final UserService userHandler = UserService.getInstance();
+	private final UserService userService = ServiceFactory.getInstance().getUserService();
 	public UserController() {
 		super();
 	}
 	
 	@Override
-	public DtUser chooseUser(String email) {
+	public DtUser chooseUser(String nickname) {
 		DtUser dtU = null;
 		return dtU;
 	}
 
 	@Override
 	public String [] listUsersByNickname() {
-		//This should go to the UsersHandlers and ask only for all the Dts, then we should
-		return userHandler.getAllUsersNickname();
+		// Returns an array with all the user nicknames and the string "<Nicknames>"
+		Map<String, DtUser> dtMap = userService.getAllUsers();
+		List<String> nicknames = new ArrayList<>();
+		nicknames.add("<Nicknames>");
+		for(Map.Entry<String,DtUser> user : dtMap.entrySet()){
+			nicknames.add(user.getKey());
+		}
+		return nicknames.toArray(new String[0]);
 	}
 
 	@Override

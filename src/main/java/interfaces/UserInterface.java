@@ -5,7 +5,7 @@ import dataTypes.DtUser;
 import java.util.List;
 
 public interface UserInterface {
-	DtUser chooseUser(String email);
+	DtUser chooseUser(String nickname);
 
 	String [] listUsersByNickname();
 	void updateUserInfo(DtUser updatedUser);
