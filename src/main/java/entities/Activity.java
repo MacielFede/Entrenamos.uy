@@ -96,6 +96,6 @@ public class Activity {
 	}
 
 	public DtActivity getData() {
-		return new DtActivity(this.name, this.description, this.duration, this.price, this.registryDate);
+		return new DtActivity(this.name, this.description, this.duration, this.price, this.registryDate, this.classes.size());
 	}
 }

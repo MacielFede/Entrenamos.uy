@@ -1,20 +1,20 @@
-package handlers;
+package services;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import dataTypes.DtUser;
 
 public class UserService {
-	private static UserService instance = null;
+	@PersistenceContext
+    private EntityManager entityManager;
 	
-	private UserService(){}
-	
-	public static UserService getInstance() {
-		if (instance == null)
-			instance = new UserService();
-		return instance;
+	public UserService(EntityManager entityManagers){
+		this.entityManager = entityManager;
 	}
 	
 	public DtUser getUserByNickname(String nickname) {

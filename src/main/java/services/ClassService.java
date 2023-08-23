@@ -1,18 +1,18 @@
-package handlers;
+package services;
 
 import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import dataTypes.DtClass;
 
 public class ClassService {
-	private static ClassService instance = null;
+	@PersistenceContext
+    private EntityManager entityManager;
 	
-	private ClassService(){}
-	
-	public static ClassService getInstance() {
-		if (instance == null)
-			instance = new ClassService();
-		return instance;
+	public ClassService(EntityManager entityManagers){
+		this.entityManager = entityManager;
 	}
 	
 	public DtClass getClassByName(String name) {
