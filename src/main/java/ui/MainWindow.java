@@ -39,7 +39,7 @@ public class MainWindow extends JFrame {
         finally we display the window */
 		this.setTitle("No pierdan la volunta wachos");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setSize(800, 500);
+		this.setSize(new Dimension(800, 500));
 		this.setLocationRelativeTo(null);
 		mainContainer = this.getContentPane();
 		mainContainer.setBackground(Color.WHITE); //contrasting bg
