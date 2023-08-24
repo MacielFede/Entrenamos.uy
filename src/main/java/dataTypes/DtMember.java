@@ -1,6 +1,7 @@
 package dataTypes;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
 
 public class DtMember extends DtUser {
 	private Map<String, DtClass> relatedClasses;

@@ -1,5 +1,7 @@
 package ui;
 
+import ui.Panels.ModifyUserDataPanel;
+
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
@@ -22,12 +24,12 @@ public class MainWindow extends JFrame {
 	private JPopupMenu currentPopupMenu;
 
 	private final JPanel homePanel = new JPanel();
-	private final JPanel professorPanel = new JPanel();
 
 	private SportActivitiesRankingPanel sportActivitiesRankingPanel 		= new SportActivitiesRankingPanel();
 	private ClassTeachingConsultationPanel classTeachingConsultationPanel	= new ClassTeachingConsultationPanel();
 	private final JPanel classesTaughtRankingPanel = new JPanel();
-
+	private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
+	
 	public MainWindow() {
 		/* Here we create the main frame and set:
 		 * - a title for the title bar
@@ -43,7 +45,7 @@ public class MainWindow extends JFrame {
 		mainContainer.setBackground(Color.WHITE); //contrasting bg
 		sidebar = createSidebar();
 		initializePanels();
-		mainContainer.add(sidebar,BorderLayout.LINE_START);
+		mainContainer.add(sidebar, BorderLayout.LINE_START);
 		mainContainer.add(homePanel, BorderLayout.CENTER);
 		this.setVisible(true);
 		// The code bellow should be run every time the main windows (the app) closes to close the database conection
@@ -61,8 +63,6 @@ public class MainWindow extends JFrame {
 		homePanel.setBackground(Color.RED);
 		classesTaughtRankingPanel.setBackground(Color.BLACK);
 		classesTaughtRankingPanel.add(new JLabel("Ranking de clases dictadas"));
-		professorPanel.add(new JLabel("Hola zorra"));
-		professorPanel.setBackground(Color.GREEN);
 		// Don't forget to initialize the active panel
 		activePanel = homePanel;
 		activePanel.addMouseListener(new MouseAdapter() {
@@ -84,9 +84,9 @@ public class MainWindow extends JFrame {
 		home.addMenuListener(new MenuListener() {
 			@Override
 			public void menuSelected(MenuEvent e) {
-				// Here we change the active JPanel and go directly to the home screen
-				if(activePanel == null || activePanel != homePanel){ changeActivePanel(homePanel); }
-			}
+          // Here we change the active JPanel and go directly to the home screen
+          changeActivePanel(homePanel);
+      }
 			// I have to implement this 2 methods to this to work
 			@Override
 			public void menuDeselected(MenuEvent e) {}
@@ -94,14 +94,12 @@ public class MainWindow extends JFrame {
 			public void menuCanceled(MenuEvent e) {}
 
 		});
-
 		sidebarElements = new JMenu[]{home, 
-				createMenu("Usuarios"), 
-				createMenu("Miembros"),
-				createMenu("Clases"), 
-				createMenu("Instituciones"), 
-				createMenu("Rankings"), 
-		};
+						createMenu("Usuarios"),
+						createMenu("Clases"),
+						createMenu("Instituciones"),
+						createMenu("Actividades"),
+						createMenu("Rankings")};
 		for (JMenu sidebarElement: sidebarElements){
 			menuBar.add(sidebarElement);
 		}
@@ -134,6 +132,10 @@ public class MainWindow extends JFrame {
 	private JPopupMenu createSubMenu(String title) {
 		JPopupMenu popupMenu = new JPopupMenu();
 		switch (title){
+		case "Usuarios" -> {
+			JMenuItem modifyUserInfo = createMenuItem("Modificar informacion del usuario", popupMenu, modifyUserDataPanel);
+			popupMenu.add(modifyUserInfo);
+		}
 		case "Rankings" -> {
 			JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
 			JMenuItem classesTaughtRanking = createMenuItem("Clases dictadas", popupMenu, classesTaughtRankingPanel);
@@ -174,6 +176,9 @@ public class MainWindow extends JFrame {
 			}
 			else if(newPanel instanceof ClassTeachingConsultationPanel){
 				this.classTeachingConsultationPanel = new ClassTeachingConsultationPanel();
+			} 
+			else if (newPanel instanceof ModifyUserDataPanel) {
+				this.modifyUserDataPanel = new ModifyUserDataPanel();
 			}
 			
 			activePanel.addMouseListener(new MouseAdapter() {
