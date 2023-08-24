@@ -1,5 +1,7 @@
 package ui;
 
+import ui.Panels.ModifyUserDataPanel;
+
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
@@ -19,11 +21,12 @@ public class MainWindow extends JFrame {
 
     private JPanel activePanel;
     private JPopupMenu currentPopupMenu;
-    
-    private final JPanel homePanel = new JPanel();
-    private final JPanel professorPanel = new JPanel();
-    private final SportActivitiesRankingPanel sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
-    private final JPanel classesTaughtRankingPanel = new JPanel();
+
+    private JPanel homePanel = new JPanel();
+    private SportActivitiesRankingPanel sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
+    private JPanel classesTaughtRankingPanel = new JPanel();
+
+    private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
 
     public MainWindow() {
         /* Here we create the main frame and set:
@@ -34,19 +37,14 @@ public class MainWindow extends JFrame {
         finally we display the window */
         this.setTitle("No pierdan la volunta wachos");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setSize(800, 500);
+        this.setMinimumSize(new Dimension(800, 500));
         this.setLocationRelativeTo(null);
         mainContainer = this.getContentPane();
         mainContainer.setBackground(Color.WHITE); //contrasting bg
         sidebar = createSidebar();
         initializePanels();
-        mainContainer.add(sidebar,BorderLayout.LINE_START);
-        mainContainer.add(professorPanel, BorderLayout.CENTER);
-        
-        // Rankings
-        mainContainer.add(sportActivitiesRankingPanel, BorderLayout.CENTER);
-        mainContainer.add(classesTaughtRankingPanel, BorderLayout.CENTER);
-        
+        mainContainer.add(sidebar,
+                BorderLayout.LINE_START);
         mainContainer.add(homePanel, BorderLayout.CENTER);
         this.setVisible(true);
         // The code bellow should be run every time the main windows (the app) closes to close the database conection
@@ -57,19 +55,6 @@ public class MainWindow extends JFrame {
 //                gr.close();
 //            }
 //        });
-        for(Component component : mainContainer.getComponents()) {
-        	if (component instanceof JPanel) {
-        		JPanel genericPanel = (JPanel) component;
-        		genericPanel.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                    	if (currentPopupMenu != null) {
-        	                currentPopupMenu.setVisible(false);
-        	            }
-                    }
-                });
-            }
-        }
     }
     private void initializePanels(){
         // In this method we should create and set every panel design and set the variables for easy access
@@ -77,23 +62,29 @@ public class MainWindow extends JFrame {
         homePanel.setBackground(Color.RED);
         classesTaughtRankingPanel.setBackground(Color.BLACK);
         classesTaughtRankingPanel.add(new JLabel("Ranking de clases dictadas"));
-        professorPanel.add(new JLabel("Hola zorra"));
-        professorPanel.setBackground(Color.GREEN);
         // Don't forget to initialize the active panel
         activePanel = homePanel;
+        activePanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (currentPopupMenu != null) {
+                    currentPopupMenu.setVisible(false);
+                }
+            }
+        });
     }
 
     private JMenuBar createSidebar() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.PAGE_AXIS));
         // I do this because the "Inicio" JMenu will only display the home screen and will never change
-        
+
         JMenu home = createMenu("Inicio");
         home.addMenuListener(new MenuListener() {
             @Override
             public void menuSelected(MenuEvent e) {
                 // Here we change the active JPanel and go directly to the home screen
-                if(activePanel == null || activePanel != homePanel){ changeActivePanel(homePanel); }
+                changeActivePanel(homePanel);
             }
             // I have to implement this 2 methods to this to work
             @Override
@@ -102,14 +93,12 @@ public class MainWindow extends JFrame {
             public void menuCanceled(MenuEvent e) {}
 
         });
-        
-        sidebarElements = new JMenu[]{home, 
-        		createMenu("Profesores"), 
-        		createMenu("Miembros"),
-                createMenu("Clases"), 
-                createMenu("Instituciones"), 
-                createMenu("Rankings"), 
-                };
+        sidebarElements = new JMenu[]{home,
+                createMenu("Usuarios"),
+                createMenu("Clases"),
+                createMenu("Instituciones"),
+                createMenu("Actividades"),
+                createMenu("Rankings")};
         for (JMenu sidebarElement: sidebarElements){
             menuBar.add(sidebarElement);
         }
@@ -117,7 +106,7 @@ public class MainWindow extends JFrame {
                 Color.BLACK));
         return menuBar;
     }
-    
+
     private JMenu createMenu(String title) {
         JMenu m = new HorizontalMenu(title);
         m.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -138,42 +127,60 @@ public class MainWindow extends JFrame {
         m.setMinimumSize(new Dimension(Integer.MAX_VALUE, m.getMinimumSize().height));
         return m;
     }
-    
+
     private JPopupMenu createSubMenu(String title) {
     	JPopupMenu popupMenu = new JPopupMenu();
     	switch (title){
-	        case "Profesores" -> {
-	            JMenuItem listProfessors = createMenuItem("Listar profesores", popupMenu, professorPanel);
-	            popupMenu.add(listProfessors);
-	        }
+            // We must initialize again the panel to save, because
+            case "Usuarios" -> {
+                JMenuItem modifyUserInfo = createMenuItem("Modificar informacion del usuario", popupMenu, modifyUserDataPanel);
+                popupMenu.add(modifyUserInfo);
+            }
         case "Rankings" -> {
-	        	JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
+                JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
 	        	JMenuItem classesTaughtRanking = createMenuItem("Clases dictadas", popupMenu, classesTaughtRankingPanel);
 	        	popupMenu.add(sportActivitiesRanking);
 	        	popupMenu.add(classesTaughtRanking);
 	        }
 	        default -> System.out.println("You didn't add a JMenuItem");
     	}
-    	
+
     	return popupMenu;
     }
-    
+
     private JMenuItem createMenuItem(String title, JPopupMenu popupMenu, JPanel panelToChange) {
     	JMenuItem menuItem = new JMenuItem(title);
         menuItem.addActionListener(e -> {
             changeActivePanel(panelToChange);
             popupMenu.setVisible(false);
         });
-        
+
         return menuItem;
     }
 
     private void changeActivePanel(JPanel newPanel){
         // This method changes the active panel with the one chosen by the user
-        mainContainer.remove(activePanel);
-        mainContainer.add(newPanel, BorderLayout.CENTER);
-        mainContainer.revalidate();
-        mainContainer.repaint();
-        activePanel = newPanel;
+        if(!activePanel.getClass().equals(newPanel.getClass())) {
+            mainContainer.remove(activePanel);
+            mainContainer.add(newPanel, BorderLayout.CENTER);
+            mainContainer.revalidate();
+            mainContainer.repaint();
+            activePanel = newPanel;
+
+            if(newPanel instanceof SportActivitiesRankingPanel) {
+                this.sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
+            } else if (newPanel instanceof ModifyUserDataPanel) {
+                this.modifyUserDataPanel = new ModifyUserDataPanel();
+            }
+
+            activePanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (currentPopupMenu != null) {
+                        currentPopupMenu.setVisible(false);
+                    }
+                }
+            });
+        }
     }
 }
