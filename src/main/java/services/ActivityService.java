@@ -29,7 +29,7 @@ public class ActivityService {
 	
 	public Map<String, DtClass> getClassesByActivity(String nameActivity){
 		Map<String, DtClass> classes = new TreeMap<String, DtClass>();
-		for(entities.Class a : activityRepository.findById(nameActivity, "name", new String[] {"classes"}).getClasses().values()){
+		for(entities.Class a : activityRepository.findById(nameActivity, "name").getClasses().values()){
 			classes.put(a.getName(), a.getData());
 		}
 		entityManager.close();
@@ -38,7 +38,7 @@ public class ActivityService {
 	
 	public Map<String, DtActivity> getAllActivity() {
 		Map<String, DtActivity> activities = new TreeMap<String, DtActivity>();
-		for(Activity a : activityRepository.findAll(new String[] {"classes"})){
+		for(Activity a : activityRepository.findAll()){
 			activities.put(a.getName(), a.getData());
 		}
 		entityManager.close();

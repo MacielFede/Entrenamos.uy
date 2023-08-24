@@ -25,7 +25,6 @@ import javax.swing.table.DefaultTableModel;
 import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtInstitute;
-import interfaces.ClassInterface;
 import interfaces.ControllerFactory;
 import interfaces.InstituteInterface;
 
@@ -45,7 +44,6 @@ public class ClassTeachingConsultationPanel extends JPanel{
 	private Map<String, DtClass> classes 			= new TreeMap<String, DtClass>();
 	
 	private InstituteInterface instituteController 	= ControllerFactory.getInstance().getInstituteInterface();
-	private ClassInterface classController 			= ControllerFactory.getInstance().getClassInterface();
 
 	public ClassTeachingConsultationPanel() {
 		initialize();
@@ -91,6 +89,25 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		}
 	}
 	
+	private void fillTable(DtClass data) {
+		DefaultTableModel model = (DefaultTableModel) this.classDataTable.getModel();
+		int actualRows = model.getRowCount();
+		for (int i = actualRows - 1; i >= 0; i--) {
+		    model.removeRow(i);
+		}
+		actualRows = model.getRowCount();
+		model.addRow(new String[] {"Nombre", data.getName()});
+		model.addRow(new String[] {"Fecha de registro", data.getRegisterDate().toString()});
+		model.addRow(new String[] {"Fecha y hora", data.getDateAndTime().toString()});
+		model.addRow(new String[] {"URL", data.getUrl()});
+		model.fireTableDataChanged(); 
+		
+		int numRows = model.getRowCount();
+        int rowHeight = classDataTable.getRowHeight();
+        int preferredHeight = rowHeight * Math.min(numRows, 4);
+        classDataTable.setPreferredScrollableViewportSize(new Dimension(classDataTable.getPreferredSize().width, preferredHeight));
+	}
+	
 	private void setListeners() {
 		institutesComboBox.addActionListener(new ActionListener() {
             @Override
@@ -129,7 +146,7 @@ public class ClassTeachingConsultationPanel extends JPanel{
                 		classesComboBox.setEnabled(false);
                 	}
                 	else {
-                		classes = classController.listClassesBySportActivity(activitiesComboBox.getSelectedItem().toString());
+                		classes = instituteController.chooseActivity((activitiesComboBox.getSelectedItem().toString()));
                 		resetComboBox(classesComboBox);
                 		if(classes != null) {
                 			addItemsToComboBox(classesComboBox, classes.keySet());
@@ -143,7 +160,7 @@ public class ClassTeachingConsultationPanel extends JPanel{
             	}
             }
         });
-		
+		JPanel mainReference = this;
 		classesComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,7 +169,10 @@ public class ClassTeachingConsultationPanel extends JPanel{
             			tableScrollPane.setVisible(false);
                 	}
                 	else {
+                		DtClass selectedClass = instituteController.chooseClassByName(classesComboBox.getSelectedItem().toString());
+                		fillTable(selectedClass);
                 		tableScrollPane.setVisible(true);
+                		mainReference.revalidate();
                 	}
             		selectedClass = classesComboBox.getSelectedItem().toString();
             	}
@@ -162,10 +182,10 @@ public class ClassTeachingConsultationPanel extends JPanel{
 	
 	private void setPanelLayout() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{71, 0, 80, 83, 0, 14, -62};
-		gridBagLayout.rowHeights = new int[]{38, 38, 38, 0, 10, 143, 53, 0};
+		gridBagLayout.columnWidths = new int[]{5, 66, 37, 68, 0, 52, -62};
+		gridBagLayout.rowHeights = new int[]{50, 38, 38, 0, 10, 80, 53, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE, 0.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 	}
 	
@@ -184,18 +204,19 @@ public class ClassTeachingConsultationPanel extends JPanel{
 	private JComboBox<String> createLabelComboBox(String labelTitle, int gridy) {
 		JLabel genericLabel = new JLabel(labelTitle);
 		GridBagConstraints gbc_Label = new GridBagConstraints();
+		gbc_Label.gridwidth = 2;
 		gbc_Label.anchor = GridBagConstraints.EAST;
 		gbc_Label.insets = new Insets(0, 0, 5, 5);
-		gbc_Label.gridx = 0;
+		gbc_Label.gridx = 1;
 		gbc_Label.gridy = gridy;
 		add(genericLabel, gbc_Label);
 		
 		JComboBox<String> genericComboBox = new JComboBox<String>();
 		GridBagConstraints gbc_institutesComboBox = new GridBagConstraints();
-		gbc_institutesComboBox.gridwidth = 4;
+		gbc_institutesComboBox.gridwidth = 3;
 		gbc_institutesComboBox.insets = new Insets(0, 0, 5, 5);
 		gbc_institutesComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_institutesComboBox.gridx = 2;
+		gbc_institutesComboBox.gridx = 3;
 		gbc_institutesComboBox.gridy = gridy;
 		add(genericComboBox, gbc_institutesComboBox);
 		
@@ -217,7 +238,7 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		tableScrollPane = new JScrollPane(classDataTable);
 		
 		GridBagConstraints gbc_table = new GridBagConstraints();
-		gbc_table.gridwidth = 4;
+		gbc_table.gridwidth = 5;
 		gbc_table.insets = new Insets(0, 0, 5, 5);
 		gbc_table.fill = GridBagConstraints.BOTH;
 		gbc_table.gridx = 1;

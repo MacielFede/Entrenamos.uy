@@ -28,13 +28,15 @@ public class InstituteService {
 
 	public Map<String, DtActivity> getActivitiesByInstitute(String instituteName){
 		Map<String, DtActivity> activities = new TreeMap<String, DtActivity>();
-		activities = instituteRepository.findById(instituteName, "name" , new String[] {"activities"}).getDataActivities();
+		//String[] joinProperties = new String[]{"activities.classes"};
+		activities = instituteRepository.findById(instituteName, "name").getDataActivities();
 		entityManager.close();
 		return activities;
 	}
 	
 	public Map<String, DtInstitute> getAllInstitutes() {
 		Map<String, DtInstitute> institutes = new TreeMap<String, DtInstitute>();
+		//String[] joinProperties = new String[]{"activities.classes"};
 		for(Institute i : instituteRepository.findAll()) {
 			institutes.put(i.getName(), i.getData());
 		}

@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtInstitute;
+import dataTypes.DtUser;
 import interfaces.InstituteInterface;
 import services.ActivityService;
 import services.InstituteService;
@@ -16,6 +17,9 @@ import services.ServiceFactory;
 
 public class InstituteController implements InstituteInterface {
 	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	private Map<String, DtInstitute> institutesCache 	= null;
+	private Map<String, DtActivity> activitiesCache		= null;
+	private Map<String, DtClass> classesCache			= null;
 	
 	public InstituteController() {
 		super();
@@ -24,22 +28,45 @@ public class InstituteController implements InstituteInterface {
 	
 	@Override
 	public Map<String, DtInstitute> listSportInstitutes() {
-		InstituteService instituteService = serviceFactory.getInstituteService();
-		Map<String, DtInstitute> institutes = instituteService.getAllInstitutes();
-		return institutes;
+		if(institutesCache == null) {
+			listSportInstitutesCache();
+		}
+		return institutesCache;
 	}
 
 	@Override
 	public Map<String, DtActivity> selectInstitution(String institutionName){
-		InstituteService instituteService = serviceFactory.getInstituteService();
-		Map<String, DtActivity> activities = instituteService.getActivitiesByInstitute(institutionName);
-		return activities;
+		if(institutesCache == null) {
+			listSportInstitutesCache();
+		}
+		activitiesCache = institutesCache.get(institutionName).getActivities();
+		return activitiesCache;
 	}
 
 	@Override
-	public Map<String, DtClass> chooseActivity(DtActivity activity) {
-		// TODO Auto-generated method stub
+	public Map<String, DtClass> chooseActivity(String activity) {
+		if(activitiesCache == null) {
+			listSportInstitutesCache();
+		}
+		for(DtInstitute i : institutesCache.values()) {
+			for(DtActivity a : i.getActivities().values()) {
+				if(a.getName().equals(activity)) {
+					classesCache = a.getClasses();
+					return classesCache;
+				}
+			}
+		}
 		return null;
+	}
+
+	@Override
+	public DtClass chooseClassByName(String className) {
+		if(classesCache !=null) {
+			return classesCache.get(className);
+		}
+		else {
+			return null;
+		}
 	}
 
 	@Override
@@ -81,6 +108,35 @@ public class InstituteController implements InstituteInterface {
 	public DtInstitute chooseSportInstitute(String name) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public boolean registerUserToClass(DtClass rclass, DtUser user) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public DtClass showClassInfo(String className) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, DtClass> listClassesDictationRanking() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean createSportClass(DtClass newClass, Integer idSportActivity) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	private void listSportInstitutesCache() {
+		InstituteService instituteService = serviceFactory.getInstituteService();
+		institutesCache = instituteService.getAllInstitutes();
 	}
 
 }

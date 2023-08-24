@@ -66,7 +66,11 @@ public class Institute {
 	}
 
 	public DtInstitute getData() {
-		return new DtInstitute(this.name, this.description, this.url);
+		Map<String, DtActivity> activitiesList = new TreeMap<String, DtActivity>();
+		for(Activity a : this.activities.values()) {
+			activitiesList.put(a.getName(), a.getData());
+		}
+		return new DtInstitute(this.name, this.description, this.url, activitiesList);
 	}
 
 	public Activity getActivity(String activityName) {
