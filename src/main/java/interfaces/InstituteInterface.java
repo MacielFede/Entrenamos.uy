@@ -22,7 +22,8 @@ public interface InstituteInterface {
 	public List<DtActivity> listSportsActivitiesRanking();
 	public void addNewSportActivity(DtActivity sportActivity, String nameInstitute);
 	public boolean modiFySportInstitute(String desc, String url);
-	public boolean registerInstitution(String name, String description, String url);
+	public void registerInstitution(String name, String description, String url);
 	public DtActivity getActivity(String activityName);
 	public DtInstitute chooseSportInstitute(String name);
+	public boolean checkInstitutionAvialability(String name);
 }
