@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
-public class ModifySportInsitutePanel extends JPanel {
+public class ModifySportInstitutePanel extends JPanel {
 	private final InstituteInterface ic = ControllerFactory.getInstance().getInstituteInterface();
 	private JTextField textFieldDsc = new JTextField();
 	private JTextField textFieldUrl = new JTextField();
@@ -35,7 +35,7 @@ public class ModifySportInsitutePanel extends JPanel {
 	private final JButton btnCancel = new JButton("Cancelar");
 	private final JLabel lblDescription = new JLabel("Descripción");
 	
-	public ModifySportInsitutePanel() {
+	public ModifySportInstitutePanel() {
 		initialize();
 		
 		selectInstitutecomboBox.addItemListener(new ItemListener() {
