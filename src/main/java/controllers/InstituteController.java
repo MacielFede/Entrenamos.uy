@@ -33,6 +33,11 @@ public class InstituteController implements InstituteInterface {
 		}
 		return institutesCache;
 	}
+	
+	public boolean checkActivityAvialability(String name) {
+		ActivityService activityService = serviceFactory.getActivityService();
+		return activityService.checkActivityAvialability(name);
+	}
 
 	@Override
 	public Map<String, DtActivity> selectInstitution(String institutionName){
@@ -81,9 +86,9 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public boolean addNewSportActivity(DtActivity sportActivity, Integer idInstitute) {
-		// TODO Auto-generated method stub
-		return false;
+	public void addNewSportActivity(DtActivity sportActivity, String nameInstitute) {
+		InstituteService instituteService = serviceFactory.getInstituteService();
+		instituteService.addActivityAtInstitute(nameInstitute, sportActivity);
 	}
 
 	@Override

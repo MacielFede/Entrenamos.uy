@@ -27,12 +27,13 @@ public class Activity {
 	public Activity() {
 	}
 
-	public Activity(String name, String description, Integer duration, Float price, Map<String, Class> classes) {
+	public Activity(String name, String description, Integer duration, Date registeryDate, Float price, Map<String, Class> classes) {
 		this.name = name;
 		this.description = description;
 		this.duration = duration;
 		this.price = price;
 		this.classes = classes;
+		this.registryDate = registeryDate;
 	}
 
 	// GETTERS
