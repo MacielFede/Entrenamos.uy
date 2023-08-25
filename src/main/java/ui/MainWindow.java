@@ -7,6 +7,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import ui.Panels.ClassDictationRankingPanel;
+import ui.Panels.AddSportActivityPanel;
 import ui.Panels.ClassTeachingConsultationPanel;
 import ui.Panels.ModifySportInstitutePanel;
 import ui.Panels.SportActivitiesRankingPanel;
@@ -29,6 +30,7 @@ public class MainWindow extends JFrame {
 
 	private SportActivitiesRankingPanel sportActivitiesRankingPanel 		= new SportActivitiesRankingPanel();
 	private ClassTeachingConsultationPanel classTeachingConsultationPanel	= new ClassTeachingConsultationPanel();
+	private AddSportActivityPanel addSportActivityPanel						= new AddSportActivityPanel();
 	private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
 	private JPanel modifySportInstitutePanel = new ModifySportInstitutePanel();
 	private ClassDictationRankingPanel classDictationRankingPanel           = new ClassDictationRankingPanel();
@@ -150,6 +152,10 @@ public class MainWindow extends JFrame {
 		case "Instituciones" -> {
 			JMenuItem modifySportInstitute = createMenuItem("Modificar institución deportiva", popupMenu, modifySportInstitutePanel);
 			popupMenu.add(modifySportInstitute);
+
+		case "Actividades" -> {
+			JMenuItem addSportActivity = createMenuItem("Alta de actividad deportiva", popupMenu, addSportActivityPanel);
+			popupMenu.add(addSportActivity);
 		}
 		default -> System.out.println("You didn't add a JMenuItem");
 		}
@@ -190,6 +196,8 @@ public class MainWindow extends JFrame {
 			}
 			else if (newPanel instanceof ClassDictationRankingPanel) {
 				this.classDictationRankingPanel = new ClassDictationRankingPanel();
+			else if (newPanel instanceof AddSportActivityPanel) {
+				this.addSportActivityPanel = new AddSportActivityPanel();
 			}
 			
 			activePanel.addMouseListener(new MouseAdapter() {

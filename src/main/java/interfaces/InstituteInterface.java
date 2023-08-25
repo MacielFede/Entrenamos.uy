@@ -11,6 +11,7 @@ import dataTypes.DtUser;
 
 public interface InstituteInterface {
 	public boolean registerUserToClass(DtClass rclass, DtUser user);
+	public boolean checkActivityAvialability(String name);
 	public DtClass showClassInfo(String className);
 	public DtClass chooseClassByName(String className);
 	public List<DtClass> listClassesDictationRanking();
@@ -19,8 +20,8 @@ public interface InstituteInterface {
 	public Map<String, DtActivity> selectInstitution(String institutionName);
 	public Map<String, DtClass> chooseActivity(String activity);
 	public List<DtActivity> listSportsActivitiesRanking();
-	public boolean addNewSportActivity(DtActivity sportActivity, Integer idInstitute);
 	public void modiFySportInstitute(DtInstitute institute);
+	public void addNewSportActivity(DtActivity sportActivity, String nameInstitute);
 	public boolean registerInstitution(String name, String description, String url);
 	public DtActivity getActivity(String activityName);
 	public DtInstitute chooseSportInstitute(String name);
