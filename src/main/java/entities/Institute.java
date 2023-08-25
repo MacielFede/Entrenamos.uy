@@ -49,6 +49,10 @@ public class Institute {
 		this.name = name;
 	}
 
+	public Map<String, Activity> getActivities() {
+		return activities;
+	}
+
 	public String getDescription() {
 		return description;
 	}
