@@ -36,6 +36,10 @@ public class ActivityService {
 		return classes;
 	}
 	
+	public boolean checkActivityAvialability(String name) {
+		return activityRepository.findById(name, "name") == null ? true : false;
+	}
+	
 	public Map<String, DtActivity> getAllActivity() {
 		Map<String, DtActivity> activities = new TreeMap<String, DtActivity>();
 		for(Activity a : activityRepository.findAll()){

@@ -8,6 +8,8 @@ import javax.persistence.PersistenceContext;
 
 import dataTypes.DtActivity;
 import dataTypes.DtInstitute;
+import entities.Activity;
+import entities.Class;
 import entities.Institute;
 import repository.GenericRepository;
 
@@ -24,6 +26,23 @@ public class InstituteService {
 	public DtInstitute getInstituteByName(String name) {
 		DtInstitute DtU = null;
 		return DtU;
+	}
+	
+	public void addActivityAtInstitute(String name, DtActivity activity){
+		entityManager.getTransaction().begin();
+		Institute institute = instituteRepository.findById(name, "name");
+		Activity newActivity = 
+				new Activity(
+						activity.getName(),
+						activity.getDescription(), 
+						activity.getDuration(), 
+						activity.getRegistryDate(),
+						activity.getPrice(), 
+						new TreeMap<String, Class>());
+		institute.getActivities().put(activity.getName(), newActivity);
+		instituteRepository.save(institute);
+		entityManager.getTransaction().commit();
+		entityManager.close();
 	}
 
 	public Map<String, DtActivity> getActivitiesByInstitute(String instituteName){
