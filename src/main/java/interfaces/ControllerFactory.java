@@ -1,6 +1,5 @@
 package interfaces;
 
-import controllers.ClassController;
 import controllers.InstituteController;
 import controllers.UserController;
 
@@ -17,10 +16,6 @@ public class ControllerFactory {
 	
 	public UserInterface getUserInterface() {
 		return new UserController();
-	}
-	
-	public ClassInterface getClassInterface() {
-		return new ClassController();
 	}
 	
 	public InstituteInterface getInstituteInterface() {

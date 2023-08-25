@@ -5,14 +5,19 @@ import javax.persistence.Persistence;
 
 public class ServiceFactory {
 	private static ServiceFactory instance = null;
-	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("entrenamosuy");
+	private static EntityManagerFactory entityManagerFactory = null;
 	private ServiceFactory(){}
 	
 	public static ServiceFactory getInstance() {
 		if (instance == null) {
 			instance = new ServiceFactory();
+			entityManagerFactory = Persistence.createEntityManagerFactory("entrenamosuy");
 		}
 		return instance;
+	}
+	
+	public void closeEntityManagerFactory() {
+		entityManagerFactory.close();
 	}
 	
 	public ActivityService getActivityService() {

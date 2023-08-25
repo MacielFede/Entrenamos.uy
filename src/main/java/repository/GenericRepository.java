@@ -18,17 +18,27 @@ public class GenericRepository<T> {
 		this.entityClass = entityClass;
 	}
 	
-	public T findById(Object id, String[] IncludeProperties) {
-		/* To obtain the class with all the associated classes (Joins) in a single 
-		query we mark it in "IncludeProperties" saving the name of each attribute that we want */
+	public T findById(Object id, String keyAttributeName, String[] IncludeProperties) {
+		/* 
+		To obtain the class with all the associated classes (Joins) in a single 
+		query we mark it in "IncludeProperties" saving the name of each attribute that we want.
+		Also to use this operation we have to specify the name of the entity key.
+		*/
 		if(IncludeProperties != null) {
 			CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 			CriteriaQuery<T> query = builder.createQuery(entityClass);
 			Root<T> root = query.from(entityClass);
-			for(String propertyName : IncludeProperties) {
-				root.fetch(propertyName, JoinType.LEFT);
-			}
-			query.select(root).where(builder.equal(root.get("id"), id));
+			if (IncludeProperties != null) {
+		        for (String propertyName : IncludeProperties) {
+		            String[] propertyPath = propertyName.split("\\.");
+		            javax.persistence.criteria.From<?, ?> from = root;
+		            
+		            for (String property : propertyPath) {
+		                from = from.join(property, JoinType.LEFT);
+		            }
+		        }
+		    }
+			query.select(root).where(builder.equal(root.get(keyAttributeName), id));
 			return entityManager.createQuery(query).getSingleResult();
 		}
 		else {
@@ -37,18 +47,27 @@ public class GenericRepository<T> {
 	}
 
 	public List<T> findAll(String[] IncludeProperties) {
-		/* To obtain the classes with all the associated classes (Joins) in a single 
-		query we mark it in "IncludeProperties" saving the name of each attribute that we want */
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<T> query = builder.createQuery(entityClass);
-		Root<T> root = query.from(entityClass);
-		if(IncludeProperties != null) {
-			for(String propertyName : IncludeProperties) {
-				root.fetch(propertyName, JoinType.LEFT);
-			}
-		}
-		query.select(root);
-		return entityManager.createQuery(query).getResultList();
+		/* 
+		To obtain the class with all the associated classes (Joins) in a single 
+		query we mark it in "IncludeProperties" saving the name of each attribute that we want.
+		*/
+	    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+	    CriteriaQuery<T> query = builder.createQuery(entityClass);
+	    Root<T> root = query.from(entityClass);
+	    
+	    if (IncludeProperties != null) {
+	        for (String propertyName : IncludeProperties) {
+	            String[] propertyPath = propertyName.split("\\.");
+	            javax.persistence.criteria.From<?, ?> from = root;
+	            
+	            for (String property : propertyPath) {
+	                from = from.join(property, JoinType.LEFT);
+	            }
+	        }
+	    }
+	    
+	    query.select(root);
+	    return entityManager.createQuery(query).getResultList();
 	}
 
 	public void save(T entity) {
@@ -59,15 +78,15 @@ public class GenericRepository<T> {
 		entityManager.merge(entity);
 	}
 
-	public void delete(Object id) {
-		T entity = findById(id);
+	public void delete(Object id, String keyAtributeName) {
+		T entity = findById(id, keyAtributeName);
 		if (entity != null) {
 			entityManager.remove(entity);
 		}
 	}
 	
-	public T findById(Object id) {
-		return this.findById(id, null);
+	public T findById(Object id, String keyAtributeName) {
+		return this.findById(id, keyAtributeName, null);
 	}
 	public List<T> findAll(){
 		return this.findAll(null);
