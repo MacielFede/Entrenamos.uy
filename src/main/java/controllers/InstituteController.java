@@ -12,6 +12,7 @@ import dataTypes.DtInstitute;
 import dataTypes.DtUser;
 import interfaces.InstituteInterface;
 import services.ActivityService;
+import services.ClassService;
 import services.InstituteService;
 import services.ServiceFactory;
 
@@ -123,9 +124,14 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public Map<String, DtClass> listClassesDictationRanking() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<DtClass> listClassesDictationRanking() {
+		ClassService classService = serviceFactory.getClassService();
+		List<DtClass> classes = new ArrayList<DtClass>();
+		for(DtClass dt : classService.getAllClasses().values()) {
+			classes.add(dt);
+		}
+		classes.sort(Comparator.comparingInt(DtClass::getEnrollmentsQuantity).reversed());
+		return classes;
 	}
 
 	@Override
