@@ -13,7 +13,7 @@ public interface InstituteInterface {
 	public boolean registerUserToClass(DtClass rclass, DtUser user);
 	public DtClass showClassInfo(String className);
 	public DtClass chooseClassByName(String className);
-	public Map<String, DtClass> listClassesDictationRanking();
+	public List<DtClass> listClassesDictationRanking();
 	public boolean createSportClass(DtClass newClass, Integer idSportActivity);
 	public Map<String, DtInstitute> listSportInstitutes();
 	public Map<String, DtActivity> selectInstitution(String institutionName);
