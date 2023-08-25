@@ -20,7 +20,7 @@ public interface InstituteInterface {
 	public Map<String, DtClass> chooseActivity(String activity);
 	public List<DtActivity> listSportsActivitiesRanking();
 	public boolean addNewSportActivity(DtActivity sportActivity, Integer idInstitute);
-	public boolean modiFySportInstitute(String desc, String url);
+	public boolean modiFySportInstitute(DtInstitute institute);
 	public boolean registerInstitution(String name, String description, String url);
 	public DtActivity getActivity(String activityName);
 	public DtInstitute chooseSportInstitute(String name);
