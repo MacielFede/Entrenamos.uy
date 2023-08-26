@@ -1,18 +1,13 @@
 package services;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import dataTypes.DtProfessor;
 import dataTypes.DtUser;
-import entities.Activity;
-import entities.Member;
-import entities.Professor;
-import entities.User;
+import entities.*;
 import repository.GenericRepository;
 
 public class UserService {
@@ -64,4 +59,34 @@ public class UserService {
 		}
 		entityManager.getTransaction().commit();
 	}
+
+	public String[] getAllEmails(){
+		Map<String, DtUser> allUsers = this.getAllUsers();
+		List<String> emails = new ArrayList<>();
+		for (Map.Entry<String, DtUser> user : allUsers.entrySet()) {
+			emails.add(user.getValue().getEmail());
+		}
+		return emails.toArray(new String[0]);
+	}
+
+	public void newUser(DtUser newUser){
+		entityManager.getTransaction().begin();
+
+		if(newUser instanceof DtProfessor){
+			Professor newProfessor	= new Professor(
+					((DtProfessor) newUser).getDescription(),
+					((DtProfessor) newUser).getBiography(),
+					((DtProfessor) newUser).getWebPage(),
+					newUser.getNickname(), newUser.getName(),
+					newUser.getLastName(), newUser.getEmail(),
+					newUser.getBornDate());
+			userRepository.save(newProfessor);
+		}else{
+			User newStudent = new Member(newUser.getNickname(), newUser.getName(), newUser.getLastName(), newUser.getEmail(), newUser.getBornDate());
+			userRepository.save(newStudent);
+		}
+		entityManager.getTransaction().commit();
+
+	}
+
 }

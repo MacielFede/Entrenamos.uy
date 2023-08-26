@@ -18,6 +18,13 @@ public class DtProfessor extends DtUser {
 		this.webPage = webPage;
 	}
 
+	public DtProfessor(String description, String biography, String webPage, String nickname, String name, String lastname, String email, Date bornDate) {
+		super(nickname, name, lastname, email, bornDate);
+		this.description = description;
+		this.biography = biography;
+		this.webPage = webPage;
+	}
+
 	public String getDescription() {
 		return description;
 	}

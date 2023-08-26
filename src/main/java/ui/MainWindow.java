@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import ui.Panels.NewUserPanel;
 import ui.Panels.SportActivitiesRankingPanel;
 
 import java.awt.*;
@@ -27,6 +28,8 @@ public class MainWindow extends JFrame {
     private JPanel classesTaughtRankingPanel = new JPanel();
 
     private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
+
+    private JPanel newUserPanel = new NewUserPanel();
 
     public MainWindow() {
         /* Here we create the main frame and set:
@@ -134,7 +137,9 @@ public class MainWindow extends JFrame {
             // We must initialize again the panel to save, because
             case "Usuarios" -> {
                 JMenuItem modifyUserInfo = createMenuItem("Modificar informacion del usuario", popupMenu, modifyUserDataPanel);
+                JMenuItem addNewUser = createMenuItem("Agregar nuevo usuario", popupMenu, newUserPanel);
                 popupMenu.add(modifyUserInfo);
+                popupMenu.add(addNewUser);
             }
         case "Rankings" -> {
                 JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
@@ -171,6 +176,9 @@ public class MainWindow extends JFrame {
                 this.sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
             } else if (newPanel instanceof ModifyUserDataPanel) {
                 this.modifyUserDataPanel = new ModifyUserDataPanel();
+            }else if(newPanel instanceof NewUserPanel){
+                this.newUserPanel = new NewUserPanel();
+
             }
 
             activePanel.addMouseListener(new MouseAdapter() {
