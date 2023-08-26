@@ -5,8 +5,9 @@ import ui.Panels.ModifyUserDataPanel;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-
 import ui.Panels.NewUserPanel;
+import ui.Panels.AddSportActivityPanel;
+import ui.Panels.ClassTeachingConsultationPanel;
 import ui.Panels.SportActivitiesRankingPanel;
 
 import java.awt.*;
@@ -23,31 +24,31 @@ public class MainWindow extends JFrame {
     private JPanel activePanel;
     private JPopupMenu currentPopupMenu;
 
-    private JPanel homePanel = new JPanel();
-    private SportActivitiesRankingPanel sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
-    private JPanel classesTaughtRankingPanel = new JPanel();
+	private final JPanel homePanel = new JPanel();
 
-    private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
-
+	private SportActivitiesRankingPanel sportActivitiesRankingPanel 		= new SportActivitiesRankingPanel();
+	private ClassTeachingConsultationPanel classTeachingConsultationPanel	= new ClassTeachingConsultationPanel();
+	private AddSportActivityPanel addSportActivityPanel						= new AddSportActivityPanel();
+	private final JPanel classesTaughtRankingPanel = new JPanel();
+	private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
     private JPanel newUserPanel = new NewUserPanel();
 
     public MainWindow() {
-        /* Here we create the main frame and set:
-        * - a title for the title bar
-        * - its behavior when the user clicks the red X
-        * - its size
-        * - the location where the window appears (center of the screen)
+		/* Here we create the main frame and set:
+		 * - a title for the title bar
+		 * - its behavior when the user clicks the red X
+		 * - its size
+		 * - the location where the window appears (center of the screen)
         finally we display the window */
         this.setTitle("No pierdan la volunta wachos");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setMinimumSize(new Dimension(800, 500));
+        this.setSize(new Dimension(800, 500));
         this.setLocationRelativeTo(null);
         mainContainer = this.getContentPane();
         mainContainer.setBackground(Color.WHITE); //contrasting bg
         sidebar = createSidebar();
         initializePanels();
-        mainContainer.add(sidebar,
-                BorderLayout.LINE_START);
+        mainContainer.add(sidebar, BorderLayout.LINE_START);
         mainContainer.add(homePanel, BorderLayout.CENTER);
         this.setVisible(true);
         // The code bellow should be run every time the main windows (the app) closes to close the database conection
@@ -146,9 +147,16 @@ public class MainWindow extends JFrame {
 	        	JMenuItem classesTaughtRanking = createMenuItem("Clases dictadas", popupMenu, classesTaughtRankingPanel);
 	        	popupMenu.add(sportActivitiesRanking);
 	        	popupMenu.add(classesTaughtRanking);
-	        }
-	        default -> System.out.println("You didn't add a JMenuItem");
-    	}
+	        }case "Clases" -> {
+                JMenuItem classTeachingConsultation = createMenuItem("Consulta de dictado de clase", popupMenu, classTeachingConsultationPanel);
+                popupMenu.add(classTeachingConsultation);
+            }
+            case "Actividades" -> {
+                JMenuItem addSportActivity = createMenuItem("Alta de actividad deportiva", popupMenu, addSportActivityPanel);
+                popupMenu.add(addSportActivity);
+            }
+            default -> System.out.println("You didn't add a JMenuItem");
+        }
 
     	return popupMenu;
     }
@@ -163,32 +171,39 @@ public class MainWindow extends JFrame {
         return menuItem;
     }
 
-    private void changeActivePanel(JPanel newPanel){
-        // This method changes the active panel with the one chosen by the user
-        if(!activePanel.getClass().equals(newPanel.getClass())) {
-            mainContainer.remove(activePanel);
-            mainContainer.add(newPanel, BorderLayout.CENTER);
-            mainContainer.revalidate();
-            mainContainer.repaint();
-            activePanel = newPanel;
+	private void changeActivePanel(JPanel newPanel){
+		// This method changes the active panel with the one chosen by the user
+		if(!activePanel.getClass().equals(newPanel.getClass())) {
+			mainContainer.remove(activePanel);
+			mainContainer.add(newPanel, BorderLayout.CENTER);
+			mainContainer.revalidate();
+			mainContainer.repaint();
+			activePanel = newPanel;
 
-            if(newPanel instanceof SportActivitiesRankingPanel) {
-                this.sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
-            } else if (newPanel instanceof ModifyUserDataPanel) {
-                this.modifyUserDataPanel = new ModifyUserDataPanel();
-            }else if(newPanel instanceof NewUserPanel){
+			if(newPanel instanceof SportActivitiesRankingPanel) {
+				this.sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
+			}
+			else if(newPanel instanceof ClassTeachingConsultationPanel){
+				this.classTeachingConsultationPanel = new ClassTeachingConsultationPanel();
+			}
+			else if (newPanel instanceof ModifyUserDataPanel) {
+				this.modifyUserDataPanel = new ModifyUserDataPanel();
+			}
+			else if (newPanel instanceof AddSportActivityPanel) {
+				this.addSportActivityPanel = new AddSportActivityPanel();
+			}else if(newPanel instanceof NewUserPanel){
                 this.newUserPanel = new NewUserPanel();
 
             }
 
-            activePanel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (currentPopupMenu != null) {
-                        currentPopupMenu.setVisible(false);
-                    }
-                }
-            });
-        }
-    }
+			activePanel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (currentPopupMenu != null) {
+						currentPopupMenu.setVisible(false);
+					}
+				}
+			});
+		}
+	}
 }

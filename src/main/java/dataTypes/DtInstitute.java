@@ -1,12 +1,28 @@
 package dataTypes;
 
+import java.util.Map;
+
 public class DtInstitute {
 
-	private String name;
+	private final String name;
 
-	private String description;
+	private final String description;
 
-	private String url;
+	private final String url;
+
+	private final Map<String, DtActivity> activities;
+	
+	public DtInstitute(String name, String description, String url, Map<String, DtActivity> activities) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.url = url;
+		this.activities = activities;
+	}
+	
+	public Map<String, DtActivity> getActivities() {
+		return activities;
+	}
 
 	public String getName() {
 		return name;
@@ -16,12 +32,6 @@ public class DtInstitute {
 		return description;
 	}
 
-	public DtInstitute(String name, String description, String url) {
-		super();
-		this.name = name;
-		this.description = description;
-		this.url = url;
-	}
 
 	public String getUrl() {
 		return url;

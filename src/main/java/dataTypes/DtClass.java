@@ -10,7 +10,8 @@ public class DtClass {
     private final Date dateAndTime;
     private final Date registerDate;
     private final String url;
-    // The String in the map represent the users id.
+
+	// The String in the map represent the users id.
     private final Map<String, DtEnrollment> enrollments;
 
     public DtClass(String name, Date dateAndTime, Date registerDate, String url, Map<String, DtEnrollment> enrollments) {
@@ -37,7 +38,7 @@ public class DtClass {
     public String getUrl() {
         return url;
     }
-
+    
     public Map<String, DtEnrollment> getEnrollments() {
         return enrollments;
     }

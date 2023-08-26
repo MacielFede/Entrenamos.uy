@@ -40,7 +40,7 @@ public class UserService {
 
 	public void updateUser(DtUser userUpdated) {
 		entityManager.getTransaction().begin();
-		if (userRepository.findById(userUpdated.getNickname()) instanceof Professor){
+		if (userRepository.findById(userUpdated.getNickname(), "nickname") instanceof Professor){
 			Professor updateProf = new Professor();
 			updateProf.setEmail(userUpdated.getEmail());
 			updateProf.setNickname(userUpdated.getNickname());

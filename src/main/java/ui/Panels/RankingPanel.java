@@ -51,6 +51,7 @@ public class RankingPanel extends JPanel{
         gbcTitle.gridx = 0;
         gbcTitle.gridy = 0;
         gbcTitle.weightx = 1; 
+        gbcTitle.gridwidth = 5;
         gbcTitle.fill = GridBagConstraints.HORIZONTAL; 
         JLabel titleLabel = new JLabel(rankingTitle);
         titleLabel.setHorizontalAlignment(JLabel.CENTER);

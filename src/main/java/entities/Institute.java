@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -48,6 +49,10 @@ public class Institute {
 		this.name = name;
 	}
 
+	public Map<String, Activity> getActivities() {
+		return activities;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -65,8 +70,11 @@ public class Institute {
 	}
 
 	public DtInstitute getData() {
-		// Generate all the logic after having all the entities.
-		return new DtInstitute(this.name, this.description, this.url);
+		Map<String, DtActivity> activitiesList = new TreeMap<String, DtActivity>();
+		for(Activity a : this.activities.values()) {
+			activitiesList.put(a.getName(), a.getData());
+		}
+		return new DtInstitute(this.name, this.description, this.url, activitiesList);
 	}
 
 	public Activity getActivity(String activityName) {
@@ -75,8 +83,11 @@ public class Institute {
 	}
 
 	public Map<String, DtActivity> getDataActivities() {
-		// Logic here
-		return null;
+		Map<String, DtActivity> activityList = new TreeMap<String, DtActivity>();
+		for(Activity a : activities.values()) {
+			activityList.put(a.getName(), a.getData());
+		}
+		return activityList;
 	}
 
 	public Map<String, Class> getClassesByActivity(String activityName) {

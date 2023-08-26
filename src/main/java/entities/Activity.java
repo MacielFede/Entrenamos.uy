@@ -1,6 +1,7 @@
 package entities;
 
 import dataTypes.DtActivity;
+import dataTypes.DtClass;
 
 import javax.persistence.*;
 import javax.persistence.Id;
@@ -9,6 +10,7 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 @Entity
 public class Activity {
@@ -25,12 +27,13 @@ public class Activity {
 	public Activity() {
 	}
 
-	public Activity(String name, String description, Integer duration, Float price, Map<String, Class> classes) {
+	public Activity(String name, String description, Integer duration, Date registeryDate, Float price, Map<String, Class> classes) {
 		this.name = name;
 		this.description = description;
 		this.duration = duration;
 		this.price = price;
 		this.classes = classes;
+		this.registryDate = registeryDate;
 	}
 
 	// GETTERS
@@ -96,6 +99,10 @@ public class Activity {
 	}
 
 	public DtActivity getData() {
-		return new DtActivity(this.name, this.description, this.duration, this.price, this.registryDate, this.classes.size());
+		Map<String, DtClass> classesList = new TreeMap<String, DtClass>();
+		for(Class c : this.classes.values()) {
+			classesList.put(c.getName(), c.getData());
+		}
+		return new DtActivity(this.name, this.description, this.duration, this.price, this.registryDate, this.classes.size(), classesList);
 	}
 }
