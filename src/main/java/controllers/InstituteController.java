@@ -9,6 +9,8 @@ import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtInstitute;
 import dataTypes.DtUser;
+import exceptions.EmptyRequiredFieldException;
+import exceptions.NullPriceException;
 import interfaces.InstituteInterface;
 import services.ActivityService;
 import services.InstituteService;
@@ -103,13 +105,23 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public DtActivity getActivity(String activityName) {
-
-		return null;
+		if(activitiesCache.isEmpty()){
+			activitiesCache = serviceFactory.getActivityService().getAllActivity();
+		}
+		return activitiesCache.get(activityName);
 	}
 
 	@Override
-	public void updateActivityInfo(DtActivity dtA){
-
+	public void updateActivityInfo(DtActivity dtA) throws EmptyRequiredFieldException, NullPriceException {
+		if(dtA.getPrice().isNaN() || dtA.getPrice().isInfinite()){
+			throw new NullPriceException();
+		}
+		if(dtA.getDuration() == 0){
+			throw new EmptyRequiredFieldException("Descripción");
+		}
+		serviceFactory.getActivityService().updateActivity(dtA);
+		//Update the cache
+		activitiesCache.put(dtA.getName(), dtA);
 	}
 
 	@Override
@@ -156,7 +168,7 @@ public class InstituteController implements InstituteInterface {
 		activitiesCache = activityService.getAllActivity();
 		List<String> names = new ArrayList<>();
 		names.add("<Nombres>");
-		for(Map.Entry<String, DtActivity> activity : cachedActivities.entrySet()){
+		for(Map.Entry<String, DtActivity> activity : activitiesCache.entrySet()){
 			names.add(activity.getKey());
 		}
 		return names.toArray(new String[0]);

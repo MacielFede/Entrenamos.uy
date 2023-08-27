@@ -7,6 +7,7 @@ import interfaces.InstituteInterface;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Date;
 import java.util.Objects;
 
 public class ModifyActivityPanel extends JPanel {
@@ -16,6 +17,9 @@ public class ModifyActivityPanel extends JPanel {
         private JFormattedTextField priceTextField = new JFormattedTextField();
         private JFormattedTextField durationTextField = new JFormattedTextField();
         private JTextField dateTextField = new JTextField();
+        JButton cancelButton = new JButton("Cancelar");
+        JButton saveButton = new JButton("Guardar");
+
         public ModifyActivityPanel(){
             this.setLayout(null);
             fetchActivitylist();
@@ -28,11 +32,24 @@ public class ModifyActivityPanel extends JPanel {
             if(Objects.isNull(activityChosen)){
                 return;
             }
-            // Sets the inputs with the user information
+            // Sets the inputs with the activity information
+            descriptionTextArea.setText(activityChosen.getDescription());
+            descriptionTextArea.setEnabled(true);
+            priceTextField.setValue(activityChosen.getPrice());
+            durationTextField.setValue(activityChosen.getDuration());
+            // TODO: cambiar el formato
+            dateTextField.setText(activityChosen.getRegistryDate().toString());
+            saveButton.setEnabled(true);
+            cancelButton.setEnabled(true);
         }
         private void updateActivityInfo(){
+            String name = (String) namesComboBox.getSelectedItem();
+            String description = descriptionTextArea.getText();
+            Float price = (Float) priceTextField.getValue();
+            Integer duration = (Integer) durationTextField.getValue();
+            Date registryDate = new Date(dateTextField.getText());
             try{
-//                ic.updateActivityInfo();
+                ic.updateActivityInfo(new DtActivity(name,description, duration, price, registryDate, -1, null));
                 JOptionPane.showMessageDialog(this, "La actividad fue actualizada con éxito!",
                         "Modificar información de actividad", JOptionPane.INFORMATION_MESSAGE);
                 restartUseCase();
@@ -44,7 +61,15 @@ public class ModifyActivityPanel extends JPanel {
         }
 
         private void restartUseCase(){
-
+            descriptionTextArea.setEnabled(false);
+            descriptionTextArea.setText("");
+            priceTextField.setEnabled(false);
+            priceTextField.setValue(0.0);
+            durationTextField.setEnabled(false);
+            durationTextField.setValue(0);
+            dateTextField.setText("");
+            saveButton.setEnabled(false);
+            cancelButton.setEnabled(false);
         }
         private void initialize(){
             JLabel title = new JLabel("Modificar actividad deportiva");
@@ -59,25 +84,22 @@ public class ModifyActivityPanel extends JPanel {
             descriptionTextArea.setEnabled(false);
             descriptionTextArea.setBounds(393, 163, 270, 204);
 
-
             priceTextField.setEnabled(false);
             priceTextField.setBounds(103, 348, 183, 19);
-            add(priceTextField);
 
             JLabel priceLabel = new JLabel("Precio");
             priceLabel.setLabelFor(priceTextField);
             priceLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
             priceLabel.setBounds(103, 318, 139, 26);
-            add(priceLabel);
 
-            JButton cancelButton = new JButton("Cancelar");
+
             cancelButton.setEnabled(false);
             cancelButton.setBounds(366, 437, 85, 33);
             cancelButton.addActionListener(e -> {
                 restartUseCase();
             });
 
-            JButton saveButton = new JButton("Guardar");
+
             saveButton.setEnabled(false);
             saveButton.setBounds(201, 437, 85, 33);
             saveButton.addActionListener(e -> {
@@ -121,6 +143,8 @@ public class ModifyActivityPanel extends JPanel {
             durationLabel.setBounds(103, 224, 139, 26);
 
             add(descriptionLabel);
+            add(priceTextField);
+            add(priceLabel);
             add(saveButton);
             add(cancelButton);
             add(descriptionTextArea);
