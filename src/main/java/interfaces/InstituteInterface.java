@@ -24,5 +24,10 @@ public interface InstituteInterface {
 	public boolean modiFySportInstitute(String desc, String url);
 	public boolean registerInstitution(String name, String description, String url);
 	public DtActivity getActivity(String activityName);
+
+	void updateActivityInfo(DtActivity dtA);
+
 	public DtInstitute chooseSportInstitute(String name);
+
+    String[] listSportActivitiesByName();
 }

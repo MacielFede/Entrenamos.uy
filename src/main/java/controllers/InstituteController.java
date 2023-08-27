@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import dataTypes.DtActivity;
 import dataTypes.DtClass;
@@ -20,10 +19,9 @@ public class InstituteController implements InstituteInterface {
 	private Map<String, DtInstitute> institutesCache 	= null;
 	private Map<String, DtActivity> activitiesCache		= null;
 	private Map<String, DtClass> classesCache			= null;
-	
+
 	public InstituteController() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -33,7 +31,7 @@ public class InstituteController implements InstituteInterface {
 		}
 		return institutesCache;
 	}
-	
+
 	public boolean checkActivityAvialability(String name) {
 		ActivityService activityService = serviceFactory.getActivityService();
 		return activityService.checkActivityAvialability(name);
@@ -105,8 +103,13 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public DtActivity getActivity(String activityName) {
-		// TODO Auto-generated method stub
+
 		return null;
+	}
+
+	@Override
+	public void updateActivityInfo(DtActivity dtA){
+
 	}
 
 	@Override
@@ -114,7 +117,7 @@ public class InstituteController implements InstituteInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public boolean registerUserToClass(DtClass rclass, DtUser user) {
 		// TODO Auto-generated method stub
@@ -138,10 +141,25 @@ public class InstituteController implements InstituteInterface {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	private void listSportInstitutesCache() {
 		InstituteService instituteService = serviceFactory.getInstituteService();
 		institutesCache = instituteService.getAllInstitutes();
+	}
+
+	@Override
+	public String[] listSportActivitiesByName() {
+		// Returns an array with all the activity names and the string "<Nombres>"
+		// Also renovates the cached map
+		ServiceFactory serviceFactory = ServiceFactory.getInstance();
+		ActivityService activityService = serviceFactory.getActivityService();
+		activitiesCache = activityService.getAllActivity();
+		List<String> names = new ArrayList<>();
+		names.add("<Nombres>");
+		for(Map.Entry<String, DtActivity> activity : cachedActivities.entrySet()){
+			names.add(activity.getKey());
+		}
+		return names.toArray(new String[0]);
 	}
 
 }

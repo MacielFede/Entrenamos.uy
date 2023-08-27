@@ -1,5 +1,6 @@
 package ui;
 
+import ui.Panels.ModifyActivityPanel;
 import ui.Panels.ModifyUserDataPanel;
 
 import javax.swing.*;
@@ -29,9 +30,9 @@ public class MainWindow extends JFrame {
 	private SportActivitiesRankingPanel sportActivitiesRankingPanel 		= new SportActivitiesRankingPanel();
 	private ClassTeachingConsultationPanel classTeachingConsultationPanel	= new ClassTeachingConsultationPanel();
 	private AddSportActivityPanel addSportActivityPanel						= new AddSportActivityPanel();
-	private final JPanel classesTaughtRankingPanel = new JPanel();
-	private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
-	
+    private ModifyActivityPanel modifyActivityPanel = new ModifyActivityPanel();
+    private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
+
 	public MainWindow() {
 		/* Here we create the main frame and set:
 		 * - a title for the title bar
@@ -42,6 +43,7 @@ public class MainWindow extends JFrame {
 		this.setTitle("No pierdan la volunta wachos");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(new Dimension(800, 500));
+        this.setMinimumSize(new Dimension(800, 500));
 		this.setLocationRelativeTo(null);
 		mainContainer = this.getContentPane();
 		mainContainer.setBackground(Color.WHITE); //contrasting bg
@@ -63,8 +65,6 @@ public class MainWindow extends JFrame {
 		// In this method we should create and set every panel design and set the variables for easy access
 		homePanel.add(new JLabel("Hola perra"));
 		homePanel.setBackground(Color.RED);
-		classesTaughtRankingPanel.setBackground(Color.BLACK);
-		classesTaughtRankingPanel.add(new JLabel("Ranking de clases dictadas"));
 		// Don't forget to initialize the active panel
 		activePanel = homePanel;
 		activePanel.addMouseListener(new MouseAdapter() {
@@ -96,7 +96,7 @@ public class MainWindow extends JFrame {
 			public void menuCanceled(MenuEvent e) {}
 
 		});
-		sidebarElements = new JMenu[]{home, 
+		sidebarElements = new JMenu[]{home,
 						createMenu("Usuarios"),
 						createMenu("Clases"),
 						createMenu("Instituciones"),
@@ -140,9 +140,7 @@ public class MainWindow extends JFrame {
 		}
 		case "Rankings" -> {
 			JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
-			JMenuItem classesTaughtRanking = createMenuItem("Clases dictadas", popupMenu, classesTaughtRankingPanel);
 			popupMenu.add(sportActivitiesRanking);
-			popupMenu.add(classesTaughtRanking);
 		}
 		case "Clases" -> {
 			JMenuItem classTeachingConsultation = createMenuItem("Consulta de dictado de clase", popupMenu, classTeachingConsultationPanel);
@@ -151,6 +149,8 @@ public class MainWindow extends JFrame {
 		case "Actividades" -> {
 			JMenuItem addSportActivity = createMenuItem("Alta de actividad deportiva", popupMenu, addSportActivityPanel);
 			popupMenu.add(addSportActivity);
+            JMenuItem modifyActivityInfo = createMenuItem("Modificar información de actividad", popupMenu, modifyActivityPanel);
+            popupMenu.add(modifyActivityInfo);
 		}
 		default -> System.out.println("You didn't add a JMenuItem");
 		}
@@ -168,36 +168,36 @@ public class MainWindow extends JFrame {
 		return menuItem;
 	}
 
-	private void changeActivePanel(JPanel newPanel){
-		// This method changes the active panel with the one chosen by the user
-		if(!activePanel.getClass().equals(newPanel.getClass())) {
-			mainContainer.remove(activePanel);
-			mainContainer.add(newPanel, BorderLayout.CENTER);
-			mainContainer.revalidate();
-			mainContainer.repaint();
-			activePanel = newPanel;
-			
-			if(newPanel instanceof SportActivitiesRankingPanel) {
-				this.sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
-			}
-			else if(newPanel instanceof ClassTeachingConsultationPanel){
-				this.classTeachingConsultationPanel = new ClassTeachingConsultationPanel();
-			} 
-			else if (newPanel instanceof ModifyUserDataPanel) {
-				this.modifyUserDataPanel = new ModifyUserDataPanel();
-			}
-			else if (newPanel instanceof AddSportActivityPanel) {
-				this.addSportActivityPanel = new AddSportActivityPanel();
-			}
-			
-			activePanel.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (currentPopupMenu != null) {
-						currentPopupMenu.setVisible(false);
-					}
-				}
-			});
-		}
-	}
+    private void changeActivePanel(JPanel newPanel){
+        // This method changes the active panel with the one chosen by the user
+        if(!activePanel.getClass().equals(newPanel.getClass())) {
+            mainContainer.remove(activePanel);
+            mainContainer.add(newPanel, BorderLayout.CENTER);
+            mainContainer.revalidate();
+            mainContainer.repaint();
+            activePanel = newPanel;
+
+            if(newPanel instanceof SportActivitiesRankingPanel) {
+                this.sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
+            } else if (newPanel instanceof ModifyUserDataPanel) {
+                this.modifyUserDataPanel = new ModifyUserDataPanel();
+            } else if(newPanel instanceof ModifyActivityPanel){
+                this.modifyActivityPanel = new ModifyActivityPanel();
+            } else if(newPanel instanceof ClassTeachingConsultationPanel){
+                this.classTeachingConsultationPanel = new ClassTeachingConsultationPanel();
+            }
+            else if (newPanel instanceof AddSportActivityPanel) {
+                this.addSportActivityPanel = new AddSportActivityPanel();
+            }
+
+            activePanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (currentPopupMenu != null) {
+                        currentPopupMenu.setVisible(false);
+                    }
+                }
+            });
+        }
+    }
 }
