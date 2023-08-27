@@ -1,38 +1,33 @@
 package services;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import repository.Connection;
 
 public class ServiceFactory {
 	private static ServiceFactory instance = null;
-	private static EntityManagerFactory entityManagerFactory = null;
+	private static Connection databaseConnection;
 	private ServiceFactory(){}
 	
 	public static ServiceFactory getInstance() {
 		if (instance == null) {
 			instance = new ServiceFactory();
-			entityManagerFactory = Persistence.createEntityManagerFactory("entrenamosuy");
+			databaseConnection = Connection.getInstance();
 		}
 		return instance;
 	}
 	
-	public void closeEntityManagerFactory() {
-		entityManagerFactory.close();
-	}
-	
 	public ActivityService getActivityService() {
-		return new ActivityService(entityManagerFactory.createEntityManager());
+		return new ActivityService(databaseConnection.getEntityManager());
 	}
 	
 	public ClassService getClassService() {
-		return new ClassService(entityManagerFactory.createEntityManager());
+		return new ClassService(databaseConnection.getEntityManager());
 	}
 	
 	public InstituteService getInstituteService() {
-		return new InstituteService(entityManagerFactory.createEntityManager());
+		return new InstituteService(databaseConnection.getEntityManager());
 	}
 	
 	public UserService getUserService() {
-		return new UserService(entityManagerFactory.createEntityManager());
+		return new UserService(databaseConnection.getEntityManager());
 	}
 }

@@ -40,6 +40,7 @@ public class UserService {
 		for(User u : userRepository.findAll()){
 			lDtU.put(u.getNickname(), u.getData());
 		}
+		entityManager.close();
 		return lDtU;
 	}
 
@@ -63,5 +64,6 @@ public class UserService {
 			userRepository.update(updateMember);
 		}
 		entityManager.getTransaction().commit();
+		entityManager.close();
 	}
 }

@@ -1,7 +1,6 @@
 package ui.Panels;
 
 import dataTypes.DtActivity;
-import dataTypes.DtUser;
 import interfaces.ControllerFactory;
 import interfaces.InstituteInterface;
 
@@ -36,9 +35,13 @@ public class ModifyActivityPanel extends JPanel {
             descriptionTextArea.setText(activityChosen.getDescription());
             descriptionTextArea.setEnabled(true);
             priceTextField.setValue(activityChosen.getPrice());
+            priceTextField.setEnabled(true);
             durationTextField.setValue(activityChosen.getDuration());
-            // TODO: cambiar el formato
-            dateTextField.setText(activityChosen.getRegistryDate().toString());
+            durationTextField.setEnabled(true);
+            String dateText = activityChosen.getRegistryDate() == null ? "null" : activityChosen.getRegistryDate().getDay() + "/" +
+                    activityChosen.getRegistryDate().getMonth() + "/" +
+                    activityChosen.getRegistryDate().getYear();
+            dateTextField.setText(dateText);
             saveButton.setEnabled(true);
             cancelButton.setEnabled(true);
         }
@@ -53,7 +56,6 @@ public class ModifyActivityPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "La actividad fue actualizada con éxito!",
                         "Modificar información de actividad", JOptionPane.INFORMATION_MESSAGE);
                 restartUseCase();
-                namesComboBox.setSelectedIndex(0);
             } catch (Exception e){
                 JOptionPane.showMessageDialog(this, e.getMessage(),
                         "Modificar información de actividad", JOptionPane.ERROR_MESSAGE);
@@ -70,19 +72,22 @@ public class ModifyActivityPanel extends JPanel {
             dateTextField.setText("");
             saveButton.setEnabled(false);
             cancelButton.setEnabled(false);
+            namesComboBox.setSelectedIndex(0);
         }
         private void initialize(){
             JLabel title = new JLabel("Modificar actividad deportiva");
             title.setFont(new Font("Tahoma", Font.PLAIN, 20));
             title.setBounds(236, 10, 281, 40);
 
-            JLabel descriptionLabel = new JLabel("Descripcion");
+            JLabel descriptionLabel = new JLabel("Descripción");
             descriptionLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
             descriptionLabel.setBounds(393, 132, 196, 26);
             descriptionLabel.setLabelFor(descriptionTextArea);
 
             descriptionTextArea.setEnabled(false);
             descriptionTextArea.setBounds(393, 163, 270, 204);
+            descriptionTextArea.setLineWrap(true);
+            descriptionTextArea.setWrapStyleWord(true);
 
             priceTextField.setEnabled(false);
             priceTextField.setBounds(103, 348, 183, 19);
