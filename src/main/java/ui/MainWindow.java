@@ -1,5 +1,6 @@
 package ui;
 
+import ui.Panels.ModifyActivityPanel;
 import ui.Panels.ModifyUserDataPanel;
 
 import javax.swing.*;
@@ -25,7 +26,7 @@ public class MainWindow extends JFrame {
     private JPanel homePanel = new JPanel();
     private SportActivitiesRankingPanel sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
     private JPanel classesTaughtRankingPanel = new JPanel();
-
+    private ModifyActivityPanel modifyActivityPanel = new ModifyActivityPanel();
     private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
 
     public MainWindow() {
@@ -136,14 +137,18 @@ public class MainWindow extends JFrame {
                 JMenuItem modifyUserInfo = createMenuItem("Modificar informacion del usuario", popupMenu, modifyUserDataPanel);
                 popupMenu.add(modifyUserInfo);
             }
-        case "Rankings" -> {
-                JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
-	        	JMenuItem classesTaughtRanking = createMenuItem("Clases dictadas", popupMenu, classesTaughtRankingPanel);
-	        	popupMenu.add(sportActivitiesRanking);
-	        	popupMenu.add(classesTaughtRanking);
-	        }
-	        default -> System.out.println("You didn't add a JMenuItem");
-    	}
+            case "Rankings" -> {
+                    JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
+                    JMenuItem classesTaughtRanking = createMenuItem("Clases dictadas", popupMenu, classesTaughtRankingPanel);
+                    popupMenu.add(sportActivitiesRanking);
+                    popupMenu.add(classesTaughtRanking);
+                }
+            case "Actividades" -> {
+                JMenuItem modifyActivityInfo = createMenuItem("Modificar información de actividad", popupMenu, modifyActivityPanel);
+                popupMenu.add(modifyActivityInfo);
+            }
+            default -> System.out.println("You didn't add a JMenuItem");
+        }
 
     	return popupMenu;
     }
@@ -171,6 +176,8 @@ public class MainWindow extends JFrame {
                 this.sportActivitiesRankingPanel = new SportActivitiesRankingPanel();
             } else if (newPanel instanceof ModifyUserDataPanel) {
                 this.modifyUserDataPanel = new ModifyUserDataPanel();
+            } else if(newPanel instanceof ModifyActivityPanel){
+                this.modifyActivityPanel = new ModifyActivityPanel();
             }
 
             activePanel.addMouseListener(new MouseAdapter() {

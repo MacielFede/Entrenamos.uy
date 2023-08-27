@@ -6,16 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import dataTypes.DtActivity;
-import dataTypes.DtClass;
 import dataTypes.DtInstitute;
 import interfaces.InstituteInterface;
 import services.ActivityService;
 import services.ServiceFactory;
 
 public class InstituteController implements InstituteInterface {
+
+	private Map<String, DtActivity> cachedActivities;
 	public InstituteController() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -27,12 +27,6 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public Map<String, DtActivity> selectInstitution(String institutionName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, DtClass> chooseActivity(DtActivity activity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -69,14 +63,34 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public DtActivity getActivity(String activityName) {
-		// TODO Auto-generated method stub
+
 		return null;
+	}
+
+	@Override
+	public void updateActivityInfo(DtActivity dtA){
+
 	}
 
 	@Override
 	public DtInstitute chooseSportInstitute(String name) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String[] listSportActivitiesByName() {
+		// Returns an array with all the activity names and the string "<Nombres>"
+		// Also renovates the cached map
+		ServiceFactory serviceFactory = ServiceFactory.getInstance();
+		ActivityService activityService = serviceFactory.getActivityService();
+		cachedActivities = activityService.getAllActivity();
+		List<String> names = new ArrayList<>();
+		names.add("<Nombres>");
+		for(Map.Entry<String, DtActivity> activity : cachedActivities.entrySet()){
+			names.add(activity.getKey());
+		}
+		return names.toArray(new String[0]);
 	}
 
 }
