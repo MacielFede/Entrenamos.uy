@@ -84,6 +84,6 @@ public class Class {
         for(Map.Entry<String, Enrollment> enrollment : this.enrollments.entrySet()){
             dtE.put(enrollment.getKey(), enrollment.getValue().getData());
         }
-        return new DtClass(this.name, this.registerDate, this.dateAndTime,this.url, dtE);
+        return new DtClass(this.name, this.registerDate, this.dateAndTime,this.url, this.enrollments.size(), dtE);
     }
 }
