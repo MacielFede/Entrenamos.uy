@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import entities.Activity;
 import entities.Member;
@@ -65,5 +66,34 @@ public class UserService {
 		}
 		entityManager.getTransaction().commit();
 		entityManager.close();
+	}
+
+	public String[] getAllEmails(){
+		Map<String, DtUser> allUsers = this.getAllUsers();
+		List<String> emails = new ArrayList<>();
+		for (Map.Entry<String, DtUser> user : allUsers.entrySet()) {
+			emails.add(user.getValue().getEmail());
+		}
+		return emails.toArray(new String[0]);
+	}
+
+	public void newUser(DtUser newUser){
+		entityManager.getTransaction().begin();
+
+		if(newUser instanceof DtProfessor){
+			Professor newProfessor	= new Professor(
+					((DtProfessor) newUser).getDescription(),
+					((DtProfessor) newUser).getBiography(),
+					((DtProfessor) newUser).getWebPage(),
+					newUser.getNickname(), newUser.getName(),
+					newUser.getLastName(), newUser.getEmail(),
+					newUser.getBornDate());
+			userRepository.save(newProfessor);
+		}else{
+			User newStudent = new Member(newUser.getNickname(), newUser.getName(), newUser.getLastName(), newUser.getEmail(), newUser.getBornDate());
+			userRepository.save(newStudent);
+		}
+		entityManager.getTransaction().commit();
+
 	}
 }
