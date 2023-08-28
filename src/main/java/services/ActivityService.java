@@ -9,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import entities.Activity;
-import entities.Institute;
 import repository.GenericRepository;
 
 public class ActivityService {
@@ -37,7 +36,9 @@ public class ActivityService {
 	}
 	
 	public boolean checkActivityAvialability(String name) {
-		return activityRepository.findById(name, "name") == null ? true : false;
+		boolean toReturn = activityRepository.findById(name, "name") == null ? true : false;
+		entityManager.close();
+		return toReturn;
 	}
 	
 	public Map<String, DtActivity> getAllActivity() {
@@ -48,4 +49,17 @@ public class ActivityService {
 		entityManager.close();
 		return activities;
 	}
+
+    public void updateActivity(DtActivity dtA) {
+		entityManager.getTransaction().begin();
+		Activity updatedActivity = new Activity();
+		updatedActivity.setName(dtA.getName());
+		updatedActivity.setDescription(dtA.getDescription());
+		updatedActivity.setDuration(dtA.getDuration());
+		updatedActivity.setPrice(dtA.getPrice());
+		updatedActivity.setregistryDate(dtA.getRegistryDate());
+		activityRepository.update(updatedActivity);
+		entityManager.getTransaction().commit();
+		entityManager.close();
+    }
 }

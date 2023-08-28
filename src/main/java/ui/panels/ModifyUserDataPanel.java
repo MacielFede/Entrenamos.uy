@@ -129,7 +129,7 @@ public class ModifyUserDataPanel extends JPanel {
         selectUser.setFont(new Font("Arial", Font.PLAIN, 14));
         selectUser.setLabelFor(selectUserComboBox);
 
-        selectUserComboBox.setBounds(459, 72, 217, 21);
+        selectUserComboBox.setBounds(350, 72, 217, 21);
         selectUserComboBox.setToolTipText("Nicknames de los usuarios");
         selectUserComboBox.addItemListener(e -> {
             String nick = String.valueOf(selectUserComboBox.getSelectedItem());

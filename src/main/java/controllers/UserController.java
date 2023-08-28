@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UserController implements UserInterface {
-	private final UserService userService = ServiceFactory.getInstance().getUserService();
+	private final ServiceFactory serviceFactory = ServiceFactory.getInstance();
 	private Map<String, DtUser> cachedUsers = null;
 	public UserController() {
 		super();
@@ -23,7 +23,7 @@ public class UserController implements UserInterface {
 	@Override
 	public DtUser chooseUser(String nickname) {
 		if (cachedUsers == null){
-			cachedUsers = userService.getAllUsers();
+			cachedUsers = serviceFactory.getUserService().getAllUsers();
 		}
 		return cachedUsers.get(nickname);
 	}
@@ -32,7 +32,7 @@ public class UserController implements UserInterface {
 	public String [] listUsersByNickname() {
 		// Returns an array with all the user nicknames and the string "<Nicknames>"
 		// Also renovates the cached array
-		cachedUsers = userService.getAllUsers();
+		cachedUsers = serviceFactory.getUserService().getAllUsers();
 		List<String> nicknames = new ArrayList<>();
 		nicknames.add("<Nicknames>");
 		for(Map.Entry<String,DtUser> user : cachedUsers.entrySet()){
@@ -53,7 +53,7 @@ public class UserController implements UserInterface {
 			String blankField = updatedUser.getEmail().isEmpty() ? updatedUser.getEmail() : updatedUser.getNickname();
 			throw new EmptyRequiredFieldException(blankField);
 		}
-		userService.updateUser(updatedUser);
+		serviceFactory.getUserService().updateUser(updatedUser);
 		cachedUsers.put(updatedUser.getNickname(), updatedUser);
 	}
 

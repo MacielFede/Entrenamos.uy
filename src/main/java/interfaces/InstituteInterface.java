@@ -7,6 +7,8 @@ import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtInstitute;
 import dataTypes.DtUser;
+import exceptions.EmptyRequiredFieldException;
+import exceptions.NullPriceException;
 
 
 public interface InstituteInterface {
@@ -24,6 +26,8 @@ public interface InstituteInterface {
 	public void addNewSportActivity(DtActivity sportActivity, String nameInstitute);
 	public void registerInstitution(String name, String description, String url);
 	public DtActivity getActivity(String activityName);
+	void updateActivityInfo(DtActivity dtA) throws EmptyRequiredFieldException, NullPriceException;
 	public DtInstitute chooseSportInstitute(String name);
 	public boolean checkInstitutionAvialability(String name);
+    String[] listSportActivitiesByName();
 }

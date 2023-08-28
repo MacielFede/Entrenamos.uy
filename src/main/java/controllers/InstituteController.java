@@ -8,6 +8,8 @@ import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtInstitute;
 import dataTypes.DtUser;
+import exceptions.EmptyRequiredFieldException;
+import exceptions.NullPriceException;
 import interfaces.InstituteInterface;
 import services.ActivityService;
 import services.ClassService;
@@ -22,7 +24,6 @@ public class InstituteController implements InstituteInterface {
 
 	public InstituteController() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -109,8 +110,23 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public DtActivity getActivity(String activityName) {
-		// TODO Auto-generated method stub
-		return null;
+		if(activitiesCache.isEmpty()){
+			activitiesCache = serviceFactory.getActivityService().getAllActivity();
+		}
+		return activitiesCache.get(activityName);
+	}
+
+	@Override
+	public void updateActivityInfo(DtActivity dtA) throws EmptyRequiredFieldException, NullPriceException {
+		if(dtA.getPrice().isNaN() || dtA.getPrice().isInfinite()){
+			throw new NullPriceException();
+		}
+		if(dtA.getDuration() == 0){
+			throw new EmptyRequiredFieldException("Descripción");
+		}
+		serviceFactory.getActivityService().updateActivity(dtA);
+		//Update the cache
+		activitiesCache.put(dtA.getName(), dtA);
 	}
 
 	@Override
@@ -151,6 +167,21 @@ public class InstituteController implements InstituteInterface {
 	private void listSportInstitutesCache() {
 		InstituteService instituteService = serviceFactory.getInstituteService();
 		institutesCache = instituteService.getAllInstitutes();
+	}
+
+	@Override
+	public String[] listSportActivitiesByName() {
+		// Returns an array with all the activity names and the string "<Nombres>"
+		// Also renovates the cached map
+		ServiceFactory serviceFactory = ServiceFactory.getInstance();
+		ActivityService activityService = serviceFactory.getActivityService();
+		activitiesCache = activityService.getAllActivity();
+		List<String> names = new ArrayList<>();
+		names.add("<Nombres>");
+		for(Map.Entry<String, DtActivity> activity : activitiesCache.entrySet()){
+			names.add(activity.getKey());
+		}
+		return names.toArray(new String[0]);
 	}
 
 }
