@@ -1,18 +1,11 @@
 package ui;
 
 import repository.Connection;
-import ui.Panels.ModifyActivityPanel;
-import ui.Panels.ModifyUserDataPanel;
+import ui.Panels.*;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import ui.Panels.AddInstitutePanel;
-import ui.Panels.ClassDictationRankingPanel;
-import ui.Panels.AddSportActivityPanel;
-import ui.Panels.ClassTeachingConsultationPanel;
-import ui.Panels.ModifySportInstitutePanel;
-import ui.Panels.SportActivitiesRankingPanel;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -137,6 +130,9 @@ public class MainWindow extends JFrame {
 		case "Usuarios" -> {
 			JMenuItem modifyUserInfo = createMenuItem("Modificar información del usuario", popupMenu);
 			popupMenu.add(modifyUserInfo);
+			JMenuItem addNewUser = createMenuItem("Agregar nuevo usuario", popupMenu);
+			popupMenu.add(addNewUser);
+
 		}
 		case "Rankings" -> {
 			JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu);
@@ -181,7 +177,8 @@ public class MainWindow extends JFrame {
         if(!activePopUp.equals(popUpClicked)) {
 			JPanel newPanel;
             switch (popUpClicked) {
-                case "Actividades deportivas" -> newPanel = new SportActivitiesRankingPanel();
+				case "Actividades deportivas" -> newPanel = new SportActivitiesRankingPanel();
+				case "Agregar nuevo usuario" -> newPanel = new NewUserPanel();
                 case "Modificar información del usuario" -> newPanel = new ModifyUserDataPanel();
                 case "Modificar información de actividad" -> newPanel = new ModifyActivityPanel();
                 case "Consulta de dictado de clase" -> newPanel = new ClassTeachingConsultationPanel();

@@ -1,6 +1,5 @@
 package ui.Panels;
 
-import dataTypes.DtClass;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import interfaces.ControllerFactory;
@@ -8,10 +7,8 @@ import interfaces.UserInterface;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
 import java.time.LocalDate;
+import java.util.Date;
 
 public class NewUserPanel extends JPanel {
 	private JTextField nicknameTextField;
