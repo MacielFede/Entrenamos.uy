@@ -1,7 +1,6 @@
 package ui;
 
 import repository.Connection;
-import services.ServiceFactory;
 import ui.Panels.ModifyActivityPanel;
 import ui.Panels.ModifyUserDataPanel;
 
