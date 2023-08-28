@@ -93,9 +93,9 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public boolean modiFySportInstitute(DtInstitute institute) {
+	public void modiFySportInstitute(DtInstitute institute) {
 		// TODO Auto-generated method stub
-		return false;
+		// return false;
 	}
 
 	@Override
