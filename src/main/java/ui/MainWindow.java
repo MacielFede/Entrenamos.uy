@@ -152,7 +152,6 @@ public class MainWindow extends JFrame {
 		case "Instituciones" -> {
 			JMenuItem modifySportInstitute = createMenuItem("Modificar institución deportiva", popupMenu, modifySportInstitutePanel);
 			popupMenu.add(modifySportInstitute);
-
 		case "Actividades" -> {
 			JMenuItem addSportActivity = createMenuItem("Alta de actividad deportiva", popupMenu, addSportActivityPanel);
 			popupMenu.add(addSportActivity);
