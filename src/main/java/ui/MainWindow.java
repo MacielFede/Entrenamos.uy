@@ -6,8 +6,10 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import ui.Panels.ClassDictationRankingPanel;
 import ui.Panels.AddSportActivityPanel;
 import ui.Panels.ClassTeachingConsultationPanel;
+import ui.Panels.ModifySportInstitutePanel;
 import ui.Panels.SportActivitiesRankingPanel;
 
 import java.awt.*;
@@ -29,8 +31,9 @@ public class MainWindow extends JFrame {
 	private SportActivitiesRankingPanel sportActivitiesRankingPanel 		= new SportActivitiesRankingPanel();
 	private ClassTeachingConsultationPanel classTeachingConsultationPanel	= new ClassTeachingConsultationPanel();
 	private AddSportActivityPanel addSportActivityPanel						= new AddSportActivityPanel();
-	private final JPanel classesTaughtRankingPanel = new JPanel();
 	private JPanel modifyUserDataPanel = new ModifyUserDataPanel();;
+	private JPanel modifySportInstitutePanel = new ModifySportInstitutePanel();
+	private ClassDictationRankingPanel classDictationRankingPanel           = new ClassDictationRankingPanel();
 	
 	public MainWindow() {
 		/* Here we create the main frame and set:
@@ -63,8 +66,6 @@ public class MainWindow extends JFrame {
 		// In this method we should create and set every panel design and set the variables for easy access
 		homePanel.add(new JLabel("Hola perra"));
 		homePanel.setBackground(Color.RED);
-		classesTaughtRankingPanel.setBackground(Color.BLACK);
-		classesTaughtRankingPanel.add(new JLabel("Ranking de clases dictadas"));
 		// Don't forget to initialize the active panel
 		activePanel = homePanel;
 		activePanel.addMouseListener(new MouseAdapter() {
@@ -140,14 +141,18 @@ public class MainWindow extends JFrame {
 		}
 		case "Rankings" -> {
 			JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu, sportActivitiesRankingPanel);
-			JMenuItem classesTaughtRanking = createMenuItem("Clases dictadas", popupMenu, classesTaughtRankingPanel);
+			JMenuItem classDictationRanking = createMenuItem("Clases dictadas", popupMenu, classDictationRankingPanel);
 			popupMenu.add(sportActivitiesRanking);
-			popupMenu.add(classesTaughtRanking);
+			popupMenu.add(classDictationRanking);
 		}
 		case "Clases" -> {
 			JMenuItem classTeachingConsultation = createMenuItem("Consulta de dictado de clase", popupMenu, classTeachingConsultationPanel);
 			popupMenu.add(classTeachingConsultation);
 		}
+		case "Instituciones" -> {
+			JMenuItem modifySportInstitute = createMenuItem("Modificar institución deportiva", popupMenu, modifySportInstitutePanel);
+			popupMenu.add(modifySportInstitute);
+
 		case "Actividades" -> {
 			JMenuItem addSportActivity = createMenuItem("Alta de actividad deportiva", popupMenu, addSportActivityPanel);
 			popupMenu.add(addSportActivity);
@@ -186,6 +191,11 @@ public class MainWindow extends JFrame {
 			else if (newPanel instanceof ModifyUserDataPanel) {
 				this.modifyUserDataPanel = new ModifyUserDataPanel();
 			}
+			else if (newPanel instanceof ModifySportInstitutePanel) {
+				this.modifySportInstitutePanel = new ModifySportInstitutePanel();
+			}
+			else if (newPanel instanceof ClassDictationRankingPanel) {
+				this.classDictationRankingPanel = new ClassDictationRankingPanel();
 			else if (newPanel instanceof AddSportActivityPanel) {
 				this.addSportActivityPanel = new AddSportActivityPanel();
 			}

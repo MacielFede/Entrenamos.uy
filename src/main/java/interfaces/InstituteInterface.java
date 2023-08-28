@@ -14,14 +14,14 @@ public interface InstituteInterface {
 	public boolean checkActivityAvialability(String name);
 	public DtClass showClassInfo(String className);
 	public DtClass chooseClassByName(String className);
-	public Map<String, DtClass> listClassesDictationRanking();
+	public List<DtClass> listClassesDictationRanking();
 	public boolean createSportClass(DtClass newClass, Integer idSportActivity);
 	public Map<String, DtInstitute> listSportInstitutes();
 	public Map<String, DtActivity> selectInstitution(String institutionName);
 	public Map<String, DtClass> chooseActivity(String activity);
 	public List<DtActivity> listSportsActivitiesRanking();
+	public void modiFySportInstitute(DtInstitute institute);
 	public void addNewSportActivity(DtActivity sportActivity, String nameInstitute);
-	public boolean modiFySportInstitute(String desc, String url);
 	public boolean registerInstitution(String name, String description, String url);
 	public DtActivity getActivity(String activityName);
 	public DtInstitute chooseSportInstitute(String name);
