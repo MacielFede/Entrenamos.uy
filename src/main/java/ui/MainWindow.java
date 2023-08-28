@@ -3,6 +3,7 @@ package ui;
 import repository.Connection;
 import ui.Panels.ModifyActivityPanel;
 import ui.Panels.ModifyUserDataPanel;
+import ui.Panels.RegistrationToClassPanel;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -137,6 +138,8 @@ public class MainWindow extends JFrame {
 		case "Usuarios" -> {
 			JMenuItem modifyUserInfo = createMenuItem("Modificar información del usuario", popupMenu);
 			popupMenu.add(modifyUserInfo);
+			JMenuItem registrationToClass = createMenuItem("Registro a dictado de clase", popupMenu);
+			popupMenu.add(registrationToClass);
 		}
 		case "Rankings" -> {
 			JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu);
@@ -189,6 +192,7 @@ public class MainWindow extends JFrame {
                 case "Alta de institución deportiva" -> newPanel = new AddInstitutePanel();
                 case "Modificar institución deportiva" -> newPanel = new ModifySportInstitutePanel();
                 case "Clases dictadas" -> newPanel = new ClassDictationRankingPanel();
+                case "Registro a dictado de clase" -> newPanel = new RegistrationToClassPanel();
                 default -> newPanel = homePanel;
             }
 
