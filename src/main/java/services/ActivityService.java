@@ -43,7 +43,8 @@ public class ActivityService {
 	
 	public Map<String, DtActivity> getAllActivity() {
 		Map<String, DtActivity> activities = new TreeMap<String, DtActivity>();
-		for(Activity a : activityRepository.findAll()){
+		String [] joinProperties = {"classes.enrollments"};
+		for(Activity a : activityRepository.findAll(joinProperties)){
 			activities.put(a.getName(), a.getData());
 		}
 		entityManager.close();
