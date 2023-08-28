@@ -7,9 +7,11 @@ import ui.Panels.ModifyUserDataPanel;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-
+import ui.Panels.AddInstitutePanel;
+import ui.Panels.ClassDictationRankingPanel;
 import ui.Panels.AddSportActivityPanel;
 import ui.Panels.ClassTeachingConsultationPanel;
+import ui.Panels.ModifySportInstitutePanel;
 import ui.Panels.SportActivitiesRankingPanel;
 
 import java.awt.*;
@@ -24,34 +26,26 @@ public class MainWindow extends JFrame {
 	// We maintain a reference here to start and close the app without leaving any resource behind
 	private final Connection dbConnection;
 	private final JMenuBar sidebar;
-	private JMenu [] sidebarElements;
+	private JMenu[] sidebarElements;
 	private Container mainContainer;
 
 	private JPanel activePanel;
 	private String activePopUp;
 	private JPopupMenu currentPopupMenu;
-
+    // We should create the home panel and delete this
 	private final JPanel homePanel = new JPanel();
-
-	private SportActivitiesRankingPanel sportActivitiesRankingPanel;
-	private ClassTeachingConsultationPanel classTeachingConsultationPanel;
-	private AddSportActivityPanel addSportActivityPanel;
-    private ModifyActivityPanel modifyActivityPanel;
-    private JPanel modifyUserDataPanel;
-
 	public MainWindow() {
-		/* Here we create the main frame and set:
-		 * - a title for the title bar
-		 * - its behavior when the user clicks the red X
-		 * - its size
-		 * - the location where the window appears (center of the screen)
-        finally we display the window */
+		/*
+		 * Here we create the main frame and set: - a title for the title bar - its
+		 * behavior when the user clicks the red X - its size - the location where the
+		 * window appears (center of the screen) finally we display the window
+		 */
 		this.setTitle("No pierdan la volunta wachos");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setMinimumSize(new Dimension(800, 500));
 		this.setLocationRelativeTo(null);
 		mainContainer = this.getContentPane();
-		mainContainer.setBackground(Color.WHITE); //contrasting bg
+		mainContainer.setBackground(Color.WHITE); // contrasting bg
 		sidebar = createSidebar();
 		initializePanels();
 		mainContainer.add(sidebar, BorderLayout.LINE_START);
@@ -112,8 +106,7 @@ public class MainWindow extends JFrame {
 		for (JMenu sidebarElement: sidebarElements){
 			menuBar.add(sidebarElement);
 		}
-		menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1,
-				Color.BLACK));
+		menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.BLACK));
 		return menuBar;
 	}
 
@@ -140,19 +133,27 @@ public class MainWindow extends JFrame {
 
 	private JPopupMenu createSubMenu(String title) {
 		JPopupMenu popupMenu = new JPopupMenu();
-		switch (title){
+		switch (title) {
 		case "Usuarios" -> {
-			JMenuItem modifyUserInfo = createMenuItem("Modificar informacion del usuario", popupMenu);
+			JMenuItem modifyUserInfo = createMenuItem("Modificar información del usuario", popupMenu);
 			popupMenu.add(modifyUserInfo);
 		}
 		case "Rankings" -> {
 			JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu);
+			JMenuItem classDictationRanking = createMenuItem("Clases dictadas", popupMenu);
 			popupMenu.add(sportActivitiesRanking);
+			popupMenu.add(classDictationRanking);
 		}
 		case "Clases" -> {
 			JMenuItem classTeachingConsultation = createMenuItem("Consulta de dictado de clase", popupMenu);
 			popupMenu.add(classTeachingConsultation);
 		}
+		case "Instituciones" -> {
+            JMenuItem modifySportInstitute = createMenuItem("Modificar institución deportiva", popupMenu);
+            popupMenu.add(modifySportInstitute);
+            JMenuItem addInstitute = createMenuItem("Alta de institución deportiva", popupMenu);
+            popupMenu.add(addInstitute);
+        }
 		case "Actividades" -> {
 			JMenuItem addSportActivity = createMenuItem("Alta de actividad deportiva", popupMenu);
 			popupMenu.add(addSportActivity);
@@ -161,9 +162,9 @@ public class MainWindow extends JFrame {
 		}
 		default -> System.out.println("You didn't add a JMenuItem");
 		}
+    return popupMenu;
+    }
 
-		return popupMenu;
-	}
 
 	private JMenuItem createMenuItem(String title, JPopupMenu popupMenu) {
 		JMenuItem menuItem = new JMenuItem(title);
@@ -181,11 +182,14 @@ public class MainWindow extends JFrame {
 			JPanel newPanel;
             switch (popUpClicked) {
                 case "Actividades deportivas" -> newPanel = new SportActivitiesRankingPanel();
-                case "Modificar informacion del usuario" -> newPanel = new ModifyUserDataPanel();
+                case "Modificar información del usuario" -> newPanel = new ModifyUserDataPanel();
                 case "Modificar información de actividad" -> newPanel = new ModifyActivityPanel();
                 case "Consulta de dictado de clase" -> newPanel = new ClassTeachingConsultationPanel();
                 case "Alta de actividad deportiva" -> newPanel = new AddSportActivityPanel();
-				default -> newPanel = homePanel;
+                case "Alta de institución deportiva" -> newPanel = new AddInstitutePanel();
+                case "Modificar institución deportiva" -> newPanel = new ModifySportInstitutePanel();
+                case "Clases dictadas" -> newPanel = new ClassDictationRankingPanel();
+                default -> newPanel = homePanel;
             }
 
             newPanel.addMouseListener(new MouseAdapter() {

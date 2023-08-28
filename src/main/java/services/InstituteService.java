@@ -11,6 +11,7 @@ import dataTypes.DtInstitute;
 import entities.Activity;
 import entities.Class;
 import entities.Institute;
+import entities.Professor;
 import repository.GenericRepository;
 
 public class InstituteService {
@@ -28,6 +29,10 @@ public class InstituteService {
 		return DtU;
 	}
 	
+	public boolean checkInstitutionAvialability(String name) {
+		return instituteRepository.findById(name, "name") == null ? true : false;
+	}
+	
 	public void addActivityAtInstitute(String name, DtActivity activity){
 		entityManager.getTransaction().begin();
 		Institute institute = instituteRepository.findById(name, "name");
@@ -40,6 +45,14 @@ public class InstituteService {
 						activity.getPrice(), 
 						new TreeMap<String, Class>());
 		institute.getActivities().put(activity.getName(), newActivity);
+		instituteRepository.save(institute);
+		entityManager.getTransaction().commit();
+		entityManager.close();
+	}
+	
+	public void createInstitute(String name, String description, String url) {
+		entityManager.getTransaction().begin();
+		Institute institute = new Institute(name,description,url, new TreeMap<String, Professor>(),new TreeMap<String, Activity>());
 		instituteRepository.save(institute);
 		entityManager.getTransaction().commit();
 		entityManager.close();
