@@ -10,7 +10,6 @@ import javax.persistence.PersistenceContext;
 
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
-import entities.Activity;
 import entities.Member;
 import entities.Professor;
 import entities.User;
@@ -46,26 +45,18 @@ public class UserService {
 	}
 
 	public void updateUser(DtUser userUpdated) {
-		entityManager.getTransaction().begin();
-		if (userRepository.findById(userUpdated.getNickname(), "nickname") instanceof Professor){
-			Professor updateProf = new Professor();
-			updateProf.setEmail(userUpdated.getEmail());
-			updateProf.setNickname(userUpdated.getNickname());
-			updateProf.setName(userUpdated.getName());
-			updateProf.setBornDate(userUpdated.getBornDate());
-			updateProf.setLastName(userUpdated.getLastName());
-			userRepository.update(updateProf);
-		} else {
-			Member updateMember = new Member();
-			updateMember.setEmail(userUpdated.getEmail());
-			updateMember.setNickname(userUpdated.getNickname());
-			updateMember.setName(userUpdated.getName());
-			updateMember.setBornDate(userUpdated.getBornDate());
-			updateMember.setLastName(userUpdated.getLastName());
-			userRepository.update(updateMember);
+		try{
+			entityManager.getTransaction().begin();
+			User updatedUser = userRepository.findById(userUpdated.getNickname(), "nickname");
+			updatedUser.setName(userUpdated.getName());
+			updatedUser.setBornDate(userUpdated.getBornDate());
+			updatedUser.setLastName(userUpdated.getLastName());
+			userRepository.update(updatedUser);
+			entityManager.getTransaction().commit();
+			entityManager.close();
+		} catch (Exception e) {
+			entityManager.close();
 		}
-		entityManager.getTransaction().commit();
-		entityManager.close();
 	}
 
 	public String[] getAllEmails(){

@@ -117,6 +117,7 @@ public class GenericRepository<T> {
 	}
 
 	public T findById(Object id, String keyAtributeName) {
+		// This should be handled by a catch statement
 		return this.findById(id, keyAtributeName, null);
 	}
 	public List<T> findAll(){

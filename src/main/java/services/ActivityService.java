@@ -36,9 +36,14 @@ public class ActivityService {
 	}
 	
 	public boolean checkActivityAvialability(String name) {
-		boolean toReturn = activityRepository.findById(name, "name") == null ? true : false;
-		entityManager.close();
-		return toReturn;
+		try{
+			activityRepository.findById(name, "name");
+			entityManager.close();
+			return false;
+		}catch(Exception e){
+			entityManager.close();
+			return true;
+		}
 	}
 	
 	public Map<String, DtActivity> getAllActivity() {
@@ -52,15 +57,18 @@ public class ActivityService {
 	}
 
     public void updateActivity(DtActivity dtA) {
-		entityManager.getTransaction().begin();
-		Activity updatedActivity = new Activity();
-		updatedActivity.setName(dtA.getName());
-		updatedActivity.setDescription(dtA.getDescription());
-		updatedActivity.setDuration(dtA.getDuration());
-		updatedActivity.setPrice(dtA.getPrice());
-		updatedActivity.setregistryDate(dtA.getRegistryDate());
-		activityRepository.update(updatedActivity);
-		entityManager.getTransaction().commit();
-		entityManager.close();
+		try {
+			entityManager.getTransaction().begin();
+			Activity updatedActivity = activityRepository.findById(dtA.getName(), "name");
+			updatedActivity.setDescription(dtA.getDescription());
+			updatedActivity.setDuration(dtA.getDuration());
+			updatedActivity.setPrice(dtA.getPrice());
+			updatedActivity.setregistryDate(dtA.getRegistryDate());
+			activityRepository.update(updatedActivity);
+			entityManager.getTransaction().commit();
+			entityManager.close();
+		} catch(Exception e) {
+			entityManager.close();
+		}
     }
 }
