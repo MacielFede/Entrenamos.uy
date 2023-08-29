@@ -92,8 +92,9 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public void modiFySportInstitute(DtInstitute institute) {
-		// TODO Auto-generated method stub
-		// return false;
+		serviceFactory.getInstituteService().updateInstitute(institute);;
+		//Update the cache
+		institutesCache.put(institute.getName(), institute);
 	}
 
 	@Override
@@ -131,7 +132,15 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public DtInstitute chooseSportInstitute(String name) {
-		// TODO Auto-generated method stub
+		if (institutesCache == null) {
+			listSportInstitutesCache();
+		}
+		
+		for (DtInstitute i : institutesCache.values()) {
+			if (i.getName().equals(name)) {
+				return i;
+			}
+		}
 		return null;
 	}
 
