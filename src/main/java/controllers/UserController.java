@@ -1,6 +1,7 @@
 package controllers;
 
 import dataTypes.DtUser;
+import exceptions.AtributeAlreadyExists;
 import exceptions.EmptyRequiredFieldException;
 import exceptions.FebruaryDayException;
 import exceptions.SameYearException;
@@ -61,5 +62,42 @@ public class UserController implements UserInterface {
 	public void newMember(DtUser DtNewUser) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public boolean existsNickname(String nickName) {
+		String[] allNickname = listUsersByNickname();
+		for (String u : allNickname) {
+			if (u.equals(nickName))
+				return true;
+		}
+		return false;
+	}
+	public boolean existsEmail(String email) {
+		String[] allEmail = serviceFactory.getUserService().getAllEmails();
+		for (String u : allEmail) {
+			if (u.equals(email))
+				return true;
+		}
+		return false;
+
+	}
+	public void newUser(DtUser newUser) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException, AtributeAlreadyExists {
+		if (newUser.getBornDate().getYear() >= Calendar.getInstance().getWeekYear())
+			throw new SameYearException();
+
+		if (newUser.getBornDate().getMonth() == 2 && Integer.parseInt(newUser.getBornDate().toString().substring(8, 10)) > 28)
+			throw new FebruaryDayException();
+
+		if (newUser.getEmail().isEmpty() || newUser.getNickname().isEmpty()) {
+			String blankField = newUser.getEmail().isEmpty() ? newUser.getEmail() : newUser.getNickname();
+			throw new EmptyRequiredFieldException(blankField);
+		}
+		if (existsNickname(newUser.getNickname()))
+			throw new AtributeAlreadyExists((String) "Nickname", newUser.getNickname());
+
+		if (existsEmail(newUser.getEmail()))
+			throw new AtributeAlreadyExists("Email", newUser.getEmail());
+
+		serviceFactory.getUserService().newUser(newUser);
 	}
 }
