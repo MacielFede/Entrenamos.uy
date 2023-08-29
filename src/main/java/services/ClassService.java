@@ -27,7 +27,8 @@ public class ClassService {
 	
 	public Map<String, DtClass> getAllClasses() {
 		Map<String, DtClass> classes = new TreeMap<String, DtClass>();
-		for(Class c : classRepository.findAll()){
+		String [] joinProperties = {"enrollments.user"};
+		for(Class c : classRepository.findAll(joinProperties)){
 			classes.put(c.getName(), c.getData());
 		}
 		entityManager.close();
