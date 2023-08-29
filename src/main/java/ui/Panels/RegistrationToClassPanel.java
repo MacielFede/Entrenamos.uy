@@ -1,10 +1,18 @@
 package ui.Panels;
 
+import interfaces.ControllerFactory;
+import interfaces.InstituteInterface;
+import interfaces.UserInterface;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -12,18 +20,15 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 
 public class RegistrationToClassPanel  extends JPanel {
+	private final UserInterface uc = ControllerFactory.getInstance().getUserInterface();
+	private final InstituteInterface ic = ControllerFactory.getInstance().getInstituteInterface();
 	private JButton btnConfirm;
 	private JComboBox<String> institutesComboBox 	= new JComboBox<String>();
 	private JComboBox<String> activitiesComboBox 	= new JComboBox<String>();
 	private JComboBox<String> classesComboBox		= new JComboBox<String>();
 	private JComboBox<String> usersComboBox			= new JComboBox<String>();
 
-	private final String nonSelectedOption			= "Sin seleccionar"; 
-	private String selectedInstitute 				= nonSelectedOption;
-	private String selectedActivity					= nonSelectedOption;
-	private String selectedClass					= nonSelectedOption;
-	private String selectedUser						= nonSelectedOption;
-	
+	private final String nonSelectedOption			= "Sin seleccionar";
 	
 	public RegistrationToClassPanel(){
 		setGridLayout();
@@ -32,7 +37,7 @@ public class RegistrationToClassPanel  extends JPanel {
 		activitiesComboBox	= createLabelComboBox("Actividad deportiva", 3);
 		classesComboBox 	= createLabelComboBox("Clase", 4);
 		usersComboBox 		= createLabelComboBox("Usuario", 5);
-		
+
 		btnConfirm = new JButton("Confirmar");
 		GridBagConstraints gbc_btnConfirm = new GridBagConstraints();
 		btnConfirm.setBackground(Color.GREEN);
@@ -41,8 +46,23 @@ public class RegistrationToClassPanel  extends JPanel {
 		gbc_btnConfirm.insets = new Insets(0, 0, 5, 5);
 		gbc_btnConfirm.gridx = 3;
 		gbc_btnConfirm.gridy = 8;
+		btnConfirm.addActionListener(e -> {
+			confirm();
+		});
 		add(btnConfirm, gbc_btnConfirm);
-		addBaseElements();
+		activitiesComboBox.setEnabled(false);
+		classesComboBox.setEnabled(false);
+		addItemsToComboBox(usersComboBox, Set.of(uc.listUsersByNickname()));
+		addItemsToComboBox(institutesComboBox, ic.listSportInstitutes().keySet());
+	}
+
+	private void addItemsToComboBox(JComboBox<String> comboBox, Set<String> values) {
+		if (!comboBox.equals(usersComboBox)){
+			comboBox.addItem("Sin seleccionar");
+		}
+		for(String value : values) {
+			comboBox.addItem(value);
+		}
 	}
 	
 	private void setGridLayout() {
@@ -66,21 +86,6 @@ public class RegistrationToClassPanel  extends JPanel {
 		gbc_titleLabel.gridwidth = 9;
 		gbc_titleLabel.gridx = 0;
 		add(titleLabel, gbc_titleLabel);
-	}
-	
-	private void addBaseElements() {
-		institutesComboBox.addItem(selectedInstitute);
-		selectedInstitute = nonSelectedOption;
-		institutesComboBox.setSelectedItem(selectedInstitute);
-		activitiesComboBox.addItem(selectedActivity);
-		selectedActivity = nonSelectedOption;
-		activitiesComboBox.setSelectedItem(selectedActivity);
-		classesComboBox.addItem(selectedClass);
-		selectedClass = nonSelectedOption;
-		classesComboBox.setSelectedItem(selectedClass);
-		selectedUser = nonSelectedOption;
-		usersComboBox.addItem(selectedUser);
-		usersComboBox.setSelectedItem(selectedUser);
 	}
 	
 	private JComboBox<String> createLabelComboBox(String labelTitle, int gridy) {
@@ -108,5 +113,30 @@ public class RegistrationToClassPanel  extends JPanel {
 	private void resetComboBox(JComboBox<String> comboBox) {
 		comboBox.removeAllItems();
 		comboBox.addItem(nonSelectedOption);
+	}
+
+	private void chooseInstitute(){
+
+	}
+
+	private void chooseActivity(){
+
+	}
+
+	private void chooseClass(){
+
+	}
+
+	private void chooseUser(){
+		btnConfirm.setEnabled(true);
+	}
+
+	private void confirm(){
+		String institute = (String) institutesComboBox.getSelectedItem();
+		String activity = (String) activitiesComboBox.getSelectedItem();
+		String selectedClass = (String) classesComboBox.getSelectedItem();
+		String user = (String) usersComboBox.getSelectedItem();
+
+
 	}
 }
