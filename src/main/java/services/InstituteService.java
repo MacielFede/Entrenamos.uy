@@ -75,4 +75,15 @@ public class InstituteService {
 		entityManager.close();
 		return institutes;
 	}
+	
+    public void updateInstitute(DtInstitute dtI) {
+		entityManager.getTransaction().begin();
+		Institute updatedInstitute = instituteRepository.findById(dtI.getName(), "name");
+		//updatedInstitute.setName(dtI.getName());
+		updatedInstitute.setDescription(dtI.getDescription());
+		updatedInstitute.setUrl(dtI.getUrl());
+		instituteRepository.update(updatedInstitute);
+		entityManager.getTransaction().commit();
+		entityManager.close();
+    }
 }
