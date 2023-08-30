@@ -1,5 +1,6 @@
 package ui.Panels;
 
+import dataTypes.DtUser;
 import interfaces.ControllerFactory;
 import interfaces.InstituteInterface;
 import interfaces.UserInterface;
@@ -11,13 +12,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JButton;
+import javax.swing.*;
 
 public class RegistrationToClassPanel  extends JPanel {
 	private final UserInterface uc = ControllerFactory.getInstance().getUserInterface();
@@ -32,7 +31,7 @@ public class RegistrationToClassPanel  extends JPanel {
 	
 	public RegistrationToClassPanel(){
 		setGridLayout();
-		setTitleLabel("Alta de actividad deportiva", "Calibri", Font.BOLD, 18);
+		setTitleLabel("Registro a dictado de clase", "Calibri", Font.BOLD, 18);
 		institutesComboBox 	= createLabelComboBox("Instituto", 2);
 		activitiesComboBox	= createLabelComboBox("Actividad deportiva", 3);
 		classesComboBox 	= createLabelComboBox("Clase", 4);
@@ -41,28 +40,41 @@ public class RegistrationToClassPanel  extends JPanel {
 		btnConfirm = new JButton("Confirmar");
 		GridBagConstraints gbc_btnConfirm = new GridBagConstraints();
 		btnConfirm.setBackground(Color.GREEN);
-		btnConfirm.setForeground(Color.WHITE);
+		btnConfirm.setForeground(Color.BLACK);
 		gbc_btnConfirm.gridwidth = 3;
 		gbc_btnConfirm.insets = new Insets(0, 0, 5, 5);
 		gbc_btnConfirm.gridx = 3;
 		gbc_btnConfirm.gridy = 8;
+		btnConfirm.setEnabled(false);
 		btnConfirm.addActionListener(e -> {
 			confirm();
 		});
 		add(btnConfirm, gbc_btnConfirm);
 		activitiesComboBox.setEnabled(false);
 		classesComboBox.setEnabled(false);
+		usersComboBox.addItem(nonSelectedOption);
+		institutesComboBox.addItem(nonSelectedOption);
 		addItemsToComboBox(usersComboBox, Set.of(uc.listUsersByNickname()));
 		addItemsToComboBox(institutesComboBox, ic.listSportInstitutes().keySet());
+		institutesComboBox.addActionListener(e -> {
+			chooseInstitute();
+		});
+		activitiesComboBox.addActionListener(e -> {
+			chooseActivity();
+		});
+		classesComboBox.addActionListener(e -> {
+			chooseClass();
+		});
+		usersComboBox.addActionListener(e -> {
+			chooseUser();
+		});
 	}
 
 	private void addItemsToComboBox(JComboBox<String> comboBox, Set<String> values) {
-		if (!comboBox.equals(usersComboBox)){
-			comboBox.addItem("Sin seleccionar");
-		}
 		for(String value : values) {
 			comboBox.addItem(value);
 		}
+		comboBox.setEnabled(true);
 	}
 	
 	private void setGridLayout() {
@@ -111,32 +123,59 @@ public class RegistrationToClassPanel  extends JPanel {
 	}
 	
 	private void resetComboBox(JComboBox<String> comboBox) {
-		comboBox.removeAllItems();
+		if (comboBox.getModel().getSize() > 0){
+			comboBox.removeAllItems();
+		}
 		comboBox.addItem(nonSelectedOption);
+		comboBox.setEnabled(false);
 	}
 
 	private void chooseInstitute(){
-
+		if (institutesComboBox.getSelectedItem() == null || Objects.equals(institutesComboBox.getSelectedItem(), nonSelectedOption)) {
+			resetComboBox(activitiesComboBox);
+			resetComboBox(classesComboBox);
+		} else {
+			resetComboBox(activitiesComboBox);
+			addItemsToComboBox(activitiesComboBox, ic.selectInstitution(institutesComboBox.getSelectedItem().toString()).keySet());
+			resetComboBox(classesComboBox);
+		}
+		btnConfirm.setEnabled(false);
 	}
 
 	private void chooseActivity(){
-
+		if (activitiesComboBox.getSelectedItem() == null || Objects.equals(activitiesComboBox.getSelectedItem(), nonSelectedOption)) {
+			resetComboBox(classesComboBox);
+		} else {
+			resetComboBox(classesComboBox);
+			addItemsToComboBox(classesComboBox, ic.chooseActivity(activitiesComboBox.getSelectedItem().toString()).keySet());
+		}
+		btnConfirm.setEnabled(false);
 	}
 
 	private void chooseClass(){
-
+		chooseUser();
 	}
 
 	private void chooseUser(){
-		btnConfirm.setEnabled(true);
+		btnConfirm.setEnabled(!Objects.equals(usersComboBox.getSelectedItem(), nonSelectedOption) && !Objects.equals(classesComboBox.getSelectedItem(), nonSelectedOption));
 	}
 
 	private void confirm(){
-		String institute = (String) institutesComboBox.getSelectedItem();
-		String activity = (String) activitiesComboBox.getSelectedItem();
 		String selectedClass = (String) classesComboBox.getSelectedItem();
-		String user = (String) usersComboBox.getSelectedItem();
-
-
+		String selectedUser = (String) usersComboBox.getSelectedItem();
+		Float price = ic.getActivity((String) usersComboBox.getSelectedItem()).getPrice();
+		DtUser user = uc.chooseUser(selectedUser);
+		try{
+			uc.addEnrollment(selectedClass, user, price);
+			JOptionPane.showMessageDialog(this, "El registro se a completado con éxito!",
+					"Modificar información de usuario", JOptionPane.INFORMATION_MESSAGE);
+			resetComboBox(activitiesComboBox);
+			resetComboBox(classesComboBox);
+			usersComboBox.setSelectedIndex(0);
+			institutesComboBox.setSelectedIndex(0);
+		} catch (Exception e){
+			JOptionPane.showMessageDialog(this, e.getMessage(),
+					"Modificar información de usuario", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

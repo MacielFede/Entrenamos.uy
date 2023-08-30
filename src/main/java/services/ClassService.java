@@ -34,5 +34,9 @@ public class ClassService {
 		entityManager.close();
 		return classes;
 	}
-	
+
+    public boolean classExists() {
+		// chequear que la clase exista
+		return false;
+    }
 }

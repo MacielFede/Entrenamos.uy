@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import dataTypes.DtEnrollment;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import entities.Member;
@@ -86,5 +87,18 @@ public class UserService {
 		}
 		entityManager.getTransaction().commit();
 
+	}
+
+    public void addEnrollment(DtEnrollment enrollment, String className) {
+		// Crear la entidad enrollment con la clase de nombre className y persistirlo
+    }
+
+	public boolean userExists() {
+		// retorna true o false si el usuario existe
+		return false;
+	}
+
+	public boolean userAlreadySignedUpToClass() {
+		// chequear que el usuario no forme parte de la clase indicada
 	}
 }

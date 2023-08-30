@@ -1,21 +1,19 @@
 package controllers;
 
+import dataTypes.DtEnrollment;
 import dataTypes.DtUser;
-import exceptions.AtributeAlreadyExists;
-import exceptions.EmptyRequiredFieldException;
-import exceptions.FebruaryDayException;
-import exceptions.SameYearException;
+import exceptions.*;
+import interfaces.ControllerFactory;
 import interfaces.UserInterface;
 import services.ServiceFactory;
 import services.UserService;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.*;
 
 public class UserController implements UserInterface {
 	private final ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	private final ControllerFactory controllerFactory = ControllerFactory.getInstance();
 	private Map<String, DtUser> cachedUsers = null;
 	public UserController() {
 		super();
@@ -35,7 +33,6 @@ public class UserController implements UserInterface {
 		// Also renovates the cached array
 		cachedUsers = serviceFactory.getUserService().getAllUsers();
 		List<String> nicknames = new ArrayList<>();
-		nicknames.add("<Nicknames>");
 		for(Map.Entry<String,DtUser> user : cachedUsers.entrySet()){
 			nicknames.add(user.getKey());
 		}
@@ -99,5 +96,20 @@ public class UserController implements UserInterface {
 			throw new AtributeAlreadyExists("Email", newUser.getEmail());
 
 		serviceFactory.getUserService().newUser(newUser);
+	}
+
+	public void addEnrollment(String className, DtUser user, Float price) throws UserAlreadySignedUpToClassException, ClassNotFoundException, UserPrincipalNotFoundException {
+		UserService us = serviceFactory.getUserService();
+		if (!us.userExists()) {
+			throw new UserPrincipalNotFoundException(user.getName());
+		}
+		if (serviceFactory.getClassService().classExists()){
+			throw new ClassNotFoundException();
+		}
+		if (us.userAlreadySignedUpToClass()){
+			throw new UserAlreadySignedUpToClassException();
+		}
+		DtEnrollment enrollment = new DtEnrollment(user, price, Calendar.getInstance().getTime());
+		serviceFactory.getUserService().addEnrollment(enrollment, className);
 	}
 }
