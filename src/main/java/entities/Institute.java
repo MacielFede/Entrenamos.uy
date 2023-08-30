@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 
 import dataTypes.DtActivity;
 import dataTypes.DtInstitute;
+import dataTypes.DtProfessor;
 
 @Entity
 public class Institute {
@@ -74,7 +75,15 @@ public class Institute {
 		for(Activity a : this.activities.values()) {
 			activitiesList.put(a.getName(), a.getData());
 		}
-		return new DtInstitute(this.name, this.description, this.url, activitiesList);
+		
+		// New, getting the institute professors
+		Map<String, DtProfessor> professorList = new TreeMap<String, DtProfessor>();
+		for(Professor p : this.professors.values()) {
+			professorList.put(p.getName(),(DtProfessor) p.getData());
+		}
+		
+		
+		return new DtInstitute(this.name, this.description, this.url, activitiesList, professorList);
 	}
 
 	public Activity getActivity(String activityName) {
