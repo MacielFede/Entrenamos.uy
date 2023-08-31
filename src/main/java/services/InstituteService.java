@@ -30,8 +30,14 @@ public class InstituteService {
 	}
 	
 	public boolean checkInstitutionAvialability(String name) {
-		return instituteRepository.findById(name, "name") == null ? true : false;
+		try {
+			return instituteRepository.findById(name, "name") == null ? true : false;			
+		}
+		catch(Exception e) {
+			return true;
+		}
 	}
+	
 	
 	public void addActivityAtInstitute(String name, DtActivity activity){
 		entityManager.getTransaction().begin();
