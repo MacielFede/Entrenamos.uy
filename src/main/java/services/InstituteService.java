@@ -74,7 +74,7 @@ public class InstituteService {
 	
 	public Map<String, DtInstitute> getAllInstitutes() {
 		Map<String, DtInstitute> institutes = new TreeMap<String, DtInstitute>();
-		String[] joinProperties = new String[]{"activities.classes.enrollments"};
+		String[] joinProperties = new String[]{"activities.classes.enrollments", "professors"};
 		for(Institute i : instituteRepository.findAll(joinProperties)) {
 			institutes.put(i.getName(), i.getData());
 		}

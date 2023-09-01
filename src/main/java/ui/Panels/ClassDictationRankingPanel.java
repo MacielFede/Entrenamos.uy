@@ -37,7 +37,7 @@ public class ClassDictationRankingPanel extends RankingPanel{
 						{
 							i,
 		                    dt.getName(),
-		                    dt.getDateAndTime().toString(),
+		                    dt.getDateAndTime() != null ? dt.getDateAndTime().toString() : "",
 		                    dt.getUrl(),
 		                    dt.getEnrollmentsQuantity()
 						});

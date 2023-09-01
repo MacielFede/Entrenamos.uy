@@ -25,7 +25,7 @@ public class Class {
 	private String url;
     @OneToMany(mappedBy = "aClass",cascade = CascadeType.ALL)
     // The String in the map represent the users' id.
-    private Map<String, Enrollment> enrollments = new TreeMap<String, Enrollment>();;
+    private Map<String, Enrollment> enrollments;
 
     public Class() {}
 

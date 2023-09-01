@@ -326,8 +326,11 @@ public class AddClassPanel extends JPanel {
 		add(urlTxt, gbc_priceTxt);
 
 		SpinnerModel modelDay = new SpinnerNumberModel(startDay, 1, 31, 1);
+		SpinnerModel modelDayUp = new SpinnerNumberModel(startDay, 1, 31, 1);
 		SpinnerModel modelMonth = new SpinnerNumberModel(startMonth, 1, 12, 1);
+		SpinnerModel modelMonthUp = new SpinnerNumberModel(startMonth, 1, 12, 1);
 		SpinnerModel modelYear = new SpinnerNumberModel(startYear, 1900, LocalDate.now().getYear(), 1);
+		SpinnerModel modelYearUp = new SpinnerNumberModel(startYear, 1900, LocalDate.now().getYear(), 1);
 		SpinnerModel modelHour = new SpinnerNumberModel(startHour, 0, 23, 1);
 		SpinnerModel modelMinute = new SpinnerNumberModel(startMinute, 0, 59, 1);
 
@@ -381,21 +384,21 @@ public class AddClassPanel extends JPanel {
 		gbc_initMinuteSpinner.gridy = 8;
 		add(initMinuteSpinner, gbc_initMinuteSpinner);
 
-		upDaySpinner = new JSpinner(modelDay);
+		upDaySpinner = new JSpinner(modelDayUp);
 		GridBagConstraints gbc_upDaySpinner = new GridBagConstraints();
 		gbc_upDaySpinner.insets = new Insets(0, 0, 5, 5);
 		gbc_upDaySpinner.gridx = 6;
 		gbc_upDaySpinner.gridy = 8;
 		add(upDaySpinner, gbc_upDaySpinner);
 
-		upMonthSpinner = new JSpinner(modelMonth);
+		upMonthSpinner = new JSpinner(modelMonthUp);
 		GridBagConstraints gbc_upMonthSpinner = new GridBagConstraints();
 		gbc_upMonthSpinner.insets = new Insets(0, 0, 5, 5);
 		gbc_upMonthSpinner.gridx = 7;
 		gbc_upMonthSpinner.gridy = 8;
 		add(upMonthSpinner, gbc_upMonthSpinner);
 
-		upYearSpinner = new JSpinner(modelYear);
+		upYearSpinner = new JSpinner(modelYearUp);
 		GridBagConstraints gbc_upYearSpinner = new GridBagConstraints();
 		gbc_upYearSpinner.insets = new Insets(0, 0, 5, 0);
 		gbc_upYearSpinner.gridx = 8;

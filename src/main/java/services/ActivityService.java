@@ -27,16 +27,19 @@ public class ActivityService {
 		return dti;
 	}
 
-	public void addClassToActivity(Class newClass, String activityName) {
+	public void addClassToActivity(DtClass newClass, String activityName) {
 		try {
+			Class createdClass = new Class(newClass.getName(),newClass.getDateAndTime(), newClass.getRegisterDate(), newClass.getUrl());
 			entityManager.getTransaction().begin();
 			Activity activity = activityRepository.findById(activityName, "name");
-			activity.getClasses().put(newClass.getName(), newClass);
+			activity.getClasses().put(createdClass.getName(), createdClass);
 			activityRepository.save(activity);
 			entityManager.getTransaction().commit();
 			entityManager.close();
 		} catch (Exception e) {
 			System.out.println(e);
+			entityManager.getTransaction().rollback();
+			entityManager.close();
 		}
 	}
 
@@ -51,7 +54,10 @@ public class ActivityService {
 
 	public boolean checkActivityAvialability(String name) {
 		try {
-			activityRepository.findById(name, "name");
+			if (activityRepository.findById(name, "name") == null) {
+				entityManager.close();
+				return true;
+			}
 			entityManager.close();
 			return false;
 		} catch (Exception e) {

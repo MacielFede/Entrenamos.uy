@@ -176,14 +176,12 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public void createSportClass(DtClass newClass, String idSportActivity, String idProfessor) {
-		// Create class
-		Class createdClass = new Class(newClass.getName(),newClass.getDateAndTime(), newClass.getRegisterDate(), newClass.getUrl());
 		// Add it to the activity
 		ActivityService activityService = serviceFactory.getActivityService();
-		activityService.addClassToActivity(createdClass, idSportActivity);
+		activityService.addClassToActivity(newClass, idSportActivity);
 		// Add it to the professor
 		UserService userService = serviceFactory.getUserService();
-		userService.addClassToProfessor(createdClass, idProfessor);	
+		userService.addClassToProfessor(newClass, idProfessor);	
 	}
 
 	private void listSportInstitutesCache() {

@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import dataTypes.DtClass;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import entities.Class;
@@ -20,26 +21,35 @@ public class UserService {
 	@PersistenceContext
 	private EntityManager entityManager;
 	private final GenericRepository<User> userRepository;
+	private final GenericRepository<Professor> professorRepository;
+	
 
 	public UserService(EntityManager entityManagers) {
 		this.entityManager = entityManagers;
 		this.userRepository = new GenericRepository<User>(entityManager, User.class);
+		this.professorRepository = new GenericRepository<Professor>(entityManager,Professor.class);
 	}
 
-	public void addClassToProfessor(Class newClass, String professorNickname) {
+	public void addClassToProfessor(DtClass newClass, String professorNickname) {
 		try {
-			entityManager.getTransaction().begin();
-			User professor = userRepository.findById(professorNickname, "nickname");
-
-			// Dynamic casting user to professor
-			if (professor instanceof Professor) {
-				((Professor) professor).getClasses().put(newClass.getName(), newClass);
-				// userRepository.save(professor); dont do this as it re-creates the class
+			// Get class
+			ServiceFactory serviceFactory = ServiceFactory.getInstance();
+			ClassService classService = serviceFactory.getClassService();
+			Class classToAdd = classService.getClassByName(newClass.getName());
+			if (classToAdd == null) {
+				throw new Exception("Class is null");
 			}
+			
+			entityManager.getTransaction().begin();
+			Professor professor = professorRepository.findById(professorNickname, "nickname");
+			professor.getClasses().put(classToAdd.getName(), classToAdd);
+			professorRepository.save(professor);
 			entityManager.getTransaction().commit();
 			entityManager.close();
 		} catch (Exception e) {
 			System.out.println(e);
+			entityManager.getTransaction().rollback();
+			entityManager.close();
 		}
 	}
 
