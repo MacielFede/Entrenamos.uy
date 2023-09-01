@@ -14,5 +14,7 @@ public interface UserInterface {
 	public boolean existsNickname(String nickName);
 	public boolean existsEmail(String email);
 	public void newUser(DtUser newUser) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException, AtributeAlreadyExists;
-    public void addEnrollment(String className, DtUser user, Float price) throws UserAlreadySignedUpToClassException, ClassNotFoundException, UserPrincipalNotFoundException;
+    public void addEnrollment(String className, DtUser user, Float price) throws Exception;
+
+	public String[] listMembersByNickname();
 }

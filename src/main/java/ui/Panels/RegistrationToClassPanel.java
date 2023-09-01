@@ -54,7 +54,7 @@ public class RegistrationToClassPanel  extends JPanel {
 		classesComboBox.setEnabled(false);
 		usersComboBox.addItem(nonSelectedOption);
 		institutesComboBox.addItem(nonSelectedOption);
-		addItemsToComboBox(usersComboBox, Set.of(uc.listUsersByNickname()));
+		addItemsToComboBox(usersComboBox, Set.of(uc.listMembersByNickname()));
 		addItemsToComboBox(institutesComboBox, ic.listSportInstitutes().keySet());
 		institutesComboBox.addActionListener(e -> {
 			chooseInstitute();
@@ -163,9 +163,10 @@ public class RegistrationToClassPanel  extends JPanel {
 	private void confirm(){
 		String selectedClass = (String) classesComboBox.getSelectedItem();
 		String selectedUser = (String) usersComboBox.getSelectedItem();
-		Float price = ic.getActivity((String) usersComboBox.getSelectedItem()).getPrice();
+		Float price = ic.getActivity((String) activitiesComboBox.getSelectedItem()).getPrice();
 		DtUser user = uc.chooseUser(selectedUser);
 		try{
+			btnConfirm.setEnabled(false);
 			uc.addEnrollment(selectedClass, user, price);
 			JOptionPane.showMessageDialog(this, "El registro se a completado con éxito!",
 					"Modificar información de usuario", JOptionPane.INFORMATION_MESSAGE);
@@ -176,6 +177,7 @@ public class RegistrationToClassPanel  extends JPanel {
 		} catch (Exception e){
 			JOptionPane.showMessageDialog(this, e.getMessage(),
 					"Modificar información de usuario", JOptionPane.ERROR_MESSAGE);
+			btnConfirm.setEnabled(true);
 		}
 	}
 }

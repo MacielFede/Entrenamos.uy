@@ -20,9 +20,8 @@ public class ClassService {
 		this.classRepository = new GenericRepository<Class>(entityManager, Class.class);
 	}
 	
-	public DtClass getClassByName(String name) {
-		DtClass dtc = null;
-		return dtc;
+	public Class getClassEntityByName(String name) {
+		return classRepository.findById(name, "name");
 	}
 	
 	public Map<String, DtClass> getAllClasses() {
@@ -35,8 +34,14 @@ public class ClassService {
 		return classes;
 	}
 
-    public boolean classExists() {
-		// chequear que la clase exista
-		return false;
+    public boolean classExists(String className) {
+		try{
+			classRepository.findById(className, "name");
+			entityManager.close();
+			return true;
+		}catch(Exception e){
+			entityManager.close();
+			return false;
+		}
     }
 }

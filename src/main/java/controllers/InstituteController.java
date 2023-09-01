@@ -111,7 +111,7 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public DtActivity getActivity(String activityName) {
-		if(activitiesCache.isEmpty()){
+		if(activitiesCache == null || activitiesCache.isEmpty()){
 			activitiesCache = serviceFactory.getActivityService().getAllActivity();
 		}
 		return activitiesCache.get(activityName);
