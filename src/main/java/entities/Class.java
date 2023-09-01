@@ -25,7 +25,7 @@ public class Class {
 	private String url;
     @OneToMany(mappedBy = "aClass",cascade = CascadeType.ALL)
     // The String in the map represent the users' id.
-    private Map<String, Enrollment> enrollments;
+    private Map<String, Enrollment> enrollments = new TreeMap<String, Enrollment>();;
 
     public Class() {}
 
@@ -81,9 +81,13 @@ public class Class {
 
     public DtClass getData(){
         Map<String, DtEnrollment> dtE = new TreeMap<>();
-        for(Map.Entry<String, Enrollment> enrollment : this.enrollments.entrySet()){
-            dtE.put(enrollment.getKey(), enrollment.getValue().getData());
+        int enrollmentQty = 0;
+        if (this.enrollments != null) {
+        	for(Map.Entry<String, Enrollment> enrollment : this.enrollments.entrySet()){
+        		dtE.put(enrollment.getKey(), enrollment.getValue().getData());
+        	}
+        enrollmentQty = this.enrollments.size();
         }
-        return new DtClass(this.name, this.registerDate, this.dateAndTime,this.url, this.enrollments.size(), dtE);
+        return new DtClass(this.name, this.registerDate, this.dateAndTime,this.url,enrollmentQty, dtE);
     }
 }

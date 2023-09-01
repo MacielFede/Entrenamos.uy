@@ -7,17 +7,22 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 
 import dataTypes.DtActivity;
+import dataTypes.DtClass;
+import dataTypes.DtEnrollment;
 import dataTypes.DtInstitute;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
@@ -30,6 +35,7 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JButton;
 import java.awt.Color;
+import java.awt.Component;
 
 public class AddClassPanel extends JPanel {
 
@@ -48,11 +54,17 @@ public class AddClassPanel extends JPanel {
 	private JTextField nameTxt;
 	private JTextField urlTxt;
 
-	private JSpinner daySpinner;
-	private JSpinner monthSpinner;
-	private JSpinner yearSpinner;
-	private JSpinner hourSpinner;
-	private JSpinner minuteSpinner;
+	private JSpinner initDaySpinner;
+	private JSpinner initMonthSpinner;
+	private JSpinner initYearSpinner;
+	private JSpinner initHourSpinner;
+	private JSpinner initMinuteSpinner;
+
+	private JSpinner upDaySpinner;
+	private JSpinner upMonthSpinner;
+	private JSpinner upYearSpinner;
+
+	private JButton btnConfirm;
 
 	private final int startDay = 1;
 	private final int startMonth = 1;
@@ -63,8 +75,8 @@ public class AddClassPanel extends JPanel {
 	// Constructor
 	public AddClassPanel() {
 		this.initialize();
-		this.setListeners();
 		this.setForm();
+		this.setListeners();
 		this.addBaseElements();
 		this.institutes = instituteController.listSportInstitutes();
 
@@ -212,6 +224,63 @@ public class AddClassPanel extends JPanel {
 				}
 			}
 		});
+
+		btnConfirm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String className = nameTxt.getText();
+				String url = urlTxt.getText();
+				// Empty values case
+				if (className.equals("") || url.equals("")
+						|| institutesComboBox.getSelectedItem().equals(nonSelectedOption)
+						|| activitiesComboBox.getSelectedItem().equals(nonSelectedOption)
+						|| professorsComboBox.getSelectedItem().equals(nonSelectedOption)) {
+					displayWindow("Error de ingreso", "Por favor rellene todos los campos.", JOptionPane.ERROR_MESSAGE);
+				} else if (!verifyDate(upDaySpinner, upMonthSpinner, upYearSpinner)) { // Invalid up date case
+					displayWindow("Error de ingreso", "Ingrese una fecha de alta válida.", JOptionPane.ERROR_MESSAGE);
+				} else if (!verifyDate(initDaySpinner, initMonthSpinner, initYearSpinner)) {// Invalid init date case
+					displayWindow("Error de ingreso", "Ingrese una fecha de inicio válida.", JOptionPane.ERROR_MESSAGE);
+				} else if (!instituteController.checkClassNameAvailability(className)) { // Invalid class name case
+					displayWindow("Error de ingreso", "Ya existe una clase con ese nombre, por favor ingrese otro.",
+							JOptionPane.ERROR_MESSAGE);
+				} else { // Successful case
+					int initDay = (int) initDaySpinner.getValue();
+					int initMonth = (int) initMonthSpinner.getValue();
+					int initYear = (int) initYearSpinner.getValue();
+					int initHour = (int) initHourSpinner.getValue();
+					int initMinute = (int) initMinuteSpinner.getValue();
+
+					int upDay = (int) upDaySpinner.getValue();
+					int upMonth = (int) upMonthSpinner.getValue();
+					int upYear = (int) upYearSpinner.getValue();
+
+					// Create init date
+					Calendar initCalendar = Calendar.getInstance();
+					initCalendar.set(initYear, initMonth - 1, initDay, initHour, initMinute);
+
+					// Create up date
+					Calendar upCalendar = Calendar.getInstance();
+					upCalendar.set(upYear, upMonth - 1, upDay);
+
+					Date initDate = initCalendar.getTime();
+					Date upDate = upCalendar.getTime();
+
+					// Data for the controller method
+					DtClass newClass = new DtClass(className, initDate, upDate, url, 0,
+							new TreeMap<String, DtEnrollment>());
+					DtActivity dtA = activities.get(activitiesComboBox.getSelectedItem().toString());
+					String activityName = dtA.getName();
+					DtProfessor dtP = professors.get(professorsComboBox.getSelectedItem().toString());
+					String professorName = dtP.getNickname();
+
+					// Create class
+					instituteController.createSportClass(newClass, activityName, professorName);
+					displayWindow("Éxito", "Se ha creado la clase deportiva con éxito.", JOptionPane.INFORMATION_MESSAGE);
+					resetForm();
+				}
+
+			}
+		});
+
 	}
 
 	private void addItemsToComboBox(JComboBox<String> comboBox, Set<String> values) {
@@ -276,62 +345,62 @@ public class AddClassPanel extends JPanel {
 		gbc_creationDateTxt.gridx = 7;
 		gbc_creationDateTxt.gridy = 7;
 		add(creationDateTxt, gbc_creationDateTxt);
-		daySpinner = new JSpinner(modelDay);
-		GridBagConstraints gbc_daySpinner = new GridBagConstraints();
-		gbc_daySpinner.insets = new Insets(0, 0, 5, 5);
-		gbc_daySpinner.gridx = 0;
-		gbc_daySpinner.gridy = 8;
-		add(daySpinner, gbc_daySpinner);
+		initDaySpinner = new JSpinner(modelDay);
+		GridBagConstraints gbc_initDaySpinner = new GridBagConstraints();
+		gbc_initDaySpinner.insets = new Insets(0, 0, 5, 5);
+		gbc_initDaySpinner.gridx = 0;
+		gbc_initDaySpinner.gridy = 8;
+		add(initDaySpinner, gbc_initDaySpinner);
 
-		monthSpinner = new JSpinner(modelMonth);
-		GridBagConstraints gbc_monthSpinner = new GridBagConstraints();
-		gbc_monthSpinner.insets = new Insets(0, 0, 5, 5);
-		gbc_monthSpinner.gridx = 1;
-		gbc_monthSpinner.gridy = 8;
-		add(monthSpinner, gbc_monthSpinner);
+		initMonthSpinner = new JSpinner(modelMonth);
+		GridBagConstraints gbc_initMonthSpinner = new GridBagConstraints();
+		gbc_initMonthSpinner.insets = new Insets(0, 0, 5, 5);
+		gbc_initMonthSpinner.gridx = 1;
+		gbc_initMonthSpinner.gridy = 8;
+		add(initMonthSpinner, gbc_initMonthSpinner);
 
-		yearSpinner = new JSpinner(modelYear);
-		GridBagConstraints gbc_yearSpinner = new GridBagConstraints();
-		gbc_yearSpinner.anchor = GridBagConstraints.WEST;
-		gbc_yearSpinner.insets = new Insets(0, 0, 5, 5);
-		gbc_yearSpinner.gridx = 2;
-		gbc_yearSpinner.gridy = 8;
-		add(yearSpinner, gbc_yearSpinner);
+		initYearSpinner = new JSpinner(modelYear);
+		GridBagConstraints gbc_initYearSpinner = new GridBagConstraints();
+		gbc_initYearSpinner.anchor = GridBagConstraints.WEST;
+		gbc_initYearSpinner.insets = new Insets(0, 0, 5, 5);
+		gbc_initYearSpinner.gridx = 2;
+		gbc_initYearSpinner.gridy = 8;
+		add(initYearSpinner, gbc_initYearSpinner);
 
-		hourSpinner = new JSpinner(modelHour);
-		GridBagConstraints gbc_hourSpinner = new GridBagConstraints();
-		gbc_hourSpinner.insets = new Insets(0, 0, 5, 5);
-		gbc_hourSpinner.gridx = 3;
-		gbc_hourSpinner.gridy = 8;
-		add(hourSpinner, gbc_hourSpinner);
+		initHourSpinner = new JSpinner(modelHour);
+		GridBagConstraints gbc_initHourSpinner = new GridBagConstraints();
+		gbc_initHourSpinner.insets = new Insets(0, 0, 5, 5);
+		gbc_initHourSpinner.gridx = 3;
+		gbc_initHourSpinner.gridy = 8;
+		add(initHourSpinner, gbc_initHourSpinner);
 
-		minuteSpinner = new JSpinner(modelMinute);
-		GridBagConstraints gbc_minuteSpinner = new GridBagConstraints();
-		gbc_minuteSpinner.insets = new Insets(0, 0, 5, 5);
-		gbc_minuteSpinner.gridx = 4;
-		gbc_minuteSpinner.gridy = 8;
-		add(minuteSpinner, gbc_minuteSpinner);
+		initMinuteSpinner = new JSpinner(modelMinute);
+		GridBagConstraints gbc_initMinuteSpinner = new GridBagConstraints();
+		gbc_initMinuteSpinner.insets = new Insets(0, 0, 5, 5);
+		gbc_initMinuteSpinner.gridx = 4;
+		gbc_initMinuteSpinner.gridy = 8;
+		add(initMinuteSpinner, gbc_initMinuteSpinner);
 
-		JSpinner daySpinner_1 = new JSpinner(modelDay);
-		GridBagConstraints gbc_daySpinner_1 = new GridBagConstraints();
-		gbc_daySpinner_1.insets = new Insets(0, 0, 5, 5);
-		gbc_daySpinner_1.gridx = 6;
-		gbc_daySpinner_1.gridy = 8;
-		add(daySpinner_1, gbc_daySpinner_1);
+		upDaySpinner = new JSpinner(modelDay);
+		GridBagConstraints gbc_upDaySpinner = new GridBagConstraints();
+		gbc_upDaySpinner.insets = new Insets(0, 0, 5, 5);
+		gbc_upDaySpinner.gridx = 6;
+		gbc_upDaySpinner.gridy = 8;
+		add(upDaySpinner, gbc_upDaySpinner);
 
-		JSpinner monthSpinner_1 = new JSpinner(modelMonth);
-		GridBagConstraints gbc_monthSpinner_1 = new GridBagConstraints();
-		gbc_monthSpinner_1.insets = new Insets(0, 0, 5, 5);
-		gbc_monthSpinner_1.gridx = 7;
-		gbc_monthSpinner_1.gridy = 8;
-		add(monthSpinner_1, gbc_monthSpinner_1);
+		upMonthSpinner = new JSpinner(modelMonth);
+		GridBagConstraints gbc_upMonthSpinner = new GridBagConstraints();
+		gbc_upMonthSpinner.insets = new Insets(0, 0, 5, 5);
+		gbc_upMonthSpinner.gridx = 7;
+		gbc_upMonthSpinner.gridy = 8;
+		add(upMonthSpinner, gbc_upMonthSpinner);
 
-		JSpinner yearSpinner_1 = new JSpinner(modelYear);
-		GridBagConstraints gbc_yearSpinner_1 = new GridBagConstraints();
-		gbc_yearSpinner_1.insets = new Insets(0, 0, 5, 0);
-		gbc_yearSpinner_1.gridx = 8;
-		gbc_yearSpinner_1.gridy = 8;
-		add(yearSpinner_1, gbc_yearSpinner_1);
+		upYearSpinner = new JSpinner(modelYear);
+		GridBagConstraints gbc_upYearSpinner = new GridBagConstraints();
+		gbc_upYearSpinner.insets = new Insets(0, 0, 5, 0);
+		gbc_upYearSpinner.gridx = 8;
+		gbc_upYearSpinner.gridy = 8;
+		add(upYearSpinner, gbc_upYearSpinner);
 
 		JLabel daySpinnerLabel = new JLabel("Día");
 		GridBagConstraints gbc_daySpinnerLabel = new GridBagConstraints();
@@ -390,9 +459,8 @@ public class AddClassPanel extends JPanel {
 		gbc_yearSpinnerLabel_1.gridy = 9;
 		add(yearSpinnerLabel_1, gbc_yearSpinnerLabel_1);
 
-		JButton btnConfirm = new JButton("Confirmar");
+		btnConfirm = new JButton("Confirmar");
 		btnConfirm.setForeground(Color.WHITE);
-		btnConfirm.setEnabled(false);
 		btnConfirm.setBackground(Color.GREEN);
 		GridBagConstraints gbc_btnConfirm = new GridBagConstraints();
 		gbc_btnConfirm.gridwidth = 3;
@@ -402,4 +470,49 @@ public class AddClassPanel extends JPanel {
 		add(btnConfirm, gbc_btnConfirm);
 	}
 
+	private void displayWindow(String titleLabel, String message, int messageType) {
+		JOptionPane.showMessageDialog(this, message, titleLabel, messageType);
+	}
+
+	private boolean verifyDate(JSpinner daySpinner, JSpinner monthSpinner, JSpinner yearSpinner) {
+		SpinnerNumberModel model = (SpinnerNumberModel) daySpinner.getModel();
+		int day = (int) model.getNumber();
+		model = (SpinnerNumberModel) monthSpinner.getModel();
+		int month = (int) model.getNumber();
+		model = (SpinnerNumberModel) yearSpinner.getModel();
+		int year = (int) model.getNumber();
+		try {
+			LocalDate date = LocalDate.of(year, month, day);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private void resetForm() {
+		Component[] components = this.getComponents();
+		for (Component component : components) {
+			if (component instanceof JTextField) {
+				((JTextField) component).setText("");
+			} else if (component instanceof JTextPane) {
+				((JTextPane) component).setText("");
+			}
+		}
+		// Init date
+		initDaySpinner.setValue(startDay);
+		initMonthSpinner.setValue(startMonth);
+		initYearSpinner.setValue(startYear);
+		initHourSpinner.setValue(startHour);
+		initMinuteSpinner.setValue(startMinute);
+
+		// Up date
+		upDaySpinner.setValue(startDay);
+		upMonthSpinner.setValue(startMonth);
+		upYearSpinner.setValue(startYear);
+
+		// Combo-boxes
+		institutesComboBox.setSelectedItem(nonSelectedOption);
+		activitiesComboBox.setSelectedItem(nonSelectedOption);
+		professorsComboBox.setSelectedItem(nonSelectedOption);
+	}
 }

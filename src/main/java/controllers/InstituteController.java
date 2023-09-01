@@ -8,6 +8,7 @@ import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtInstitute;
 import dataTypes.DtUser;
+import entities.Class;
 import exceptions.EmptyRequiredFieldException;
 import exceptions.NullPriceException;
 import interfaces.InstituteInterface;
@@ -15,6 +16,7 @@ import services.ActivityService;
 import services.ClassService;
 import services.InstituteService;
 import services.ServiceFactory;
+import services.UserService;
 
 public class InstituteController implements InstituteInterface {
 	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
@@ -143,6 +145,11 @@ public class InstituteController implements InstituteInterface {
 		}
 		return null;
 	}
+	
+	public boolean checkClassNameAvailability(String className) {
+		ClassService classService = serviceFactory.getClassService();
+		return classService.checkClassAvailability(className);
+	}
 
 	@Override
 	public boolean registerUserToClass(DtClass rclass, DtUser user) {
@@ -168,9 +175,15 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public boolean createSportClass(DtClass newClass, Integer idSportActivity) {
-		// TODO Auto-generated method stub
-		return false;
+	public void createSportClass(DtClass newClass, String idSportActivity, String idProfessor) {
+		// Create class
+		Class createdClass = new Class(newClass.getName(),newClass.getDateAndTime(), newClass.getRegisterDate(), newClass.getUrl());
+		// Add it to the activity
+		ActivityService activityService = serviceFactory.getActivityService();
+		activityService.addClassToActivity(createdClass, idSportActivity);
+		// Add it to the professor
+		UserService userService = serviceFactory.getUserService();
+		userService.addClassToProfessor(createdClass, idProfessor);	
 	}
 
 	private void listSportInstitutesCache() {
