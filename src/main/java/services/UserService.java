@@ -100,7 +100,6 @@ public class UserService {
 		enrollRepo.save(newEnrollment);
 		entityManager.getTransaction().commit();
 		entityManager.close();
-		.println("Completo");
     }
 
 	public boolean userExists(String userNickname) {
