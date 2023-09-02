@@ -8,10 +8,12 @@ import java.util.TreeMap;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import entities.Class;
+import entities.Enrollment;
 import entities.Member;
 import entities.Professor;
 import entities.User;
@@ -22,12 +24,35 @@ public class UserService {
 	private EntityManager entityManager;
 	private final GenericRepository<User> userRepository;
 	private final GenericRepository<Professor> professorRepository;
+	private final GenericRepository<Member> memberRepository;
 	
 
 	public UserService(EntityManager entityManagers) {
 		this.entityManager = entityManagers;
 		this.userRepository = new GenericRepository<User>(entityManager, User.class);
 		this.professorRepository = new GenericRepository<Professor>(entityManager,Professor.class);
+		this.memberRepository = new GenericRepository<Member>(entityManager,Member.class);
+	}
+	
+	public Map<String,DtClass> getMemberClasses(String nickname) {
+		Map<String, DtClass> classes = new TreeMap<String, DtClass>();
+		String[] joinProperties = new String[]{"enrollments"};
+		Member member = memberRepository.findById(nickname,"nickname",joinProperties);
+		// If member exisists
+		if (member != null) {
+			// Get his enrollments
+			List<Enrollment> enrollments = member.getEnrollments();
+			
+			// If he has enrollments
+			if (enrollments != null) {
+				// Add the related class to the Map
+				for (Enrollment e: enrollments) {
+					classes.put(e.getaClass().getName(),e.getaClass().getData());
+				}
+			}
+		}
+		entityManager.close();
+		return classes;
 	}
 
 	public void addClassToProfessor(DtClass newClass, String professorNickname) {

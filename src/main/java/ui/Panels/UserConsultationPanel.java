@@ -17,6 +17,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
+import dataTypes.DtClass;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import interfaces.ControllerFactory;
@@ -29,7 +30,8 @@ public class UserConsultationPanel extends JPanel {
 	private JComboBox<String> usersComboBox = new JComboBox<String>();
 	private String selectedUser = nonSelectedOption;
 
-	private Map<String, DtUser> users = new TreeMap<String, DtUser>();
+	// private Map<String, DtUser> users = new TreeMap<String, DtUser>();
+	private String[] userNicknames = null;
 
 	// Constructor
 	public UserConsultationPanel() {
@@ -39,19 +41,24 @@ public class UserConsultationPanel extends JPanel {
 		this.addBaseElements();
 
 		/*
-		 * this.users = userController.listUsersByNickname();
+		 * Map<String, DtClass> classesPrueba =
+		 * userController.getMemberEnrolledClasses("JoeDoe2"); if (classesPrueba !=
+		 * null) { for (Map.Entry<String, DtClass> entry : classesPrueba.entrySet()) {
+		 * DtClass aClass = entry.getValue(); System.out.println(aClass.getName()); }
 		 * 
-		 * if (institutes != null) { addItemsToComboBox(institutesComboBox,
-		 * institutes.keySet()); }
+		 * }
 		 */
-
 	}
 
 	private void initialize() {
 		setPanelLayout();
 		setTitleLabel("Consulta de usuario", "Calibri", Font.BOLD, 18);
+		// Create comboboxes in swing
 		usersComboBox = createLabelComboBox("Seleccione el usuario", 1);
 
+		// Populate initial comboBox
+		userNicknames = userController.listUsersByNickname();
+		addItemsToComboBox(usersComboBox, userNicknames);
 	}
 
 	private void addBaseElements() {
@@ -111,7 +118,7 @@ public class UserConsultationPanel extends JPanel {
 		return genericComboBox;
 	}
 
-	private void addItemsToComboBox(JComboBox<String> comboBox, Set<String> values) {
+	private void addItemsToComboBox(JComboBox<String> comboBox, String[] values) {
 		for (String value : values) {
 			comboBox.addItem(value);
 		}

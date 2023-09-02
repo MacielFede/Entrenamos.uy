@@ -1,5 +1,6 @@
 package controllers;
 
+import dataTypes.DtClass;
 import dataTypes.DtUser;
 import exceptions.AtributeAlreadyExists;
 import exceptions.EmptyRequiredFieldException;
@@ -62,6 +63,11 @@ public class UserController implements UserInterface {
 	public void newMember(DtUser DtNewUser) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public Map<String,DtClass> getMemberEnrolledClasses(String nickname) {
+		return serviceFactory.getUserService().getMemberClasses(nickname);
 	}
 
 	public boolean existsNickname(String nickName) {
