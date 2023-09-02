@@ -56,7 +56,7 @@ public class UserConsultationPanel extends JPanel {
 		this.setForm();
 		this.setListeners();
 		this.addBaseElements();
-		
+
 		// Populate initial comboBox
 		String[] fetchedUsers = userController.listUsersByNickname();
 		Set<String> nicknameSet = new HashSet<>(Arrays.asList(fetchedUsers));
@@ -312,8 +312,23 @@ public class UserConsultationPanel extends JPanel {
 		} else if (chosenUser instanceof DtProfessor) {
 			// Can have both of them
 			activitiesComboBox.setEnabled(true);
-			classesComboBox.setEnabled(true);	
-			
+			classesComboBox.setEnabled(true);
+
+			// Adding classes and activities
+			Map<String, DtClass> professorClasses = ((DtProfessor) chosenUser).getRelatedClasses();
+			System.out.println(professorClasses);
+			if (professorClasses != null) {
+				Set<String> profClassesToAdd = new HashSet<>();
+				for (Map.Entry<String, DtClass> entry : professorClasses.entrySet()) {
+					DtClass aClass = entry.getValue();
+					profClassesToAdd.add(aClass.getName());
+				}
+				addItemsToComboBox(classesComboBox, profClassesToAdd);
+			} else { // No classes!
+				classesComboBox.setEnabled(false);
+				activitiesComboBox.setEnabled(false);
+			}
+
 		}
 	}
 
