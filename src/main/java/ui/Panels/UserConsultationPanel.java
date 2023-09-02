@@ -7,7 +7,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.Map;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -21,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 import dataTypes.DtClass;
+import dataTypes.DtMember;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import interfaces.ControllerFactory;
@@ -37,11 +41,12 @@ public class UserConsultationPanel extends JPanel {
 	private String selectedActivity = nonSelectedOption;
 	private String selectedClass = nonSelectedOption;
 
-	// private Map<String, DtUser> users = new TreeMap<String, DtUser>();
-	private String[] userNicknames = null;
+	private DtUser chosenUser = null;
+	private Set<String> userNicknames;
+
 	private JTextField nicknameTextField;
 	private JTextField nameTextField;
-	private JTextField surnameTextfield;
+	private JTextField surnameTextField;
 	private JTextField mailTextField;
 	private JTextField dateTextField;
 
@@ -51,15 +56,13 @@ public class UserConsultationPanel extends JPanel {
 		this.setForm();
 		this.setListeners();
 		this.addBaseElements();
-
-		/*
-		 * Map<String, DtClass> classesPrueba =
-		 * userController.getMemberEnrolledClasses("JoeDoe2"); if (classesPrueba !=
-		 * null) { for (Map.Entry<String, DtClass> entry : classesPrueba.entrySet()) {
-		 * DtClass aClass = entry.getValue(); System.out.println(aClass.getName()); }
-		 * 
-		 * }
-		 */
+		
+		// Populate initial comboBox
+		String[] fetchedUsers = userController.listUsersByNickname();
+		Set<String> nicknameSet = new HashSet<>(Arrays.asList(fetchedUsers));
+		nicknameSet.remove("<Nicknames>");
+		userNicknames = nicknameSet;
+		addItemsToComboBox(usersComboBox, nicknameSet);
 	}
 
 	private void initialize() {
@@ -67,13 +70,8 @@ public class UserConsultationPanel extends JPanel {
 		setTitleLabel("Consulta de usuario", "Calibri", Font.BOLD, 18);
 		// Create comboboxes in swing
 		usersComboBox = createLabelComboBox("Seleccione el usuario", 1);
-		activitiesComboBox = createLabelComboBox("Actividades", 2);
-		activitiesComboBox = createLabelComboBox("Clases", 3);
-
-		// Populate initial comboBox
-		userNicknames = userController.listUsersByNickname();
-		addItemsToComboBox(usersComboBox, userNicknames);
-
+		activitiesComboBox = createLabelComboBox("Actividades relacionadas", 2);
+		classesComboBox = createLabelComboBox("Clases relacionadas", 3);
 	}
 
 	private void setForm() {
@@ -112,6 +110,7 @@ public class UserConsultationPanel extends JPanel {
 			add(nicknameTextField, gbc_nicknameTextField);
 			nicknameTextField.setColumns(10);
 			nicknameTextField.setEnabled(false);
+			nicknameTextField.setEditable(false);
 		}
 		{
 			nameTextField = new JTextField();
@@ -123,18 +122,20 @@ public class UserConsultationPanel extends JPanel {
 			gbc_nameTextField.gridy = 5;
 			add(nameTextField, gbc_nameTextField);
 			nameTextField.setEnabled(false);
+			nameTextField.setEditable(false);
 		}
 		{
-			surnameTextfield = new JTextField();
-			surnameTextfield.setColumns(10);
-			GridBagConstraints gbc_surnameTextfield = new GridBagConstraints();
-			gbc_surnameTextfield.gridwidth = 3;
-			gbc_surnameTextfield.insets = new Insets(0, 0, 5, 5);
-			gbc_surnameTextfield.fill = GridBagConstraints.HORIZONTAL;
-			gbc_surnameTextfield.gridx = 4;
-			gbc_surnameTextfield.gridy = 5;
-			add(surnameTextfield, gbc_surnameTextfield);
-			surnameTextfield.setEnabled(false);
+			surnameTextField = new JTextField();
+			surnameTextField.setColumns(10);
+			GridBagConstraints gbc_surnameTextField = new GridBagConstraints();
+			gbc_surnameTextField.gridwidth = 3;
+			gbc_surnameTextField.insets = new Insets(0, 0, 5, 5);
+			gbc_surnameTextField.fill = GridBagConstraints.HORIZONTAL;
+			gbc_surnameTextField.gridx = 4;
+			gbc_surnameTextField.gridy = 5;
+			add(surnameTextField, gbc_surnameTextField);
+			surnameTextField.setEnabled(false);
+			surnameTextField.setEditable(false);
 		}
 		{
 			JLabel mailLabel = new JLabel("Mail");
@@ -162,6 +163,8 @@ public class UserConsultationPanel extends JPanel {
 			gbc_mailTextField.gridy = 7;
 			add(mailTextField, gbc_mailTextField);
 			mailTextField.setEnabled(false);
+			mailTextField.setEditable(false);
+
 		}
 		{
 			dateTextField = new JTextField();
@@ -173,6 +176,7 @@ public class UserConsultationPanel extends JPanel {
 			gbc_dateTextField.gridy = 7;
 			add(dateTextField, gbc_dateTextField);
 			dateTextField.setEnabled(false);
+			dateTextField.setEditable(false);
 		}
 	}
 
@@ -183,8 +187,10 @@ public class UserConsultationPanel extends JPanel {
 		// Activities
 		activitiesComboBox.addItem(nonSelectedOption);
 		selectedActivity = nonSelectedOption;
+		activitiesComboBox.setEnabled(false);
 		// Classes
 		classesComboBox.addItem(nonSelectedOption);
+		classesComboBox.setEnabled(false);
 		selectedClass = nonSelectedOption;
 	}
 
@@ -239,7 +245,7 @@ public class UserConsultationPanel extends JPanel {
 		return genericComboBox;
 	}
 
-	private void addItemsToComboBox(JComboBox<String> comboBox, String[] values) {
+	private void addItemsToComboBox(JComboBox<String> comboBox, Set<String> values) {
 		for (String value : values) {
 			comboBox.addItem(value);
 		}
@@ -255,36 +261,60 @@ public class UserConsultationPanel extends JPanel {
 		usersComboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Fetch user data
 				if (usersComboBox.getSelectedItem() != null
 						&& !usersComboBox.getSelectedItem().toString().equals(selectedUser)) {
+					resetForm();
 					selectedUser = usersComboBox.getSelectedItem().toString();
+					fetchSelectedUserData(selectedUser);
 				}
 			}
 		});
 	}
 
 	private void fetchSelectedUserData(String nickname) {
-		DtUser userChosen = userController.chooseUser(nickname);
-		if (Objects.isNull(userChosen)) {
+		chosenUser = userController.chooseUser(nickname);
+		if (Objects.isNull(chosenUser)) {
 			return;
 		}
-		// Sets the inputs with the user information
-		/*
-		 * emailTextField.setText(userChosen.getEmail());
-		 * nameTextField.setText(userChosen.getName()); nameTextField.setEnabled(true);
-		 * nameTextField.setEditable(true);
-		 * lastnameTextField.setText(userChosen.getLastName());
-		 * lastnameTextField.setEnabled(true); lastnameTextField.setEditable(true); //
-		 * Here I put the day -1 because I need the index of the item to be selected in
-		 * the array
-		 * dayComboBox.setSelectedIndex(Integer.parseInt(userChosen.getBornDate().
-		 * toString().substring(8,10)) -1); dayComboBox.setEnabled(true);
-		 * monthComboBox.setSelectedIndex(userChosen.getBornDate().getMonth());
-		 * monthComboBox.setEnabled(true); activeUserYearBorn =
-		 * userChosen.getBornDate().getYear(); changeYearComboBox("START");
-		 * yearComboBox.setEnabled(true); saveButton.setEnabled(true);
-		 * cancelButton.setEnabled(true);
-		 */
+		// Set textfield values
+		nicknameTextField.setText(chosenUser.getNickname());
+		nicknameTextField.setEnabled(true);
+		nameTextField.setText(chosenUser.getName());
+		nameTextField.setEnabled(true);
+		surnameTextField.setText(chosenUser.getLastName());
+		surnameTextField.setEnabled(true);
+		mailTextField.setText(chosenUser.getEmail());
+		mailTextField.setEnabled(true);
+
+		// Set date textfield value
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		String formattedDate = dateFormat.format(chosenUser.getBornDate());
+		dateTextField.setText(formattedDate);
+		dateTextField.setEnabled(true);
+
+		// Get user enrolled classes
+		if (chosenUser instanceof DtMember) {
+			activitiesComboBox.setEnabled(false);
+			classesComboBox.setEnabled(true);
+			Map<String, DtClass> memberClasses = userController.getMemberEnrolledClasses(chosenUser.getNickname());
+			// Add classes to comboBox
+			if (memberClasses != null) {
+				Set<String> classesToAdd = new HashSet<>();
+				for (Map.Entry<String, DtClass> entry : memberClasses.entrySet()) {
+					DtClass aClass = entry.getValue();
+					classesToAdd.add(aClass.getName());
+				}
+				addItemsToComboBox(classesComboBox, classesToAdd);
+			} else { // No classes!
+				classesComboBox.setEnabled(false);
+			}
+		} else if (chosenUser instanceof DtProfessor) {
+			// Can have both of them
+			activitiesComboBox.setEnabled(true);
+			classesComboBox.setEnabled(true);	
+			
+		}
 	}
 
 	private void displayWindow(String titleLabel, String message, int messageType) {
@@ -300,6 +330,15 @@ public class UserConsultationPanel extends JPanel {
 				((JTextPane) component).setText("");
 			}
 		}
+		// ComboBoxes
+		activitiesComboBox.removeAllItems();
+		activitiesComboBox.setEnabled(false);
+		activitiesComboBox.addItem(nonSelectedOption);
+		selectedActivity = nonSelectedOption;
+		classesComboBox.removeAllItems();
+		classesComboBox.setEnabled(false);
+		classesComboBox.addItem(nonSelectedOption);
+		selectedClass = nonSelectedOption;
 	}
 
 }
