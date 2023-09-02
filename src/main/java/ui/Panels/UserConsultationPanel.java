@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -316,7 +315,6 @@ public class UserConsultationPanel extends JPanel {
 
 			// Adding classes and activities
 			Map<String, DtClass> professorClasses = ((DtProfessor) chosenUser).getRelatedClasses();
-			System.out.println(professorClasses);
 			if (professorClasses != null) {
 				Set<String> profClassesToAdd = new HashSet<>();
 				for (Map.Entry<String, DtClass> entry : professorClasses.entrySet()) {
