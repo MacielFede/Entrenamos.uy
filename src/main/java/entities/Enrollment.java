@@ -64,6 +64,6 @@ public class Enrollment {
     }
 
     public DtEnrollment getData() {
-        return new DtEnrollment(this.user.getData(), this.cost, this.enrollmentDate);
+        return new DtEnrollment(this.user.getData(), this.cost, this.enrollmentDate, this.aClass.getData());
     }
 }
