@@ -91,13 +91,17 @@ public class UserService {
     public void addEnrollment(DtEnrollment enrollment, String className) {
 		// Crear la entidad enrollment con la clase de nombre className y persistirlo
 		Enrollment newEnrollment = new Enrollment();
+		GenericRepository<Member> memberRepo = new GenericRepository<>(entityManager, Member.class);
+		Member member = memberRepo.findById(enrollment.getMember().getNickname(), "nickname", new String[]{"enrollments"});
 		newEnrollment.setEnrollmentDate(enrollment.getEnrollmentDate());
 		newEnrollment.setCost(enrollment.getCost());
-		newEnrollment.setaClass(ServiceFactory.getInstance().getClassService().getClassEntityByName(className));
-		newEnrollment.setMember(userRepository.findById(enrollment.getMember().getNickname(), "nickname"));
-		GenericRepository<Enrollment> enrollRepo = new GenericRepository<>(entityManager, Enrollment.class);
+		newEnrollment.setMember(member);
+		newEnrollment.setaClass(ServiceFactory.getInstance().getClassService().addEnrollmentToClass(className, newEnrollment));
+		List<Enrollment> newEnrollments = member.getEnrollments();
+		newEnrollments.add(newEnrollment);
+		member.setEnrollments(newEnrollments);
 		entityManager.getTransaction().begin();
-		enrollRepo.save(newEnrollment);
+		userRepository.save(member);
 		entityManager.getTransaction().commit();
 		entityManager.close();
     }

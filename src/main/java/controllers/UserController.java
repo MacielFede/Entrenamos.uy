@@ -109,7 +109,6 @@ public class UserController implements UserInterface {
 		if (serviceFactory.getUserService().userAlreadySignedUpToClass(user.getNickname(), className)){
 			throw new UserAlreadySignedUpToClassException();
 		}
-		ln("usuario no esta enrolled");
 		DtEnrollment enrollment = new DtEnrollment(user, price, Calendar.getInstance().getTime());
 		serviceFactory.getUserService().addEnrollment(enrollment, className);
 	}
