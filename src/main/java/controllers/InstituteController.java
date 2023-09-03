@@ -8,7 +8,6 @@ import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtInstitute;
 import dataTypes.DtUser;
-import entities.Class;
 import exceptions.EmptyRequiredFieldException;
 import exceptions.NullPriceException;
 import interfaces.InstituteInterface;
@@ -71,7 +70,8 @@ public class InstituteController implements InstituteInterface {
 		if (classesCache != null) {
 			return classesCache.get(className);
 		} else {
-			return null;
+			listClassesCache();
+			return classesCache.get(className);
 		}
 	}
 
@@ -84,6 +84,12 @@ public class InstituteController implements InstituteInterface {
 		}
 		activities.sort(Comparator.comparingInt(DtActivity::getClassesQuantity).reversed());
 		return activities;
+	}
+	
+	@Override
+	public Map<String,DtActivity> getAllActivities() {
+		ActivityService activityService = serviceFactory.getActivityService();
+		return activityService.getAllActivity();
 	}
 
 	@Override
@@ -187,6 +193,11 @@ public class InstituteController implements InstituteInterface {
 	private void listSportInstitutesCache() {
 		InstituteService instituteService = serviceFactory.getInstituteService();
 		institutesCache = instituteService.getAllInstitutes();
+	}
+	
+	private void listClassesCache() {
+		ClassService classService = serviceFactory.getClassService();
+		classesCache = classService.getAllClasses();
 	}
 
 	@Override

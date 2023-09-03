@@ -1,6 +1,7 @@
 package ui.Panels;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,24 +14,42 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
+import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtMember;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import interfaces.ControllerFactory;
+import interfaces.InstituteInterface;
 import interfaces.UserInterface;
+import javax.swing.JButton;
+import java.awt.Color;
 
 public class UserConsultationPanel extends JPanel {
-	private final UserInterface userController = ControllerFactory.getInstance().getUserInterface();
+	private final UserInterface uc = ControllerFactory.getInstance().getUserInterface();
+	private final InstituteInterface ic = ControllerFactory.getInstance().getInstituteInterface();
+
+	private JTable activityDataTable;
+	private JScrollPane activityTableScrollPane;
+
+	private JTable classDataTable;
+	private JScrollPane classTableScrollPane;
+	private String[] classTableHeaders = new String[] { "Atributo", "Valor" };
 
 	private final String nonSelectedOption = "Sin seleccionar";
 	private JComboBox<String> usersComboBox = new JComboBox<String>();
@@ -42,7 +61,9 @@ public class UserConsultationPanel extends JPanel {
 
 	private DtUser chosenUser = null;
 	private Set<String> userNicknames;
+	private Map<String, DtActivity> activities = new TreeMap<String, DtActivity>();
 
+	private JButton btnReset;
 	private JTextField nicknameTextField;
 	private JTextField nameTextField;
 	private JTextField surnameTextField;
@@ -57,11 +78,14 @@ public class UserConsultationPanel extends JPanel {
 		this.addBaseElements();
 
 		// Populate initial comboBox
-		String[] fetchedUsers = userController.listUsersByNickname();
+		String[] fetchedUsers = uc.listUsersByNickname();
 		Set<String> nicknameSet = new HashSet<>(Arrays.asList(fetchedUsers));
-		nicknameSet.remove("<Nicknames>");
+		nicknameSet.remove("<Nicknames>"); // wtf is this haha
 		userNicknames = nicknameSet;
 		addItemsToComboBox(usersComboBox, nicknameSet);
+
+		// Get activities
+		this.activities = ic.getAllActivities();
 	}
 
 	private void initialize() {
@@ -71,9 +95,21 @@ public class UserConsultationPanel extends JPanel {
 		usersComboBox = createLabelComboBox("Seleccione el usuario", 1);
 		activitiesComboBox = createLabelComboBox("Actividades relacionadas", 2);
 		classesComboBox = createLabelComboBox("Clases relacionadas", 3);
+		createClassDataTable();
+		createActivityTable();
 	}
 
 	private void setForm() {
+		{
+			btnReset = new JButton("↻");
+			btnReset.setBackground(new Color(0, 0, 255));
+			btnReset.setForeground(new Color(255, 255, 255));
+			GridBagConstraints gbc_btnReset = new GridBagConstraints();
+			gbc_btnReset.insets = new Insets(0, 0, 5, 5);
+			gbc_btnReset.gridx = 7;
+			gbc_btnReset.gridy = 1;
+			add(btnReset, gbc_btnReset);
+		}
 		{
 			JLabel nicknameLabel = new JLabel("Nickname");
 			GridBagConstraints gbc_nicknameLabel = new GridBagConstraints();
@@ -200,7 +236,6 @@ public class UserConsultationPanel extends JPanel {
 		gridBagLayout.columnWeights = new double[] { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
 		gridBagLayout.rowWeights = new double[] { 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0 };
 		setLayout(gridBagLayout);
-
 		JSeparator separator = new JSeparator();
 		GridBagConstraints gbc_separator = new GridBagConstraints();
 		gbc_separator.gridwidth = 9;
@@ -256,6 +291,18 @@ public class UserConsultationPanel extends JPanel {
 	}
 
 	private void setListeners() {
+		
+		
+		btnReset.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				usersComboBox.setSelectedItem(nonSelectedOption);
+				resetForm();
+				classTableScrollPane.setVisible(false);
+				activityTableScrollPane.setVisible(false);
+			}
+		});
+		
 
 		usersComboBox.addActionListener(new ActionListener() {
 			@Override
@@ -269,10 +316,179 @@ public class UserConsultationPanel extends JPanel {
 				}
 			}
 		});
+
+		JPanel mainReference = this;
+		activitiesComboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (activitiesComboBox.getSelectedItem() != null
+						&& !activitiesComboBox.getSelectedItem().toString().equals(selectedActivity)) {
+					if (activitiesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
+						activityTableScrollPane.setVisible(false);
+					} else {
+						selectedActivity = activitiesComboBox.getSelectedItem().toString();
+						// Reset class (we are selecting activity now)
+						selectedClass = nonSelectedOption;
+						classesComboBox.setSelectedItem(nonSelectedOption);
+						classTableScrollPane.setVisible(false);
+						// Show activity table
+						showSelectedActivity(selectedActivity);
+						mainReference.revalidate();
+					}
+				}
+			}
+		});
+
+		classesComboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (classesComboBox.getSelectedItem() != null
+						&& !classesComboBox.getSelectedItem().toString().equals(selectedClass)) {
+					if (classesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
+						classTableScrollPane.setVisible(false);
+					} else {
+						selectedClass = classesComboBox.getSelectedItem().toString();
+						// Reset activity (we are selecting class now)
+						selectedActivity = nonSelectedOption;
+						activitiesComboBox.setSelectedItem(nonSelectedOption);
+						activityTableScrollPane.setVisible(false);
+						// Show class table
+						showSelectedClass(selectedClass);
+						mainReference.revalidate();
+					}
+				}
+
+			}
+		});
+
+	}
+
+	private void showSelectedActivity(String activityName) {
+		// Reset tables
+		activityTableScrollPane.setVisible(false);
+		classTableScrollPane.setVisible(false);
+		// Create table with name, description, cost, duration and registryDate
+		DtActivity selectedActivity = this.activities.get(activityName);
+		fillActivityTable(selectedActivity);
+		activityTableScrollPane.setVisible(true);
+	}
+
+	private void showSelectedClass(String className) {
+		// Reset tables
+		activityTableScrollPane.setVisible(false);
+		classTableScrollPane.setVisible(false);
+		// Show name, date, dateAndTime and url
+		DtClass selectedClass = ic.chooseClassByName(className);
+		fillTable(selectedClass);
+		classTableScrollPane.setVisible(true);
+	}
+
+	private void fillTable(DtClass data) {
+		DefaultTableModel model = (DefaultTableModel) this.classDataTable.getModel();
+		int actualRows = model.getRowCount();
+		for (int i = actualRows - 1; i >= 0; i--) {
+			model.removeRow(i);
+		}
+		actualRows = model.getRowCount();
+		model.addRow(new String[] { "Nombre", data.getName() });
+		model.addRow(new String[] { "Fecha de registro", data.getRegisterDate().toString() });
+		model.addRow(new String[] { "Fecha y hora", data.getDateAndTime().toString() });
+		model.addRow(new String[] { "URL", data.getUrl() });
+		model.fireTableDataChanged();
+
+		int numRows = model.getRowCount();
+		int rowHeight = classDataTable.getRowHeight();
+		int preferredHeight = rowHeight * Math.min(numRows, 4);
+		classDataTable.setPreferredScrollableViewportSize(
+				new Dimension(classDataTable.getPreferredSize().width, preferredHeight));
+	}
+
+	private void createClassDataTable() {
+		DefaultTableModel model = new DefaultTableModel(0, classTableHeaders.length);
+		model.setColumnIdentifiers(classTableHeaders);
+
+		classDataTable = new JTable(model);
+
+		DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+		cellRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+		classDataTable.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
+		cellRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+		classDataTable.getColumnModel().getColumn(1).setCellRenderer(cellRenderer);
+
+		classTableScrollPane = new JScrollPane(classDataTable);
+
+		GridBagConstraints gbc_table = new GridBagConstraints();
+		gbc_table.gridwidth = 5;
+		gbc_table.insets = new Insets(0, 0, 5, 5);
+		gbc_table.fill = GridBagConstraints.BOTH;
+		gbc_table.gridx = 1;
+		gbc_table.gridy = 8;
+
+		int rowCount = 5;
+		int rowHeight = classDataTable.getRowHeight();
+		int headerHeight = classDataTable.getTableHeader().getPreferredSize().height;
+		int totalHeight = (rowHeight * rowCount) + headerHeight;
+		Dimension preferredSize = new Dimension(classDataTable.getPreferredSize().width, totalHeight);
+		classDataTable.setPreferredScrollableViewportSize(preferredSize);
+
+		add(classTableScrollPane, gbc_table);
+		classTableScrollPane.setVisible(false);
+	}
+
+	private void fillActivityTable(DtActivity data) {
+		DefaultTableModel model = (DefaultTableModel) this.activityDataTable.getModel();
+		int actualRows = model.getRowCount();
+		for (int i = actualRows - 1; i >= 0; i--) {
+			model.removeRow(i);
+		}
+		actualRows = model.getRowCount();
+		model.addRow(new String[] { "Nombre", data.getName() });
+		model.addRow(new String[] { "Descripcion", data.getDescription() });
+		model.addRow(new String[] { "Fecha de registro", data.getRegistryDate().toString() });
+		model.addRow(new String[] { "Duracion", data.getDuration().toString() });
+		model.addRow(new String[] { "Costo", data.getPrice().toString() });
+		model.fireTableDataChanged();
+
+		int numRows = model.getRowCount();
+		int rowHeight = activityDataTable.getRowHeight();
+		int preferredHeight = rowHeight * Math.min(numRows, 5);
+		activityDataTable.setPreferredScrollableViewportSize(new Dimension(activityDataTable.getPreferredSize().width, preferredHeight));
+	}
+
+	private void createActivityTable() {
+		DefaultTableModel model = new DefaultTableModel(0, classTableHeaders.length);
+		model.setColumnIdentifiers(classTableHeaders);
+
+		activityDataTable = new JTable(model);
+
+		DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+		cellRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+		activityDataTable.getColumnModel().getColumn(0).setCellRenderer(cellRenderer);
+		cellRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+		activityDataTable.getColumnModel().getColumn(1).setCellRenderer(cellRenderer);
+
+		activityTableScrollPane = new JScrollPane(activityDataTable);
+
+		GridBagConstraints gbc_table = new GridBagConstraints();
+		gbc_table.gridwidth = 5;
+		gbc_table.insets = new Insets(0, 0, 5, 5);
+		gbc_table.fill = GridBagConstraints.BOTH;
+		gbc_table.gridx = 1;
+		gbc_table.gridy = 8;
+
+		int rowCount = 6;
+		int rowHeight = activityDataTable.getRowHeight();
+		int headerHeight = activityDataTable.getTableHeader().getPreferredSize().height;
+		int totalHeight = (rowHeight * rowCount) + headerHeight;
+		Dimension preferredSize = new Dimension(activityDataTable.getPreferredSize().width, totalHeight);
+		activityDataTable.setPreferredScrollableViewportSize(preferredSize);
+
+		add(activityTableScrollPane, gbc_table);
+		activityTableScrollPane.setVisible(false);
 	}
 
 	private void fetchSelectedUserData(String nickname) {
-		chosenUser = userController.chooseUser(nickname);
+		chosenUser = uc.chooseUser(nickname);
 		if (Objects.isNull(chosenUser)) {
 			return;
 		}
@@ -296,7 +512,7 @@ public class UserConsultationPanel extends JPanel {
 		if (chosenUser instanceof DtMember) {
 			activitiesComboBox.setEnabled(false);
 			classesComboBox.setEnabled(true);
-			Map<String, DtClass> memberClasses = userController.getMemberEnrolledClasses(chosenUser.getNickname());
+			Map<String, DtClass> memberClasses = uc.getMemberEnrolledClasses(chosenUser.getNickname());
 			// Add classes to comboBox
 			if (memberClasses != null) {
 				Set<String> classesToAdd = new HashSet<>();
@@ -308,7 +524,9 @@ public class UserConsultationPanel extends JPanel {
 			} else { // No classes!
 				classesComboBox.setEnabled(false);
 			}
-		} else if (chosenUser instanceof DtProfessor) {
+		}
+		// If we have a professor it's different
+		else if (chosenUser instanceof DtProfessor) {
 			// Can have both of them
 			activitiesComboBox.setEnabled(true);
 			classesComboBox.setEnabled(true);
@@ -317,17 +535,37 @@ public class UserConsultationPanel extends JPanel {
 			Map<String, DtClass> professorClasses = ((DtProfessor) chosenUser).getRelatedClasses();
 			if (professorClasses != null) {
 				Set<String> profClassesToAdd = new HashSet<>();
+				Set<String> relatedActivities = new HashSet<>();
 				for (Map.Entry<String, DtClass> entry : professorClasses.entrySet()) {
 					DtClass aClass = entry.getValue();
 					profClassesToAdd.add(aClass.getName());
+					DtActivity activityFromClass = getActivityFromClass(aClass.getName());
+					if (activityFromClass != null)
+						relatedActivities.add(activityFromClass.getName());
 				}
 				addItemsToComboBox(classesComboBox, profClassesToAdd);
+				addItemsToComboBox(activitiesComboBox, relatedActivities);
 			} else { // No classes!
 				classesComboBox.setEnabled(false);
 				activitiesComboBox.setEnabled(false);
 			}
 
 		}
+	}
+
+	private DtActivity getActivityFromClass(String className) {
+		// Iterate through activities to find the class related activity
+		for (Map.Entry<String, DtActivity> entry : activities.entrySet()) {
+			DtActivity activity = entry.getValue();
+			// Get activity classes
+			Map<String, DtClass> currentActivityClasses = activity.getClasses();
+			for (Map.Entry<String, DtClass> classEntry : currentActivityClasses.entrySet()) {
+				DtClass aClass = classEntry.getValue();
+				if (aClass.getName().equals(className))
+					return activity;
+			}
+		}
+		return null;
 	}
 
 	private void displayWindow(String titleLabel, String message, int messageType) {
@@ -344,13 +582,11 @@ public class UserConsultationPanel extends JPanel {
 			}
 		}
 		// ComboBoxes
-		activitiesComboBox.removeAllItems();
+		resetComboBox(activitiesComboBox);
 		activitiesComboBox.setEnabled(false);
-		activitiesComboBox.addItem(nonSelectedOption);
 		selectedActivity = nonSelectedOption;
-		classesComboBox.removeAllItems();
+		resetComboBox(classesComboBox);
 		classesComboBox.setEnabled(false);
-		classesComboBox.addItem(nonSelectedOption);
 		selectedClass = nonSelectedOption;
 	}
 
