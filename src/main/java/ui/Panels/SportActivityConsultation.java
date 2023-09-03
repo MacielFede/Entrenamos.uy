@@ -21,7 +21,6 @@ public class SportActivityConsultation extends JPanel{
 	private JScrollPane tableScrollPane;
 	private JComboBox<String> institutesComboBox 	= new JComboBox<String>();
 	private JComboBox<String> activitiesComboBox 	= new JComboBox<String>();
-	private JComboBox<String> classesComboBox		= new JComboBox<String>();
 	private String[] tableHeaders 					= new String[] {"Atributo", "Valor"};
 	private final String nonSelectedOption			= "Sin seleccionar";
 	private String selectedInstitute 				= nonSelectedOption;
@@ -45,12 +44,10 @@ public class SportActivityConsultation extends JPanel{
 	
 	private void initialize() {
 		setPanelLayout();
-		setTitleLabel("Consulta de dictado de clase", "Calibri", Font.BOLD, 18);
+		setTitleLabel("Consulta de actividad deportiva", "Calibri", Font.BOLD, 18);
 		institutesComboBox 	= createLabelComboBox("Institutos", 1);
 		activitiesComboBox	= createLabelComboBox("Actividad deportiva", 2);
-		classesComboBox 	= createLabelComboBox("Clases", 3);
 		activitiesComboBox.setEnabled(false);
-		classesComboBox.setEnabled(false);
 		createDataTable();
 	}
 	
@@ -61,9 +58,7 @@ public class SportActivityConsultation extends JPanel{
 		activitiesComboBox.addItem(selectedActivity);
 		selectedActivity = nonSelectedOption;
 		activitiesComboBox.setSelectedItem(selectedActivity);
-		classesComboBox.addItem(selectedClass);
 		selectedClass = nonSelectedOption;
-		classesComboBox.setSelectedItem(selectedClass);
 	}
 	
 	private void resetComboBox(JComboBox<String> comboBox) {
@@ -77,24 +72,7 @@ public class SportActivityConsultation extends JPanel{
 		}
 	}
 	
-	private void fillTable(DtClass data) {
-		DefaultTableModel model = (DefaultTableModel) this.classDataTable.getModel();
-		int actualRows = model.getRowCount();
-		for (int i = actualRows - 1; i >= 0; i--) {
-		    model.removeRow(i);
-		}
-		actualRows = model.getRowCount();
-		model.addRow(new String[] {"Nombre", data.getName()});
-		model.addRow(new String[] {"Fecha de registro", data.getRegisterDate().toString()});
-		model.addRow(new String[] {"Fecha y hora", data.getDateAndTime().toString()});
-		model.addRow(new String[] {"URL", data.getUrl()});
-		model.fireTableDataChanged(); 
-		
-		int numRows = model.getRowCount();
-        int rowHeight = classDataTable.getRowHeight();
-        int preferredHeight = rowHeight * Math.min(numRows, 4);
-        classDataTable.setPreferredScrollableViewportSize(new Dimension(classDataTable.getPreferredSize().width, preferredHeight));
-	}
+
 	private void fillTableActivity(DtActivity data) {
 		//(string name, String description, Integer duration, Float price, Date registryDate, int classesQuantity, Map<String, DtClass> classes)
 		DefaultTableModel model = (DefaultTableModel) this.classDataTable.getModel();
@@ -128,8 +106,6 @@ public class SportActivityConsultation extends JPanel{
             	if(institutesComboBox.getSelectedItem() != null && !institutesComboBox.getSelectedItem().toString().equals(selectedInstitute)) {
             		if(institutesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
                 		activitiesComboBox.setEnabled(false);
-                		resetComboBox(classesComboBox);
-                		classesComboBox.setEnabled(false);
                 	}
                 	else {
                 		activities = instituteController.selectInstitution(institutesComboBox.getSelectedItem().toString());
@@ -138,13 +114,10 @@ public class SportActivityConsultation extends JPanel{
                 			addItemsToComboBox(activitiesComboBox, activities.keySet());
                 		}
                 		activitiesComboBox.setEnabled(true);
-                		resetComboBox(classesComboBox);
-                		classesComboBox.setEnabled(false);
                 	}
             		selectedActivity = nonSelectedOption;
             		activitiesComboBox.setSelectedItem(selectedActivity);
             		selectedClass = nonSelectedOption;
-            		classesComboBox.setSelectedItem(selectedClass);
             		tableScrollPane.setVisible(false);
                 	selectedInstitute = institutesComboBox.getSelectedItem().toString();
             	}
@@ -156,19 +129,10 @@ public class SportActivityConsultation extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
             	if(activitiesComboBox.getSelectedItem() != null && !activitiesComboBox.getSelectedItem().toString().equals(selectedActivity)) {
-            		if(activitiesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
-                		classesComboBox.setEnabled(false);
-                	}
-                	else {
+            		if(!activitiesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
                 		classes = instituteController.chooseActivity((activitiesComboBox.getSelectedItem().toString()));
-                		resetComboBox(classesComboBox);
-                		if(classes != null) {
-                			addItemsToComboBox(classesComboBox, classes.keySet());
-                		}
-//                		classesComboBox.setEnabled(true);
                 	}
             		selectedClass = nonSelectedOption;
-            		classesComboBox.setSelectedItem(selectedClass);
             		tableScrollPane.setVisible(false);
             		selectedActivity = activitiesComboBox.getSelectedItem().toString();
 					//==============================
@@ -182,24 +146,6 @@ public class SportActivityConsultation extends JPanel{
             	}
             }
         });
-//		JPanel mainReference = this;
-//		classesComboBox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//            	if(classesComboBox.getSelectedItem() != null &&!classesComboBox.getSelectedItem().toString().equals(selectedClass)) {
-//            		if(classesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
-//            			tableScrollPane.setVisible(false);
-//                	}
-//                	else {
-//                		DtClass selectedClass = instituteController.chooseClassByName(classesComboBox.getSelectedItem().toString());
-//                		fillTable(selectedClass);
-//                		tableScrollPane.setVisible(true);
-//                		mainReference.revalidate();
-//                	}
-//            		selectedClass = classesComboBox.getSelectedItem().toString();
-//            	}
-//            }
-//        });
 	}
 	
 	private void setPanelLayout() {
