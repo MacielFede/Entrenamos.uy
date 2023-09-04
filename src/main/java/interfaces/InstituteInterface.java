@@ -32,4 +32,5 @@ public interface InstituteInterface {
 	public boolean checkInstitutionAvialability(String name);
     String[] listSportActivitiesByName();
     public Map<String,DtActivity> getAllActivities();
+	DtActivity chooseActivityByName(String activity);
 }

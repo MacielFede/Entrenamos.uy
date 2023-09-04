@@ -1,22 +1,21 @@
 package controllers;
 
 import dataTypes.DtClass;
+import dataTypes.DtEnrollment;
 import dataTypes.DtUser;
-import exceptions.AtributeAlreadyExists;
-import exceptions.EmptyRequiredFieldException;
-import exceptions.FebruaryDayException;
-import exceptions.SameYearException;
+import entities.Member;
+import exceptions.*;
+import interfaces.ControllerFactory;
 import interfaces.UserInterface;
 import services.ServiceFactory;
 import services.UserService;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.*;
 
 public class UserController implements UserInterface {
 	private final ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	private final ControllerFactory controllerFactory = ControllerFactory.getInstance();
 	private Map<String, DtUser> cachedUsers = null;
 	public UserController() {
 		super();
@@ -36,7 +35,6 @@ public class UserController implements UserInterface {
 		// Also renovates the cached array
 		cachedUsers = serviceFactory.getUserService().getAllUsers();
 		List<String> nicknames = new ArrayList<>();
-		nicknames.add("<Nicknames>");
 		for(Map.Entry<String,DtUser> user : cachedUsers.entrySet()){
 			nicknames.add(user.getKey());
 		}
@@ -105,5 +103,28 @@ public class UserController implements UserInterface {
 			throw new AtributeAlreadyExists("Email", newUser.getEmail());
 
 		serviceFactory.getUserService().newUser(newUser);
+	}
+
+	public void addEnrollment(String className, DtUser user, Float price) throws Exception {
+		if (!serviceFactory.getUserService().userExists(user.getNickname())) {
+			throw new Exception("El usuario indicado no existe, seleccione uno valido");
+		}
+		if (!serviceFactory.getClassService().classExists(className)){
+			throw new ClassNotFoundException("La clase indicada no existe, seleccione una valida por favor");
+		}
+		if (serviceFactory.getUserService().userAlreadySignedUpToClass(user.getNickname(), className)){
+			throw new UserAlreadySignedUpToClassException();
+		}
+		DtEnrollment enrollment = new DtEnrollment(user, price, Calendar.getInstance().getTime());
+		serviceFactory.getUserService().addEnrollment(enrollment, className);
+	}
+
+	@Override
+	public String[] listMembersByNickname() {
+		List<String> nicknames = new ArrayList<>();
+		for(Map.Entry<String,DtUser> user : serviceFactory.getUserService().getMembers().entrySet()){
+			nicknames.add(user.getKey());
+		}
+		return nicknames.toArray(new String[0]);
 	}
 }
