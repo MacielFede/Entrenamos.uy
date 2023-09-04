@@ -9,13 +9,14 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 public class ModifyUserDataPanel extends JPanel {
     private final UserInterface uc = ControllerFactory.getInstance().getUserInterface();
     private int activeUserYearBorn;
     private final JLabel title = new JLabel("Cambiar información basica del usuario");
     private final JLabel selectUser = new JLabel("Seleccione el usuario >");
-    private JComboBox<String> selectUserComboBox;
+    private JComboBox<String> selectUserComboBox = new JComboBox<>();
     private final JSeparator separator = new JSeparator();
     private final JButton saveButton = new JButton("Guardar");
     private final JButton cancelButton = new JButton("Cancelar");
@@ -31,13 +32,16 @@ public class ModifyUserDataPanel extends JPanel {
     private final JLabel bornDateDetailLabel = new JLabel("dd / mm / aa");
     private final JLabel bornDateLabel = new JLabel("Fecha de nacimiento");
     public ModifyUserDataPanel(){
-        fetchUserList();
+        addItemsToComboBox(selectUserComboBox, Set.of(uc.listUsersByNickname()));
         initialize();
         this.setVisible(true);
     }
 
-    private void fetchUserList(){
-        selectUserComboBox = new JComboBox<>(uc.listUsersByNickname());
+    private void addItemsToComboBox(JComboBox<String> comboBox, Set<String> values) {
+        comboBox.addItem("Sin seleccionar");
+        for(String value : values) {
+            comboBox.addItem(value);
+        }
     }
 
     private void fetchSelectedUserData(String nickname){
@@ -80,7 +84,6 @@ public class ModifyUserDataPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "El usuario fue actualizado con éxito!",
                     "Modificar información de usuario", JOptionPane.INFORMATION_MESSAGE);
             restartUseCase();
-            selectUserComboBox.setSelectedIndex(0);
         } catch (Exception e){
             JOptionPane.showMessageDialog(this, e.getMessage(),
                     "Modificar información de usuario", JOptionPane.ERROR_MESSAGE);
@@ -99,6 +102,7 @@ public class ModifyUserDataPanel extends JPanel {
         yearComboBox.setEnabled(false);
         monthComboBox.setEnabled(false);
         dayComboBox.setEnabled(false);
+        selectUserComboBox.setSelectedIndex(0);
     }
 
     private void changeYearComboBox(String operation){
@@ -133,7 +137,7 @@ public class ModifyUserDataPanel extends JPanel {
         selectUserComboBox.setToolTipText("Nicknames de los usuarios");
         selectUserComboBox.addItemListener(e -> {
             String nick = String.valueOf(selectUserComboBox.getSelectedItem());
-            if(nick.equals("<Nicknames>") && !emailTextField.getText().isEmpty()) {
+            if(nick.equals("Sin seleccionar") && !emailTextField.getText().isEmpty()) {
                 restartUseCase();
                 return;
             }
