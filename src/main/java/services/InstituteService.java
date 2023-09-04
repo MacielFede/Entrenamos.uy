@@ -30,8 +30,14 @@ public class InstituteService {
 	}
 	
 	public boolean checkInstitutionAvialability(String name) {
-		return instituteRepository.findById(name, "name") == null ? true : false;
+		try {
+			return instituteRepository.findById(name, "name") == null ? true : false;			
+		}
+		catch(Exception e) {
+			return true;
+		}
 	}
+	
 	
 	public void addActivityAtInstitute(String name, DtActivity activity){
 		entityManager.getTransaction().begin();
@@ -68,7 +74,7 @@ public class InstituteService {
 	
 	public Map<String, DtInstitute> getAllInstitutes() {
 		Map<String, DtInstitute> institutes = new TreeMap<String, DtInstitute>();
-		String[] joinProperties = new String[]{"activities.classes.enrollments"};
+		String[] joinProperties = new String[]{"activities.classes.enrollments", "professors"};
 		for(Institute i : instituteRepository.findAll(joinProperties)) {
 			institutes.put(i.getName(), i.getData());
 		}

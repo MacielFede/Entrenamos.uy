@@ -145,6 +145,8 @@ public class MainWindow extends JFrame {
 		case "Clases" -> {
 			JMenuItem classTeachingConsultation = createMenuItem("Consulta de dictado de clase", popupMenu);
 			popupMenu.add(classTeachingConsultation);
+			JMenuItem addClass = createMenuItem("Alta de dictado de clase", popupMenu);
+			popupMenu.add(addClass);
 		}
 		case "Instituciones" -> {
             JMenuItem modifySportInstitute = createMenuItem("Modificar institución deportiva", popupMenu);
@@ -192,6 +194,7 @@ public class MainWindow extends JFrame {
                 case "Alta de institución deportiva" -> newPanel = new AddInstitutePanel();
                 case "Modificar institución deportiva" -> newPanel = new ModifySportInstitutePanel();
                 case "Clases dictadas" -> newPanel = new ClassDictationRankingPanel();
+                case "Alta de dictado de clase" -> newPanel = new AddClassPanel();
                 case "Registro a dictado de clase" -> newPanel = new RegistrationToClassPanel();
                 default -> newPanel = homePanel;
             }

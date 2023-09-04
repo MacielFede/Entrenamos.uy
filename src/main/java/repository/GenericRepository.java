@@ -39,7 +39,15 @@ public class GenericRepository<T> {
 			}
 		}
 		query.select(root).where(builder.equal(root.get(keyAttributeName), id));
-		return entityManager.createQuery(query).getSingleResult();
+		try {
+			T entity = entityManager.createQuery(query).getSingleResult();
+			return entity;
+		}
+		catch (Exception e ) {
+			System.out.println(e);
+			return null;
+		}
+		
 	}
 
 	public List<T> findAll(String[] IncludeProperties) {

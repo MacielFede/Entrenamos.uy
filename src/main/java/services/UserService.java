@@ -6,9 +6,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import dataTypes.DtEnrollment;
+import dataTypes.DtClass;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
+import entities.Class;
+import dataTypes.DtEnrollment;
 import entities.Enrollment;
 import entities.Member;
 import entities.Professor;
@@ -17,27 +19,53 @@ import repository.GenericRepository;
 
 public class UserService {
 	@PersistenceContext
-    private EntityManager entityManager;
+	private EntityManager entityManager;
 	private final GenericRepository<User> userRepository;
+	private final GenericRepository<Professor> professorRepository;
 	
-	public UserService(EntityManager entityManagers){
+
+	public UserService(EntityManager entityManagers) {
 		this.entityManager = entityManagers;
 		this.userRepository = new GenericRepository<User>(entityManager, User.class);
+		this.professorRepository = new GenericRepository<Professor>(entityManager,Professor.class);
 	}
-	
+
+	public void addClassToProfessor(DtClass newClass, String professorNickname) {
+		try {
+			// Get class
+			ServiceFactory serviceFactory = ServiceFactory.getInstance();
+			ClassService classService = serviceFactory.getClassService();
+			Class classToAdd = classService.getClassByName(newClass.getName());
+			if (classToAdd == null) {
+				throw new Exception("Class is null");
+			}
+			
+			entityManager.getTransaction().begin();
+			Professor professor = professorRepository.findById(professorNickname, "nickname");
+			professor.getClasses().put(classToAdd.getName(), classToAdd);
+			professorRepository.save(professor);
+			entityManager.getTransaction().commit();
+			entityManager.close();
+		} catch (Exception e) {
+			System.out.println(e);
+			entityManager.getTransaction().rollback();
+			entityManager.close();
+		}
+	}
+
 	public DtUser getUserByNickname(String nickname) {
 		DtUser DtU = null;
 		return DtU;
 	}
-	
+
 	public DtUser getUserByEmail(String email) {
 		DtUser DtU = null;
 		return DtU;
 	}
-	
+
 	public Map<String, DtUser> getAllUsers() {
 		Map<String, DtUser> lDtU = new TreeMap<>();
-		for(User u : userRepository.findAll()){
+		for (User u : userRepository.findAll()) {
 			lDtU.put(u.getNickname(), u.getData());
 		}
 		entityManager.close();
@@ -45,7 +73,7 @@ public class UserService {
 	}
 
 	public void updateUser(DtUser userUpdated) {
-		try{
+		try {
 			entityManager.getTransaction().begin();
 			User updatedUser = userRepository.findById(userUpdated.getNickname(), "nickname");
 			updatedUser.setName(userUpdated.getName());
@@ -59,7 +87,7 @@ public class UserService {
 		}
 	}
 
-	public String[] getAllEmails(){
+	public String[] getAllEmails() {
 		Map<String, DtUser> allUsers = this.getAllUsers();
 		List<String> emails = new ArrayList<>();
 		for (Map.Entry<String, DtUser> user : allUsers.entrySet()) {
@@ -68,20 +96,17 @@ public class UserService {
 		return emails.toArray(new String[0]);
 	}
 
-	public void newUser(DtUser newUser){
+	public void newUser(DtUser newUser) {
 		entityManager.getTransaction().begin();
 
-		if(newUser instanceof DtProfessor){
-			Professor newProfessor	= new Professor(
-					((DtProfessor) newUser).getDescription(),
-					((DtProfessor) newUser).getBiography(),
-					((DtProfessor) newUser).getWebPage(),
-					newUser.getNickname(), newUser.getName(),
-					newUser.getLastName(), newUser.getEmail(),
-					newUser.getBornDate());
+		if (newUser instanceof DtProfessor) {
+			Professor newProfessor = new Professor(((DtProfessor) newUser).getDescription(),
+					((DtProfessor) newUser).getBiography(), ((DtProfessor) newUser).getWebPage(), newUser.getNickname(),
+					newUser.getName(), newUser.getLastName(), newUser.getEmail(), newUser.getBornDate());
 			userRepository.save(newProfessor);
-		}else{
-			User newStudent = new Member(newUser.getNickname(), newUser.getName(), newUser.getLastName(), newUser.getEmail(), newUser.getBornDate());
+		} else {
+			User newStudent = new Member(newUser.getNickname(), newUser.getName(), newUser.getLastName(),
+					newUser.getEmail(), newUser.getBornDate());
 			userRepository.save(newStudent);
 		}
 		entityManager.getTransaction().commit();

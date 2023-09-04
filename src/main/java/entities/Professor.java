@@ -16,7 +16,7 @@ import dataTypes.DtUser;
 @Entity
 public class Professor extends User {
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	private Map<String, Class> classes;
 
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -90,7 +90,6 @@ public class Professor extends User {
 
 	@Override
 	public DtUser getData() {
-		// TODO Auto-generated method stub
 		return new DtProfessor(new TreeMap<String, DtClass>(), this.description, this.biography, this.webPage,
 				this.nickname, this.name, this.lastName, this.email, this.bornDate);
 	}

@@ -50,7 +50,8 @@ public class ModifySportInstitutePanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					String selectedInstitute = (String)selectInstitutecomboBox.getSelectedItem();
-					ic.modiFySportInstitute(new DtInstitute(selectedInstitute, textFieldDsc.getText(), textFieldUrl.getText(), null));	
+					// New, added one more attribute (professors) to the DtInstitute (in this case, with a null value)
+					ic.modiFySportInstitute(new DtInstitute(selectedInstitute, textFieldDsc.getText(), textFieldUrl.getText(), null, null));	
 					displayWindow("Validación", "Institución modificada con éxito", JOptionPane.INFORMATION_MESSAGE);
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(btnAccept, ex.getMessage(), "Modificar institución deportiva", JOptionPane.ERROR_MESSAGE);
