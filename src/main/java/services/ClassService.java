@@ -1,5 +1,6 @@
 package services;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -8,6 +9,7 @@ import javax.persistence.PersistenceContext;
 
 import dataTypes.DtClass;
 import entities.Class;
+import entities.Enrollment;
 import repository.GenericRepository;
 
 public class ClassService {
@@ -20,9 +22,8 @@ public class ClassService {
 		this.classRepository = new GenericRepository<Class>(entityManager, Class.class);
 	}
 	
-	public DtClass getClassByName(String name) {
-		DtClass dtc = null;
-		return dtc;
+	public Class getClassEntityByName(String name) {
+		return classRepository.findById(name, "name");
 	}
 	
 	public Map<String, DtClass> getAllClasses() {
@@ -34,5 +35,23 @@ public class ClassService {
 		entityManager.close();
 		return classes;
 	}
-	
+
+    public boolean classExists(String className) {
+		try{
+			classRepository.findById(className, "name");
+			entityManager.close();
+			return true;
+		}catch(Exception e){
+			entityManager.close();
+			return false;
+		}
+    }
+
+	public Class addEnrollmentToClass(String className, Enrollment newEnrollment) {
+		Class theClass = classRepository.findById(className, "name", new String[]{"enrollments"});
+		Map<String, Enrollment> newEnrollments = theClass.getEnrollments();
+		newEnrollments.put(newEnrollment.getMember().getNickname(), newEnrollment);
+		theClass.setEnrollments(newEnrollments);
+		return theClass;
+	}
 }

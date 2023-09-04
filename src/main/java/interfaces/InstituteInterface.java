@@ -30,4 +30,6 @@ public interface InstituteInterface {
 	public DtInstitute chooseSportInstitute(String name);
 	public boolean checkInstitutionAvialability(String name);
     String[] listSportActivitiesByName();
+	DtActivity chooseActivityByName(String activity);
+
 }
