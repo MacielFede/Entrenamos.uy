@@ -24,9 +24,13 @@ public class InstituteService {
 		this.instituteRepository = new GenericRepository<Institute>(entityManager ,Institute.class);
 	}
 	
-	public DtInstitute getInstituteByName(String name) {
-		DtInstitute DtU = null;
-		return DtU;
+	public Institute getInstituteByName(String name) {
+		try {
+			return instituteRepository.findById(name, "name");
+		}
+		catch(Exception e) {
+			return null;
+		}
 	}
 	
 	public boolean checkInstitutionAvialability(String name) {
@@ -92,4 +96,15 @@ public class InstituteService {
 		entityManager.getTransaction().commit();
 		entityManager.close();
     }
+
+	public Institute addProffesorToInstitute(String institute, Professor newProfessor) {
+		try {
+			Institute instituteChanged = instituteRepository.findById(institute, "name", new String[]{"professors"});
+			instituteChanged.getProfessors().put(newProfessor.getNickname(), newProfessor);
+			return instituteChanged;
+		}
+		catch(Exception e) {
+			return null;
+		}
+	}
 }

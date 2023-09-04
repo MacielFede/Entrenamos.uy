@@ -1,12 +1,11 @@
 package services;
 
+import java.security.Provider;
 import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
-import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
@@ -120,13 +119,14 @@ public class UserService {
 		return emails.toArray(new String[0]);
 	}
 
-	public void newUser(DtUser newUser) {
+	public void newUser(DtUser newUser, String institute) {
 		entityManager.getTransaction().begin();
 
 		if (newUser instanceof DtProfessor) {
 			Professor newProfessor = new Professor(((DtProfessor) newUser).getDescription(),
 					((DtProfessor) newUser).getBiography(), ((DtProfessor) newUser).getWebPage(), newUser.getNickname(),
 					newUser.getName(), newUser.getLastName(), newUser.getEmail(), newUser.getBornDate());
+			newProfessor.setSportInstitution(ServiceFactory.getInstance().getInstituteService().addProffesorToInstitute(institute, newProfessor));
 			userRepository.save(newProfessor);
 		} else {
 			User newStudent = new Member(newUser.getNickname(), newUser.getName(), newUser.getLastName(),
@@ -134,7 +134,7 @@ public class UserService {
 			userRepository.save(newStudent);
 		}
 		entityManager.getTransaction().commit();
-
+		entityManager.close();
 	}
 
     public void addEnrollment(DtEnrollment enrollment, String className) {

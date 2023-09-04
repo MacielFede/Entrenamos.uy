@@ -66,6 +66,18 @@ public class Institute {
 		return url;
 	}
 
+	public void setActivities(Map<String, Activity> activities) {
+		this.activities = activities;
+	}
+
+	public Map<String, Professor> getProfessors() {
+		return professors;
+	}
+
+	public void setProfessors(Map<String, Professor> professors) {
+		this.professors = professors;
+	}
+
 	public void setUrl(String url) {
 		this.url = url;
 	}

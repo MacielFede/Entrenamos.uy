@@ -1,14 +1,18 @@
 package ui.Panels;
 
+import dataTypes.DtInstitute;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import interfaces.ControllerFactory;
+import interfaces.InstituteInterface;
 import interfaces.UserInterface;
+//package eclipseHDP;
 
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Map;
 
 public class NewUserPanel extends JPanel {
 	private JTextField nicknameTextField;
@@ -31,17 +35,21 @@ public class NewUserPanel extends JPanel {
 	private JLabel lblWebPage;
 	private JLabel lblBirthDate;
 	private JButton saveButton;
+	private JLabel lblNewLabel;
+	private JComboBox instituteComboBox;
 
 	private final UserInterface uc = ControllerFactory.getInstance().getUserInterface();
+	private final InstituteInterface ic = ControllerFactory.getInstance().getInstituteInterface();
 
 	/**
 	 * Create the panel.
 	 */
 	public NewUserPanel() {
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{49, 114, 212, 114, 0};
-		gridBagLayout.rowHeights = new int[]{19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowHeights = new int[]{19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 59, 122, 0};
+		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 
@@ -82,7 +90,7 @@ public class NewUserPanel extends JPanel {
 		gbc_emailTextField.gridy = 3;
 		add(emailTextField, gbc_emailTextField);
 
-		lblName = new JLabel("Name");
+		lblName = new JLabel("Nombre");
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
 		gbc_lblName.insets = new Insets(0, 0, 5, 5);
 		gbc_lblName.anchor = GridBagConstraints.EAST;
@@ -100,7 +108,7 @@ public class NewUserPanel extends JPanel {
 		gbc_nameTextField.gridy = 4;
 		add(nameTextField, gbc_nameTextField);
 
-		lblLastname = new JLabel("LastName");
+		lblLastname = new JLabel("Apellido");
 		GridBagConstraints gbc_lblLastname = new GridBagConstraints();
 		gbc_lblLastname.insets = new Insets(0, 0, 5, 5);
 		gbc_lblLastname.anchor = GridBagConstraints.EAST;
@@ -118,7 +126,7 @@ public class NewUserPanel extends JPanel {
 		gbc_lastnameTextField.gridy = 5;
 		add(lastnameTextField, gbc_lastnameTextField);
 
-		lblBirthDate = new JLabel("birth-date");
+		lblBirthDate = new JLabel("Fecha de nacimiento");
 		GridBagConstraints gbc_lblBirthDate = new GridBagConstraints();
 		gbc_lblBirthDate.insets = new Insets(0, 0, 5, 5);
 		gbc_lblBirthDate.anchor = GridBagConstraints.EAST;
@@ -149,13 +157,13 @@ public class NewUserPanel extends JPanel {
 		}
 		yearComboBox = new JComboBox<>(years);
 		GridBagConstraints gbc_yearComboBox = new GridBagConstraints();
-		gbc_yearComboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_yearComboBox.insets = new Insets(0, 0, 5, 5);
 		gbc_yearComboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_yearComboBox.gridx = 3;
 		gbc_yearComboBox.gridy = 6;
 		add(yearComboBox, gbc_yearComboBox);
 
-		checkBoxIsTeacher = new JCheckBox("Is Teacher?");
+		checkBoxIsTeacher = new JCheckBox("Es profesor?");
 		GridBagConstraints gbc_checkBoxIsTeacher = new GridBagConstraints();
 		gbc_checkBoxIsTeacher.insets = new Insets(0, 0, 5, 5);
 		gbc_checkBoxIsTeacher.gridx = 2;
@@ -165,7 +173,7 @@ public class NewUserPanel extends JPanel {
 			changeCheckBoxState();
 		});
 
-		lblDescription = new JLabel("Description");
+		lblDescription = new JLabel("Descripcion");
 		GridBagConstraints gbc_lblDescription = new GridBagConstraints();
 		gbc_lblDescription.insets = new Insets(0, 0, 5, 5);
 		gbc_lblDescription.gridx = 1;
@@ -182,7 +190,7 @@ public class NewUserPanel extends JPanel {
 		gbc_descriptionTextArea.gridy = 8;
 		add(descriptionTextArea, gbc_descriptionTextArea);
 
-		lblBiography = new JLabel("Biography");
+		lblBiography = new JLabel("Biografia");
 		GridBagConstraints gbc_lblBiography = new GridBagConstraints();
 		gbc_lblBiography.insets = new Insets(0, 0, 5, 5);
 		gbc_lblBiography.gridx = 1;
@@ -199,10 +207,9 @@ public class NewUserPanel extends JPanel {
 		gbc_biographyTextArea.gridy = 9;
 		add(biographyTextArea, gbc_biographyTextArea);
 
-		lblWebPage = new JLabel("Web page");
+		lblWebPage = new JLabel("Pagina web");
 		GridBagConstraints gbc_lblWebPage = new GridBagConstraints();
 		gbc_lblWebPage.insets = new Insets(0, 0, 5, 5);
-		gbc_lblWebPage.anchor = GridBagConstraints.EAST;
 		gbc_lblWebPage.gridx = 1;
 		gbc_lblWebPage.gridy = 10;
 		add(lblWebPage, gbc_lblWebPage);
@@ -218,8 +225,28 @@ public class NewUserPanel extends JPanel {
 		gbc_webPageTextField.gridy = 10;
 		add(webPageTextField, gbc_webPageTextField);
 
+		lblNewLabel = new JLabel("Instituto");
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel.gridx = 1;
+		gbc_lblNewLabel.gridy = 11;
+		add(lblNewLabel, gbc_lblNewLabel);
+
+		instituteComboBox = new JComboBox();
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox.gridx = 2;
+		gbc_comboBox.gridy = 11;
+		instituteComboBox.setEnabled(false);
+		add(instituteComboBox, gbc_comboBox);
+
+		fetchInstituteList();
+
 		saveButton = new JButton("Confirmar");
 		GridBagConstraints gbc_saveButton = new GridBagConstraints();
+		gbc_saveButton.insets = new Insets(0, 0, 0, 5);
 		gbc_saveButton.gridx = 3;
 		gbc_saveButton.gridy = 12;
 		add(saveButton, gbc_saveButton);
@@ -228,15 +255,28 @@ public class NewUserPanel extends JPanel {
 		});
 	}
 
+	public void fetchInstituteList() {
+		instituteComboBox.addItem("Sin seleccionar");
+		Map<String, DtInstitute> institutesList = ic.listSportInstitutes();
+		for (Map.Entry<String, DtInstitute> entry : institutesList.entrySet()) {
+			String key = entry.getKey();
+			DtInstitute dt = entry.getValue();
+			instituteComboBox.addItem(dt.getName());
+		}
+	}
+
 	private void changeCheckBoxState() {
 		if(checkBoxIsTeacher.isSelected()){
 			descriptionTextArea.setEnabled(true);
 			biographyTextArea.setEnabled(true);
 			webPageTextField.setEnabled(true);
+			instituteComboBox.setEnabled(true);
+
 		}else{
 			descriptionTextArea.setEnabled(false);
 			biographyTextArea.setEnabled(false);
 			webPageTextField.setEnabled(false);
+			instituteComboBox.setEnabled(false);
 		}
 	}
 
@@ -250,16 +290,22 @@ public class NewUserPanel extends JPanel {
 		int year 			= (int) yearComboBox.getSelectedItem();
 		int day 			= (int) dayComboBox.getSelectedItem();
 		Date bornDate 		= new Date(year-1900, month-1, day);
-		//LocalDate bornDate 		= LocalDate.of(year, month, day); DEBERIAMOS USAR ESTA LIBRERIA PERO HAY QUE CAMBIAR LA IMPLEMENTACION DE LOS DT Y LAS CLASES
+//		LocalDate bornDate 		= LocalDate.of(year, month, day); DEBERIAMOS USAR ESTA LIBRERIA PERO HAY QUE CAMBIAR LA IMPLEMENTACION DE LOS DT Y LAS CLASES
 		boolean isTeacher 	= checkBoxIsTeacher.isSelected();
 		String description 	= (String) descriptionTextArea.getText();
 		String biography 	= (String) biographyTextArea.getText();
 		String webPage		= (String) webPageTextField.getText();
+		String institute 	= (String) instituteComboBox.getSelectedItem();
+		if (isTeacher && (institute == null || institute.isEmpty() || institute.equals("Sin seleccionar"))){
+			JOptionPane.showMessageDialog(this, "Debes seleccionar un instituto para el profesor",
+					"Crear nuevo usuario", JOptionPane.ERROR_MESSAGE);
+			return ;
+		}
 		try {
 			if(isTeacher)
-				uc.newUser(new DtProfessor(description, biography, webPage, nickname, name, lastname, email, bornDate));
+				uc.newUser(new DtProfessor(description, biography, webPage, nickname, name, lastname, email, bornDate), institute);
 			else
-				uc.newUser(new DtUser(nickname, name, lastname, email, bornDate));
+				uc.newUser(new DtUser(nickname, name, lastname, email, bornDate), institute);
 
 			JOptionPane.showMessageDialog(this, "Usuario creado exitosamente.",
 					"Crear nuevo usuario", JOptionPane.INFORMATION_MESSAGE);
@@ -277,7 +323,7 @@ public class NewUserPanel extends JPanel {
 		descriptionTextArea.setText("Hello World!!");
 		biographyTextArea.setText("Hi, i'm Joe Doe. A developer...");
 		webPageTextField.setText("www.JoeDoe.com");
-
+		instituteComboBox.setSelectedIndex(0);
 	}
 
 }
