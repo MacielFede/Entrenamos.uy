@@ -26,4 +26,5 @@ public class DtEnrollment {
     public Date getEnrollmentDate() {
         return enrollmentDate;
     }
+    
 }

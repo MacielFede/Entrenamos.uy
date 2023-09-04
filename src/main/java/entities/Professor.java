@@ -90,14 +90,28 @@ public class Professor extends User {
 
 	@Override
 	public DtUser getData() {
-		return new DtProfessor(new TreeMap<String, DtClass>(), this.description, this.biography, this.webPage,
+		Map<String,DtClass> profClasses = new TreeMap<String, DtClass>();
+		if (this.classes != null) {
+			for (Map.Entry<String, Class> entry : this.classes.entrySet()) {
+				Class currentClass = entry.getValue();
+				profClasses.put(currentClass.getName(), currentClass.getData());
+			}
+		}
+		
+		return new DtProfessor(profClasses, this.description, this.biography, this.webPage,
 				this.nickname, this.name, this.lastName, this.email, this.bornDate);
 	}
 
 	@Override
 	public Map<String, DtClass> getRelatedClasses() {
-		Map<String, DtClass> xd = new TreeMap<String, DtClass>();
-		return xd;
+		Map<String,DtClass> profClasses = new TreeMap<String, DtClass>();
+		if (this.classes != null) {
+			for (Map.Entry<String, Class> entry : this.classes.entrySet()) {
+				Class currentClass = entry.getValue();
+				profClasses.put(currentClass.getName(), currentClass.getData());
+			}
+		}
+		return profClasses;
 	}
 
 }

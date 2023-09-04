@@ -1,5 +1,6 @@
 package controllers;
 
+import dataTypes.DtClass;
 import dataTypes.DtEnrollment;
 import dataTypes.DtUser;
 import entities.Member;
@@ -60,6 +61,11 @@ public class UserController implements UserInterface {
 	public void newMember(DtUser DtNewUser) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public Map<String,DtClass> getMemberEnrolledClasses(String nickname) {
+		return serviceFactory.getUserService().getMemberClasses(nickname);
 	}
 
 	public boolean existsNickname(String nickName) {

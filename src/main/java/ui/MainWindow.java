@@ -128,7 +128,8 @@ public class MainWindow extends JFrame {
 			popupMenu.add(registrationToClass);
 			JMenuItem addNewUser = createMenuItem("Agregar nuevo usuario", popupMenu);
 			popupMenu.add(addNewUser);
-
+			JMenuItem consultUser = createMenuItem("Consulta de usuario", popupMenu);
+			popupMenu.add(consultUser);
 		}
 		case "Rankings" -> {
 			JMenuItem sportActivitiesRanking = createMenuItem("Actividades deportivas", popupMenu);
@@ -180,6 +181,7 @@ public class MainWindow extends JFrame {
             switch (popUpClicked) {
 				case "Actividades deportivas" -> newPanel = new SportActivitiesRankingPanel();
 				case "Agregar nuevo usuario" -> newPanel = new NewUserPanel();
+				case "Consulta de usuario" -> newPanel = new UserConsultationPanel();
                 case "Modificar información del usuario" -> newPanel = new ModifyUserDataPanel();
                 case "Modificar información de actividad" -> newPanel = new ModifyActivityPanel();
                 case "Consulta de dictado de clase" -> newPanel = new ClassTeachingConsultationPanel();
