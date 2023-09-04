@@ -63,7 +63,19 @@ public class InstituteController implements InstituteInterface {
 		}
 		return null;
 	}
-
+	public DtActivity chooseActivityByName(String activity) {
+		if (activitiesCache == null) {
+			listSportInstitutesCache();
+		}
+		for (DtInstitute i : institutesCache.values()) {
+			for (DtActivity a : i.getActivities().values()) {
+				if (a.getName().equals(activity)) {
+					return a;
+				}
+			}
+		}
+		return null;
+	}
 	@Override
 	public DtClass chooseClassByName(String className) {
 		if (classesCache != null) {

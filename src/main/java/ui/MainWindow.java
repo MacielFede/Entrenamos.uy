@@ -157,6 +157,9 @@ public class MainWindow extends JFrame {
 			popupMenu.add(addSportActivity);
             JMenuItem modifyActivityInfo = createMenuItem("Modificar información de actividad", popupMenu);
             popupMenu.add(modifyActivityInfo);
+			JMenuItem sportActivityConsultation = createMenuItem("Consulta de actividad deportiva", popupMenu);
+			popupMenu.add(sportActivityConsultation);
+
 		}
 		default -> System.out.println("You didn't add a JMenuItem");
 		}
@@ -184,7 +187,8 @@ public class MainWindow extends JFrame {
                 case "Modificar información del usuario" -> newPanel = new ModifyUserDataPanel();
                 case "Modificar información de actividad" -> newPanel = new ModifyActivityPanel();
                 case "Consulta de dictado de clase" -> newPanel = new ClassTeachingConsultationPanel();
-                case "Alta de actividad deportiva" -> newPanel = new AddSportActivityPanel();
+				case "Alta de actividad deportiva" -> newPanel = new AddSportActivityPanel();
+				case "Consulta de actividad deportiva" -> newPanel = new SportActivityConsultation();
                 case "Alta de institución deportiva" -> newPanel = new AddInstitutePanel();
                 case "Modificar institución deportiva" -> newPanel = new ModifySportInstitutePanel();
                 case "Clases dictadas" -> newPanel = new ClassDictationRankingPanel();
