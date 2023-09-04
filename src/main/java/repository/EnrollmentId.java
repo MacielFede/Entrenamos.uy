@@ -1,11 +1,13 @@
 package repository;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
 // This class is only used to implement the table that contains both ids and the Enrollment attributes
 public class EnrollmentId implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String aClass;
@@ -44,6 +46,10 @@ public class EnrollmentId implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(aClass, user);
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((aClass == null) ? 0 : aClass.hashCode());
+            result = prime * result + ((user == null) ? 0 : user.hashCode());
+            return result;
     }
 }

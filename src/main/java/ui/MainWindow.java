@@ -130,6 +130,8 @@ public class MainWindow extends JFrame {
 		case "Usuarios" -> {
 			JMenuItem modifyUserInfo = createMenuItem("Modificar información del usuario", popupMenu);
 			popupMenu.add(modifyUserInfo);
+			JMenuItem registrationToClass = createMenuItem("Registro a dictado de clase", popupMenu);
+			popupMenu.add(registrationToClass);
 			JMenuItem addNewUser = createMenuItem("Agregar nuevo usuario", popupMenu);
 			popupMenu.add(addNewUser);
 
@@ -157,6 +159,9 @@ public class MainWindow extends JFrame {
 			popupMenu.add(addSportActivity);
             JMenuItem modifyActivityInfo = createMenuItem("Modificar información de actividad", popupMenu);
             popupMenu.add(modifyActivityInfo);
+			JMenuItem sportActivityConsultation = createMenuItem("Consulta de actividad deportiva", popupMenu);
+			popupMenu.add(sportActivityConsultation);
+
 		}
 		default -> System.out.println("You didn't add a JMenuItem");
 		}
@@ -184,11 +189,13 @@ public class MainWindow extends JFrame {
                 case "Modificar información del usuario" -> newPanel = new ModifyUserDataPanel();
                 case "Modificar información de actividad" -> newPanel = new ModifyActivityPanel();
                 case "Consulta de dictado de clase" -> newPanel = new ClassTeachingConsultationPanel();
-                case "Alta de actividad deportiva" -> newPanel = new AddSportActivityPanel();
+				case "Alta de actividad deportiva" -> newPanel = new AddSportActivityPanel();
+				case "Consulta de actividad deportiva" -> newPanel = new SportActivityConsultation();
                 case "Alta de institución deportiva" -> newPanel = new AddInstitutePanel();
                 case "Modificar institución deportiva" -> newPanel = new ModifySportInstitutePanel();
                 case "Clases dictadas" -> newPanel = new ClassDictationRankingPanel();
                 case "Alta de dictado de clase" -> newPanel = new AddClassPanel();
+                case "Registro a dictado de clase" -> newPanel = new RegistrationToClassPanel();
                 default -> newPanel = homePanel;
             }
 

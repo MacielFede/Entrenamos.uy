@@ -1,17 +1,17 @@
 package services;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import dataTypes.DtClass;
 import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import entities.Class;
+import dataTypes.DtEnrollment;
+import entities.Enrollment;
 import entities.Member;
 import entities.Professor;
 import entities.User;
@@ -111,5 +111,58 @@ public class UserService {
 		}
 		entityManager.getTransaction().commit();
 
+	}
+
+    public void addEnrollment(DtEnrollment enrollment, String className) {
+		// Crear la entidad enrollment con la clase de nombre className y persistirlo
+		Enrollment newEnrollment = new Enrollment();
+		GenericRepository<Member> memberRepo = new GenericRepository<>(entityManager, Member.class);
+		Member member = memberRepo.findById(enrollment.getMember().getNickname(), "nickname", new String[]{"enrollments"});
+		newEnrollment.setEnrollmentDate(enrollment.getEnrollmentDate());
+		newEnrollment.setCost(enrollment.getCost());
+		newEnrollment.setMember(member);
+		newEnrollment.setaClass(ServiceFactory.getInstance().getClassService().addEnrollmentToClass(className, newEnrollment));
+		List<Enrollment> newEnrollments = member.getEnrollments();
+		newEnrollments.add(newEnrollment);
+		member.setEnrollments(newEnrollments);
+		entityManager.getTransaction().begin();
+		userRepository.save(member);
+		entityManager.getTransaction().commit();
+		entityManager.close();
+    }
+
+	public boolean userExists(String userNickname) {
+		try{
+			userRepository.findById(userNickname, "nickname");
+			entityManager.close();
+			return true;
+		}catch(Exception e){
+			entityManager.close();
+			return false;
+		}
+	}
+
+	public boolean userAlreadySignedUpToClass(String user, String className) {
+		GenericRepository<Member> memberRepo = new GenericRepository<>(entityManager, Member.class);
+		Member member = memberRepo.findById(user, "nickname", new String[]{"enrollments"});
+		if(member.getEnrollments() == null || member.getEnrollments().isEmpty()){ return false; }
+		for (Enrollment enrollment : member.getEnrollments()) {
+			if (Objects.equals(enrollment.getaClass().getName(), className)) {
+				entityManager.close();
+				return true;
+			}
+		}
+		entityManager.close();
+		return false;
+	}
+
+	public Map<String, DtUser> getMembers() {
+		GenericRepository<Member> memberRepo = new GenericRepository<>(entityManager, Member.class);
+		Map<String, DtUser> lDtU = new TreeMap<>();
+		for(Member u : memberRepo.findAll()){
+			lDtU.put(u.getNickname(), u.getData());
+		}
+		entityManager.close();
+		return lDtU;
 	}
 }
