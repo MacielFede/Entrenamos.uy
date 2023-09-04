@@ -1,6 +1,5 @@
 package services;
 
-import java.security.Provider;
 import java.util.*;
 
 import javax.persistence.EntityManager;
@@ -64,7 +63,7 @@ public class UserService {
 			}
 			
 			entityManager.getTransaction().begin();
-			Professor professor = professorRepository.findById(professorNickname, "nickname");
+			Professor professor = professorRepository.findById(professorNickname, "nickname", new String[]{"classes", "sportInstitution"});
 			professor.getClasses().put(classToAdd.getName(), classToAdd);
 			professorRepository.save(professor);
 			entityManager.getTransaction().commit();
@@ -76,21 +75,15 @@ public class UserService {
 		}
 	}
 
-	public DtUser getUserByNickname(String nickname) {
-		DtUser DtU = null;
-		return DtU;
-	}
-
-	public DtUser getUserByEmail(String email) {
-		DtUser DtU = null;
-		return DtU;
-	}
-
 	public Map<String, DtUser> getAllUsers() {
 		Map<String, DtUser> lDtU = new TreeMap<>();
-		for (User u : userRepository.findAll()) {
-			lDtU.put(u.getNickname(), u.getData());
+		for (Professor p : professorRepository.findAll(new String[]{"sportInstitution", "classes.enrollments.user"})) {
+			lDtU.put(p.getNickname(), p.getData());
 		}
+		for (Member m : memberRepository.findAll(new String[]{"enrollments"})) {
+			lDtU.put(m.getNickname(), m.getData());
+		}
+
 		entityManager.close();
 		return lDtU;
 	}
@@ -181,9 +174,8 @@ public class UserService {
 	}
 
 	public Map<String, DtUser> getMembers() {
-		GenericRepository<Member> memberRepo = new GenericRepository<>(entityManager, Member.class);
 		Map<String, DtUser> lDtU = new TreeMap<>();
-		for(Member u : memberRepo.findAll()){
+		for(Member u : memberRepository.findAll(new String[]{"enrollments.aClass"})){
 			lDtU.put(u.getNickname(), u.getData());
 		}
 		entityManager.close();
