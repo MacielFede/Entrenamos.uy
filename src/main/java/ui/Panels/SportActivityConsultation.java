@@ -96,7 +96,7 @@ public class SportActivityConsultation extends JPanel{
 	}
 		int numRows = model.getRowCount();
 		int rowHeight = classDataTable.getRowHeight();
-		int preferredHeight = rowHeight * Math.min(numRows, 4);
+		int preferredHeight = rowHeight * numRows;
 		classDataTable.setPreferredScrollableViewportSize(new Dimension(classDataTable.getPreferredSize().width, preferredHeight));
 	}
 	private void setListeners() {

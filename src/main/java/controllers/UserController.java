@@ -3,14 +3,11 @@ package controllers;
 import dataTypes.DtClass;
 import dataTypes.DtEnrollment;
 import dataTypes.DtUser;
-import entities.Member;
 import exceptions.*;
 import interfaces.ControllerFactory;
 import interfaces.UserInterface;
 import services.ServiceFactory;
-import services.UserService;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 
 public class UserController implements UserInterface {
@@ -85,7 +82,7 @@ public class UserController implements UserInterface {
 		return false;
 
 	}
-	public void newUser(DtUser newUser) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException, AtributeAlreadyExists {
+	public void newUser(DtUser newUser, String institute) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException, AtributeAlreadyExists {
 		if (newUser.getBornDate().getYear() >= Calendar.getInstance().getWeekYear())
 			throw new SameYearException();
 
@@ -102,7 +99,7 @@ public class UserController implements UserInterface {
 		if (existsEmail(newUser.getEmail()))
 			throw new AtributeAlreadyExists("Email", newUser.getEmail());
 
-		serviceFactory.getUserService().newUser(newUser);
+		serviceFactory.getUserService().newUser(newUser, institute);
 	}
 
 	public void addEnrollment(String className, DtUser user, Float price) throws Exception {

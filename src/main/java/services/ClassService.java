@@ -34,10 +34,11 @@ public class ClassService {
 
 	public boolean checkClassAvailability(String className) {
 		try {
-			return classRepository.findById(className, "name") == null ? true : false;
+			return classRepository.findById(className, "name") == null;
 		} catch (Exception e) {
 			return true;
 		}
+	}
 
 	public Map<String, DtClass> getAllClasses() {
 		Map<String, DtClass> classes = new TreeMap<String, DtClass>();
