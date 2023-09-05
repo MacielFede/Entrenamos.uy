@@ -170,18 +170,6 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public boolean registerUserToClass(DtClass rclass, DtUser user) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public DtClass showClassInfo(String className) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<DtClass> listClassesDictationRanking() {
 		ClassService classService = serviceFactory.getClassService();
 		List<DtClass> classes = new ArrayList<DtClass>();

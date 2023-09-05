@@ -12,10 +12,8 @@ import exceptions.NullPriceException;
 
 
 public interface InstituteInterface {
-	public boolean registerUserToClass(DtClass rclass, DtUser user);
 	public boolean checkClassNameAvailability(String className);
 	public boolean checkActivityAvialability(String name);
-	public DtClass showClassInfo(String className);
 	public DtClass chooseClassByName(String className);
 	public List<DtClass> listClassesDictationRanking();
 	public void createSportClass(DtClass newClass, String idSportActivity, String idProfessor);

@@ -26,7 +26,7 @@ public class InstituteService {
 	
 	public Institute getInstituteByName(String name) {
 		try {
-			return instituteRepository.findById(name, "name");
+			return instituteRepository.findById(name, "name", new String[]{"activities", "professors"});
 		}
 		catch(Exception e) {
 			return null;
@@ -35,7 +35,12 @@ public class InstituteService {
 	
 	public boolean checkInstitutionAvialability(String name) {
 		try {
-			return instituteRepository.findById(name, "name") == null ? true : false;			
+			if(instituteRepository.findById(name, "name") == null){
+				entityManager.close();
+				return true;
+			}
+			entityManager.close();
+			return false;
 		}
 		catch(Exception e) {
 			return true;
@@ -45,7 +50,7 @@ public class InstituteService {
 	
 	public void addActivityAtInstitute(String name, DtActivity activity){
 		entityManager.getTransaction().begin();
-		Institute institute = instituteRepository.findById(name, "name");
+		Institute institute = instituteRepository.findById(name, "name", new String[]{"activities.classes", "professors"});
 		Activity newActivity = 
 				new Activity(
 						activity.getName(),
@@ -78,7 +83,7 @@ public class InstituteService {
 	
 	public Map<String, DtInstitute> getAllInstitutes() {
 		Map<String, DtInstitute> institutes = new TreeMap<String, DtInstitute>();
-		String[] joinProperties = new String[]{"activities.classes.enrollments", "professors"};
+		String[] joinProperties = new String[]{"activities.classes.enrollments.user", "professors.classes"};
 		for(Institute i : instituteRepository.findAll(joinProperties)) {
 			institutes.put(i.getName(), i.getData());
 		}
@@ -88,7 +93,7 @@ public class InstituteService {
 	
     public void updateInstitute(DtInstitute dtI) {
 		entityManager.getTransaction().begin();
-		Institute updatedInstitute = instituteRepository.findById(dtI.getName(), "name");
+		Institute updatedInstitute = instituteRepository.findById(dtI.getName(), "name", new String[]{"activities", "professors"});
 		//updatedInstitute.setName(dtI.getName());
 		updatedInstitute.setDescription(dtI.getDescription());
 		updatedInstitute.setUrl(dtI.getUrl());

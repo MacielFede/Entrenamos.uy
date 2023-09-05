@@ -22,16 +22,11 @@ public class ActivityService {
 		this.activityRepository = new GenericRepository<Activity>(entityManager, Activity.class);
 	}
 
-	public DtActivity getActivityByName(String name) {
-		DtActivity dti = null;
-		return dti;
-	}
-
 	public void addClassToActivity(DtClass newClass, String activityName) {
 		try {
 			Class createdClass = new Class(newClass.getName(),newClass.getDateAndTime(), newClass.getRegisterDate(), newClass.getUrl());
 			entityManager.getTransaction().begin();
-			Activity activity = activityRepository.findById(activityName, "name");
+			Activity activity = activityRepository.findById(activityName, "name", new String[]{"classes.enrollments.user"});
 			activity.getClasses().put(createdClass.getName(), createdClass);
 			activityRepository.save(activity);
 			entityManager.getTransaction().commit();
@@ -45,7 +40,7 @@ public class ActivityService {
 
 	public Map<String, DtClass> getClassesByActivity(String nameActivity) {
 		Map<String, DtClass> classes = new TreeMap<String, DtClass>();
-		for (entities.Class a : activityRepository.findById(nameActivity, "name").getClasses().values()) {
+		for (entities.Class a : activityRepository.findById(nameActivity, "name", new String[]{"classes.enrollments.user"}).getClasses().values()) {
 			classes.put(a.getName(), a.getData());
 		}
 		entityManager.close();
@@ -68,7 +63,7 @@ public class ActivityService {
 
 	public Map<String, DtActivity> getAllActivity() {
 		Map<String, DtActivity> activities = new TreeMap<String, DtActivity>();
-		String[] joinProperties = { "classes.enrollments" };
+		String[] joinProperties = { "classes.enrollments.user" };
 		for (Activity a : activityRepository.findAll(joinProperties)) {
 			activities.put(a.getName(), a.getData());
 		}
@@ -79,7 +74,7 @@ public class ActivityService {
 	public void updateActivity(DtActivity dtA) {
 		try {
 			entityManager.getTransaction().begin();
-			Activity updatedActivity = activityRepository.findById(dtA.getName(), "name");
+			Activity updatedActivity = activityRepository.findById(dtA.getName(), "name", new String[]{"classes"});
 			updatedActivity.setDescription(dtA.getDescription());
 			updatedActivity.setDuration(dtA.getDuration());
 			updatedActivity.setPrice(dtA.getPrice());
