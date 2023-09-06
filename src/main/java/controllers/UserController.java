@@ -106,7 +106,7 @@ public class UserController implements UserInterface {
 		if (!serviceFactory.getUserService().userExists(user.getNickname())) {
 			throw new Exception("El usuario indicado no existe, seleccione uno valido");
 		}
-		if (!serviceFactory.getClassService().classExists(className)){
+		if (serviceFactory.getClassService().checkClassAvailability(className)){
 			throw new ClassNotFoundException("La clase indicada no existe, seleccione una valida por favor");
 		}
 		if (serviceFactory.getUserService().userAlreadySignedUpToClass(user.getNickname(), className)){

@@ -1,6 +1,5 @@
 package services;
 
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -25,7 +24,7 @@ public class ClassService {
 
 	public Class getClassByName(String name) {
 		try {
-			return this.classRepository.findById(name, "name");
+			return this.classRepository.findById(name, "name", new String[]{"enrollments.user"});
 		} catch (Exception e) {
 			System.out.println(e);
 			return null;
@@ -50,19 +49,8 @@ public class ClassService {
 		return classes;
 	}
 
-    public boolean classExists(String className) {
-		try{
-			classRepository.findById(className, "name");
-			entityManager.close();
-			return true;
-		}catch(Exception e){
-			entityManager.close();
-			return false;
-		}
-    }
-
 	public Class addEnrollmentToClass(String className, Enrollment newEnrollment) {
-		Class theClass = classRepository.findById(className, "name", new String[]{"enrollments"});
+		Class theClass = classRepository.findById(className, "name", new String[]{"enrollments.user"});
 		Map<String, Enrollment> newEnrollments = theClass.getEnrollments();
 		newEnrollments.put(newEnrollment.getMember().getNickname(), newEnrollment);
 		theClass.setEnrollments(newEnrollments);

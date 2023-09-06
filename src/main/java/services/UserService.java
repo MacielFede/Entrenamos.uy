@@ -1,6 +1,5 @@
 package services;
 
-import java.security.Provider;
 import java.util.*;
 
 import javax.persistence.EntityManager;
@@ -64,7 +63,7 @@ public class UserService {
 			}
 			
 			entityManager.getTransaction().begin();
-			Professor professor = professorRepository.findById(professorNickname, "nickname");
+			Professor professor = professorRepository.findById(professorNickname, "nickname", new String[]{"classes.enrollments.user", "sportInstitution"});
 			professor.getClasses().put(classToAdd.getName(), classToAdd);
 			professorRepository.save(professor);
 			entityManager.getTransaction().commit();
@@ -76,21 +75,15 @@ public class UserService {
 		}
 	}
 
-	public DtUser getUserByNickname(String nickname) {
-		DtUser DtU = null;
-		return DtU;
-	}
-
-	public DtUser getUserByEmail(String email) {
-		DtUser DtU = null;
-		return DtU;
-	}
-
 	public Map<String, DtUser> getAllUsers() {
 		Map<String, DtUser> lDtU = new TreeMap<>();
-		for (User u : userRepository.findAll()) {
-			lDtU.put(u.getNickname(), u.getData());
+		for (Professor p : professorRepository.findAll(new String[]{"classes.enrollments.user", "sportInstitution"})) {
+			lDtU.put(p.getNickname(), p.getData());
 		}
+		for (Member m : memberRepository.findAll(new String[]{"enrollments.aClass"})) {
+			lDtU.put(m.getNickname(), m.getData());
+		}
+
 		entityManager.close();
 		return lDtU;
 	}
@@ -141,7 +134,7 @@ public class UserService {
 		// Crear la entidad enrollment con la clase de nombre className y persistirlo
 		Enrollment newEnrollment = new Enrollment();
 		GenericRepository<Member> memberRepo = new GenericRepository<>(entityManager, Member.class);
-		Member member = memberRepo.findById(enrollment.getMember().getNickname(), "nickname", new String[]{"enrollments"});
+		Member member = memberRepo.findById(enrollment.getMember().getNickname(), "nickname", new String[]{"enrollments.aClass"});
 		newEnrollment.setEnrollmentDate(enrollment.getEnrollmentDate());
 		newEnrollment.setCost(enrollment.getCost());
 		newEnrollment.setMember(member);
@@ -168,7 +161,7 @@ public class UserService {
 
 	public boolean userAlreadySignedUpToClass(String user, String className) {
 		GenericRepository<Member> memberRepo = new GenericRepository<>(entityManager, Member.class);
-		Member member = memberRepo.findById(user, "nickname", new String[]{"enrollments"});
+		Member member = memberRepo.findById(user, "nickname", new String[]{"enrollments.aClass"});
 		if(member.getEnrollments() == null || member.getEnrollments().isEmpty()){ return false; }
 		for (Enrollment enrollment : member.getEnrollments()) {
 			if (Objects.equals(enrollment.getaClass().getName(), className)) {
@@ -181,9 +174,8 @@ public class UserService {
 	}
 
 	public Map<String, DtUser> getMembers() {
-		GenericRepository<Member> memberRepo = new GenericRepository<>(entityManager, Member.class);
 		Map<String, DtUser> lDtU = new TreeMap<>();
-		for(Member u : memberRepo.findAll()){
+		for(Member u : memberRepository.findAll(new String[]{"enrollments.aClass"})){
 			lDtU.put(u.getNickname(), u.getData());
 		}
 		entityManager.close();
