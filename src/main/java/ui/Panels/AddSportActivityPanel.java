@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import java.awt.GridBagLayout;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JSeparator;
 
 import dataTypes.DtActivity;
@@ -35,8 +36,13 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.awt.event.ActionEvent;
@@ -46,12 +52,16 @@ import javax.swing.JTextPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JInternalFrame;
 
 public class AddSportActivityPanel extends JPanel{
 	private JButton btnConfirm;
 	private JButton btnVerifyName;
+	private JButton btnUpImg;
 
+	private File selectedFile;
+	
 	private JTextField nameTxt;
 	private JTextField priceTxt;
 	private JTextPane descriptionTxt;
@@ -61,6 +71,8 @@ public class AddSportActivityPanel extends JPanel{
 	private JSpinner yearSpinner;
 	private JSpinner durationSpinner;
 
+	private JLabel lblImagen;
+	
 	private Set<String> institutes;
 	private String selectedName;
 
@@ -162,7 +174,7 @@ public class AddSportActivityPanel extends JPanel{
 
 		descriptionTxt = new JTextPane();
 		GridBagConstraints gbc_descriptionText = new GridBagConstraints();
-		gbc_descriptionText.gridheight = 4;
+		gbc_descriptionText.gridheight = 3;
 		gbc_descriptionText.gridwidth = 3;
 		gbc_descriptionText.insets = new Insets(0, 0, 5, 5);
 		gbc_descriptionText.fill = GridBagConstraints.BOTH;
@@ -203,7 +215,7 @@ public class AddSportActivityPanel extends JPanel{
 		gbc_daySpinner.gridx = 1;
 		gbc_daySpinner.gridy = 8;
 		add(daySpinner, gbc_daySpinner);
-
+		
 		JLabel daySpinnerLabel = new JLabel("Día");
 		GridBagConstraints gbc_daySpinnerLabel = new GridBagConstraints();
 		gbc_daySpinnerLabel.insets = new Insets(0, 0, 5, 5);
@@ -243,6 +255,43 @@ public class AddSportActivityPanel extends JPanel{
 	}
 
 	private void addButtonListeners() {
+		lblImagen = new JLabel("Imagen");
+		GridBagConstraints gbc_lblImagen = new GridBagConstraints();
+		gbc_lblImagen.anchor = GridBagConstraints.EAST;
+		gbc_lblImagen.gridwidth = 2;
+		gbc_lblImagen.insets = new Insets(0, 0, 5, 5);
+		gbc_lblImagen.gridx = 5;
+		gbc_lblImagen.gridy = 8;
+		add(lblImagen, gbc_lblImagen);
+		
+		JPanel thisPanel = this;
+		
+		JLabel lblImagenName = new JLabel("");
+		GridBagConstraints gbc_lblImagenName = new GridBagConstraints();
+		gbc_lblImagenName.anchor = GridBagConstraints.NORTH;
+		gbc_lblImagenName.gridwidth = 2;
+		gbc_lblImagenName.insets = new Insets(0, 0, 5, 5);
+		gbc_lblImagenName.gridx = 6;
+		gbc_lblImagenName.gridy = 9;
+		lblImagenName.setForeground(Color.RED);
+		add(lblImagenName, gbc_lblImagenName);
+		
+		
+		btnUpImg.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de imagen", "jpg", "jpeg", "png", "gif");
+                fileChooser.setFileFilter(filter);
+                
+                int result = fileChooser.showOpenDialog(thisPanel);
+                
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    selectedFile = fileChooser.getSelectedFile();
+                    lblImagenName.setText(selectedFile.getName());;
+                }
+            }
+        });
+		
 		btnVerifyName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(nameTxt.getText() != null && !nameTxt.getText().isEmpty()) {
@@ -298,6 +347,14 @@ public class AddSportActivityPanel extends JPanel{
 									new TreeMap<String, DtClass>()), 
 							instituteComboBox.getSelectedItem().toString());
 					displayWindow("Éxito", "Se ha creado la actividad deportiva con éxito.", JOptionPane.INFORMATION_MESSAGE);
+					
+					File destino = new File("../../resources/" + selectedFile.getName());
+					try {
+						Files.copy(selectedFile.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					
 					resetForm();
 				}
 			}
@@ -374,6 +431,13 @@ public class AddSportActivityPanel extends JPanel{
 		gbc_btnConfirm.gridy = 10;
 		add(btnConfirm, gbc_btnConfirm);
 		btnConfirm.setEnabled(false);
+		
+		btnUpImg = new JButton("↑");
+		GridBagConstraints gbc_btnUpImg = new GridBagConstraints();
+		gbc_btnUpImg.insets = new Insets(0, 0, 5, 5);
+		gbc_btnUpImg.gridx = 7;
+		gbc_btnUpImg.gridy = 8;
+		add(btnUpImg, gbc_btnUpImg);
 	}
 
 	private void setGridLayout() {
