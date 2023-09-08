@@ -55,6 +55,7 @@ public class InstituteService {
 				new Activity(
 						activity.getName(),
 						activity.getDescription(), 
+						activity.getImgName(),
 						activity.getDuration(), 
 						activity.getRegistryDate(),
 						activity.getPrice(), 

@@ -8,6 +8,7 @@ public class DtActivity {
 
 	private final String name;
 	private final String description;
+	private final String imgName;
 	private final  Integer duration;
 	private final  Float price;
 	private final  Date registryDate;
@@ -15,7 +16,7 @@ public class DtActivity {
 	private final Map<String, DtClass> classes;
 
 
-	public DtActivity(String name, String description, Integer duration, Float price, Date registryDate, int classesQuantity, Map<String, DtClass> classes)
+	public DtActivity(String name, String description, String imgName, Integer duration, Float price, Date registryDate, int classesQuantity, Map<String, DtClass> classes)
 	{
 		this.name           	= name;
 		this.description    	= description;
@@ -24,6 +25,11 @@ public class DtActivity {
 		this.registryDate   	= registryDate;
 		this.classesQuantity 	= classesQuantity;
 		this.classes			= classes;
+		this.imgName			= imgName;
+	}
+
+	public String getImgName() {
+		return imgName;
 	}
 
 	public Map<String, DtClass> getClasses() {

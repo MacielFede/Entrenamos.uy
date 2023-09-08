@@ -53,7 +53,7 @@ public class ModifyActivityPanel extends JPanel {
             Integer duration = (Integer) durationTextField.getValue();
             Date registryDate = new Date(dateTextField.getText());
             try{
-                ic.updateActivityInfo(new DtActivity(name,description, duration, price, registryDate, -1, null));
+                ic.updateActivityInfo(new DtActivity(name,description, "", duration, price, registryDate, -1, null));
                 JOptionPane.showMessageDialog(this, "La actividad fue actualizada con éxito!",
                         "Modificar información de actividad", JOptionPane.INFORMATION_MESSAGE);
                 restartUseCase();
