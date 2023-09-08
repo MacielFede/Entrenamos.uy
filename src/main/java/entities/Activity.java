@@ -17,6 +17,8 @@ public class Activity {
 	@Id
 	private String name;
 	private String description;
+	private String imgName;
+
 	private Integer duration;
 	private Float price;
 	@Temporal(TemporalType.TIMESTAMP)
@@ -27,13 +29,14 @@ public class Activity {
 	public Activity() {
 	}
 
-	public Activity(String name, String description, Integer duration, Date registeryDate, Float price, Map<String, Class> classes) {
+	public Activity(String name, String description, String imgName, Integer duration, Date registeryDate, Float price, Map<String, Class> classes) {
 		this.name = name;
 		this.description = description;
 		this.duration = duration;
 		this.price = price;
 		this.classes = classes;
 		this.registryDate = registeryDate;
+		this.imgName = imgName;
 	}
 
 	// GETTERS
@@ -61,6 +64,26 @@ public class Activity {
 		return classes;
 	}
 
+	public String getImgName() {
+		return imgName;
+	}
+
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
+	}
+
+	public Date getRegistryDate() {
+		return registryDate;
+	}
+
+	public void setRegistryDate(Date registryDate) {
+		this.registryDate = registryDate;
+	}
+
+	public void setClasses(Map<String, Class> classes) {
+		this.classes = classes;
+	}
+	
 	// SETTERS
 
 	public void setName(String name) {
@@ -103,6 +126,6 @@ public class Activity {
 		for(Class c : this.classes.values()) {
 			classesList.put(c.getName(), c.getData());
 		}
-		return new DtActivity(this.name, this.description, this.duration, this.price, this.registryDate, this.classes.size(), classesList);
+		return new DtActivity(this.name, this.description, this.imgName, this.duration, this.price, this.registryDate, this.classes.size(), classesList);
 	}
 }
