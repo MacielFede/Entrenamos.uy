@@ -10,16 +10,16 @@ public class DtProfessor extends DtUser {
 	private final String webPage;
 
 	public DtProfessor(Map<String, DtClass> relatedClasses, String description, String biography, String webPage,
-			String nickname, String name, String lastName, String email, Date bornDate) {
-		super(nickname, name, lastName, email, bornDate);
+			String nickname, String name, String lastName, String email, Date bornDate, String password) {
+		super(nickname, name, lastName, email, bornDate, password);
 		this.relatedClasses = relatedClasses;
 		this.description = description;
 		this.biography = biography;
 		this.webPage = webPage;
 	}
 
-	public DtProfessor(String description, String biography, String webPage, String nickname, String name, String lastname, String email, Date bornDate) {
-		super(nickname, name, lastname, email, bornDate);
+	public DtProfessor(String description, String biography, String webPage, String nickname, String name, String lastname, String email, Date bornDate, String password) {
+		super(nickname, name, lastname, email, bornDate, password);
 		this.description = description;
 		this.biography = biography;
 		this.webPage = webPage;

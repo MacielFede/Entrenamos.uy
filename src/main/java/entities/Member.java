@@ -22,8 +22,8 @@ public class Member extends User {
 		super();
 	}
 
-	public Member(String nickname, String name, String lastName, String email, Date bornDate) {
-		super(nickname, name, lastName, email, bornDate);
+	public Member(String nickname, String name, String lastName, String email, Date bornDate, String password) {
+		super(nickname, name, lastName, email, bornDate, password);
 		this.enrollments = new ArrayList<Enrollment>();
 	}
 
@@ -38,7 +38,7 @@ public class Member extends User {
 	@Override
 	public DtUser getData() {
 		Map<String,DtClass> xd = new TreeMap<String,DtClass>();
-		return new DtMember(xd,this.nickname, this.name, this.lastName, this.email, this.bornDate);
+		return new DtMember(xd,this.nickname, this.name, this.lastName, this.email, this.bornDate, this.password);
 	}
 
 	@Override
