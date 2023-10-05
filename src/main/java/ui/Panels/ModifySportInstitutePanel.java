@@ -32,7 +32,6 @@ public class ModifySportInstitutePanel extends JPanel {
 	private final JLabel lblName = new JLabel("Nombre");
 	private final JLabel lblUrl = new JLabel("URL");
 	private final JButton btnAccept = new JButton("Aceptar");
-	private final JButton btnCancel = new JButton("Cancelar");
 	private final JLabel lblDescription = new JLabel("Descripción");
 	
 	public ModifySportInstitutePanel() {
@@ -51,17 +50,13 @@ public class ModifySportInstitutePanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					String selectedInstitute = (String)selectInstitutecomboBox.getSelectedItem();
-					ic.modiFySportInstitute(new DtInstitute(selectedInstitute, textFieldDsc.getText(), textFieldUrl.getText(), null));			
+					// New, added one more attribute (professors) to the DtInstitute (in this case, with a null value)
+					ic.modiFySportInstitute(new DtInstitute(selectedInstitute, textFieldDsc.getText(), textFieldUrl.getText(), null, null));	
+					displayWindow("Validación", "Institución modificada con éxito", JOptionPane.INFORMATION_MESSAGE);
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(btnAccept, ex.getMessage(), "Modificar institución deportiva", JOptionPane.ERROR_MESSAGE);
 				}
 		}});
-		
-		btnCancel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				initUseCase();
-			}
-		});
 
         this.setVisible(true);
 	}
@@ -70,23 +65,20 @@ public class ModifySportInstitutePanel extends JPanel {
 		setLayout(null);
 		
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitle.setBounds(10, 11, 328, 14);
+		lblTitle.setBounds(10, 11, 430, 14);
 		fetchInstituteList();
-		selectInstitutecomboBox.setBounds(130, 36, 208, 22);
-		selectInstitutecomboBox.setSelectedItem("Ver qué wea");
-		lblSelectInstitute.setBounds(10, 40, 145, 14);
+		selectInstitutecomboBox.setBounds(232, 36, 208, 22);
+		lblSelectInstitute.setBounds(10, 40, 181, 14);
 		lblName.setBounds(10, 96, 71, 14);
 		lblUrl.setBounds(10, 158, 71, 14);
-		textFieldDsc.setBounds(95, 124, 243, 20);
+		textFieldDsc.setBounds(95, 124, 345, 20);
 		textFieldDsc.setColumns(10);
 		textFieldUrl.setColumns(10);
-		textFieldUrl.setBounds(95, 155, 243, 20);
-		btnAccept.setBounds(76, 207, 89, 23);
-		
-		btnCancel.setBounds(191, 207, 89, 23);
+		textFieldUrl.setBounds(95, 155, 345, 20);
+		btnAccept.setBounds(163, 268, 122, 23);
 		lblDescription.setBounds(10, 127, 71, 14);
 		textFieldName.setColumns(10);
-		textFieldName.setBounds(95, 93, 243, 20);
+		textFieldName.setBounds(95, 93, 345, 20);
 		textFieldName.setEditable(false);
 		
 		initUseCase();
@@ -99,25 +91,25 @@ public class ModifySportInstitutePanel extends JPanel {
 		add(textFieldDsc);
 		add(textFieldUrl);
 		add(btnAccept);
-		add(btnCancel);
 		add(lblDescription);
 		add(textFieldName);
 	}
 	
     private void initUseCase(){
         // Initializes use case
+    	selectInstitutecomboBox.setSelectedItem("Sin seleccionar");
         textFieldName.setText("");
         textFieldName.setEditable(false);
         textFieldUrl.setText("");
         textFieldUrl.setEditable(false);
         textFieldDsc.setText("");
         textFieldDsc.setEditable(false);
-        btnCancel.setEnabled(false);
         btnAccept.setEnabled(false);
     }
 
 	
 	public void fetchInstituteList() {
+		selectInstitutecomboBox.addItem("Sin seleccionar");
 		Map<String, DtInstitute> institutesList = ic.listSportInstitutes();
 		for (Map.Entry<String, DtInstitute> entry : institutesList.entrySet()) {
 	        String key = entry.getKey();
@@ -134,7 +126,10 @@ public class ModifySportInstitutePanel extends JPanel {
 		 
         textFieldUrl.setEditable(true);
         textFieldDsc.setEditable(true);
-        btnCancel.setEnabled(true);
         btnAccept.setEnabled(true);
     }
+	
+	private void displayWindow(String titleLabel, String message, int messageType) {
+		JOptionPane.showMessageDialog(this, message, titleLabel, messageType);
+	}
 }

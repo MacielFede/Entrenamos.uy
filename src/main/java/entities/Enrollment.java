@@ -12,9 +12,11 @@ public class Enrollment {
     // Here Enrollment has visibility over Class because of the hibernate way of defining associations
     @Id
     @ManyToOne
+    @JoinColumn(insertable=false,updatable=false)
     private User user;
     @Id
     @ManyToOne
+    @JoinColumn(insertable=false,updatable=false)
     private Class aClass;
     private Float cost;
     @Temporal(TemporalType.TIMESTAMP)

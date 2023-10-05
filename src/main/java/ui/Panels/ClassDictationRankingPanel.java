@@ -11,8 +11,8 @@ public class ClassDictationRankingPanel extends RankingPanel{
 	
 	private final String 	rankingTitle 	= "Ranking de dictados de clases"; 
 	private final Object[] 	tableHeaders 	= new Object[]{"Puesto", "Nombre", "Fecha", "Url", "Cant. Socios"};
-	private final int[] 	minColumnWidths = new int[]{50, 200, 10, 150, 10};
-	private final int[] 	maxColumnWidths = new int[]{50, 200, 10, 150, 10};
+	private final int[] 	minColumnWidths = new int[]{50, 200, 150, 150, 50};
+	private final int[] 	maxColumnWidths = new int[]{0, 0, 0, 0, 0};
 	private final int		alignment		= SwingConstants.CENTER;
 	private final int 		maxVisibleRows	= 10;
 	
@@ -37,7 +37,7 @@ public class ClassDictationRankingPanel extends RankingPanel{
 						{
 							i,
 		                    dt.getName(),
-		                    dt.getDateAndTime(),
+		                    dt.getDateAndTime() != null ? dt.getDateAndTime().toString() : "",
 		                    dt.getUrl(),
 		                    dt.getEnrollmentsQuantity()
 						});

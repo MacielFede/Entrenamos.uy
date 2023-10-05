@@ -30,7 +30,7 @@ public class Professor extends User {
 	}
 
 	public Professor(String description, String biography, String webPage, String nickname, String name,
-			String lastName, String email, Date bornDate, String password, Institute sportInstitution) {
+					 String lastName, String email, Date bornDate, String password, Institute sportInstitution) {
 		super(nickname, name, lastName, email, bornDate, password);
 		this.description = description;
 		this.biography = biography;
@@ -124,7 +124,7 @@ public class Professor extends User {
 				profClasses.put(currentClass.getName(), currentClass.getData());
 			}
 		}
-		
+
 		return new DtProfessor(profClasses, this.description, this.biography, this.webPage,
 				this.nickname, this.name, this.lastName, this.email, this.bornDate, this.password);
 	}

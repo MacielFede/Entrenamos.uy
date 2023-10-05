@@ -6,6 +6,8 @@ import interfaces.InstituteInterface;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -38,10 +40,9 @@ public class ModifyActivityPanel extends JPanel {
             priceTextField.setEnabled(true);
             durationTextField.setValue(activityChosen.getDuration());
             durationTextField.setEnabled(true);
-            String dateText = activityChosen.getRegistryDate() == null ? "null" : activityChosen.getRegistryDate().getDay() + "/" +
-                    activityChosen.getRegistryDate().getMonth() + "/" +
-                    activityChosen.getRegistryDate().getYear();
-            dateTextField.setText(dateText);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String formattedDate = dateFormat.format(activityChosen.getRegistryDate());
+            dateTextField.setText(formattedDate);
             saveButton.setEnabled(true);
             cancelButton.setEnabled(true);
         }
@@ -52,7 +53,7 @@ public class ModifyActivityPanel extends JPanel {
             Integer duration = (Integer) durationTextField.getValue();
             Date registryDate = new Date(dateTextField.getText());
             try{
-                ic.updateActivityInfo(new DtActivity(name,description, duration, price, registryDate, -1, null));
+                ic.updateActivityInfo(new DtActivity(name,description, "", duration, price, registryDate, -1, null));
                 JOptionPane.showMessageDialog(this, "La actividad fue actualizada con éxito!",
                         "Modificar información de actividad", JOptionPane.INFORMATION_MESSAGE);
                 restartUseCase();

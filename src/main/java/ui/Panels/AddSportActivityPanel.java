@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -20,6 +21,7 @@ import javax.swing.JOptionPane;
 import java.awt.GridBagLayout;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JSeparator;
 
 import dataTypes.DtActivity;
@@ -35,8 +37,17 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.awt.event.ActionEvent;
@@ -46,11 +57,15 @@ import javax.swing.JTextPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JInternalFrame;
 
 public class AddSportActivityPanel extends JPanel{
 	private JButton btnConfirm;
 	private JButton btnVerifyName;
+	private JButton btnUpImg;
+
+	private File selectedFile;
 
 	private JTextField nameTxt;
 	private JTextField priceTxt;
@@ -60,6 +75,8 @@ public class AddSportActivityPanel extends JPanel{
 	private JSpinner monthSpinner;
 	private JSpinner yearSpinner;
 	private JSpinner durationSpinner;
+
+	private JLabel lblImagenName;
 
 	private Set<String> institutes;
 	private String selectedName;
@@ -135,16 +152,16 @@ public class AddSportActivityPanel extends JPanel{
 		gbc_durationLabel.gridx = 1;
 		gbc_durationLabel.gridy = 4;
 		add(durationLabel, gbc_durationLabel);
-		
+
 		SpinnerModel modelDurationSpinner = new SpinnerNumberModel(startDuration, 30, 360, 30);
 		durationSpinner = new JSpinner(modelDurationSpinner);
-		
+
 		GridBagConstraints gbc_durationSpinner = new GridBagConstraints();
 		gbc_durationSpinner.insets = new Insets(0, 0, 5, 5);
 		gbc_durationSpinner.gridx = 2;
 		gbc_durationSpinner.gridy = 4;
 		add(durationSpinner, gbc_durationSpinner);
-		
+
 		JLabel durationLabel_2 = new JLabel("Minutos");
 		GridBagConstraints gbc_durationLabel_2 = new GridBagConstraints();
 		gbc_durationLabel_2.insets = new Insets(0, 0, 5, 5);
@@ -162,7 +179,7 @@ public class AddSportActivityPanel extends JPanel{
 
 		descriptionTxt = new JTextPane();
 		GridBagConstraints gbc_descriptionText = new GridBagConstraints();
-		gbc_descriptionText.gridheight = 4;
+		gbc_descriptionText.gridheight = 3;
 		gbc_descriptionText.gridwidth = 3;
 		gbc_descriptionText.insets = new Insets(0, 0, 5, 5);
 		gbc_descriptionText.fill = GridBagConstraints.BOTH;
@@ -195,7 +212,7 @@ public class AddSportActivityPanel extends JPanel{
 		gbc_dateTxt.gridx = 1;
 		gbc_dateTxt.gridy = 7;
 		add(dateTxt, gbc_dateTxt);
-		
+
 		SpinnerModel modelDay = new SpinnerNumberModel(startDay, 1, 31, 1);
 		daySpinner = new JSpinner(modelDay);
 		GridBagConstraints gbc_daySpinner = new GridBagConstraints();
@@ -243,6 +260,43 @@ public class AddSportActivityPanel extends JPanel{
 	}
 
 	private void addButtonListeners() {
+		JLabel lblImagen = new JLabel("Imagen");
+		GridBagConstraints gbc_lblImagen = new GridBagConstraints();
+		gbc_lblImagen.anchor = GridBagConstraints.EAST;
+		gbc_lblImagen.gridwidth = 2;
+		gbc_lblImagen.insets = new Insets(0, 0, 5, 5);
+		gbc_lblImagen.gridx = 5;
+		gbc_lblImagen.gridy = 8;
+		add(lblImagen, gbc_lblImagen);
+
+		JPanel thisPanel = this;
+
+		lblImagenName = new JLabel("");
+		GridBagConstraints gbc_lblImagenName = new GridBagConstraints();
+		gbc_lblImagenName.anchor = GridBagConstraints.NORTH;
+		gbc_lblImagenName.gridwidth = 2;
+		gbc_lblImagenName.insets = new Insets(0, 0, 5, 5);
+		gbc_lblImagenName.gridx = 6;
+		gbc_lblImagenName.gridy = 9;
+		lblImagenName.setForeground(Color.RED);
+		add(lblImagenName, gbc_lblImagenName);
+
+
+		btnUpImg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de imagen", "jpg", "jpeg", "png", "gif");
+				fileChooser.setFileFilter(filter);
+
+				int result = fileChooser.showOpenDialog(thisPanel);
+
+				if (result == JFileChooser.APPROVE_OPTION) {
+					selectedFile = fileChooser.getSelectedFile();
+					lblImagenName.setText(selectedFile.getName());;
+				}
+			}
+		});
+
 		btnVerifyName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(nameTxt.getText() != null && !nameTxt.getText().isEmpty()) {
@@ -282,58 +336,83 @@ public class AddSportActivityPanel extends JPanel{
 					int year = (int) model.getNumber();  
 					model = (SpinnerNumberModel) durationSpinner.getModel();
 					int duration = (int) model.getNumber();
-					
-					Calendar calendar = Calendar.getInstance();
-			        calendar.set(year, month - 1, day); // minus 1, because the months start in 0 in Calendar
 
-			        Date fecha = calendar.getTime();
+					Calendar calendar = Calendar.getInstance();
+					calendar.set(year, month - 1, day); // minus 1, because the months start in 0 in Calendar
+					
+					String imgName = "";
+					if(selectedFile != null) {
+						imgName = selectedFile.getName();
+					}
+					
 					instituteController.addNewSportActivity(
 							new DtActivity(
 									nameTxt.getText(), 
 									descriptionTxt == null ? null : descriptionTxt.getText(), 
+									imgName,
 									duration, 
 									priceTxt.getText().isEmpty() ? 0 : Float.parseFloat(priceTxt.getText().replace(",", ".")), 
 									calendar.getTime(), 
 									0,
 									new TreeMap<String, DtClass>()), 
 							instituteComboBox.getSelectedItem().toString());
+
+					try {
+						InputStream configStream = AddSportActivityPanel.class.getClassLoader().getResourceAsStream("config.properties");
+						if (configStream != null) {
+							Properties properties = new Properties();
+							properties.load(configStream);
+							String imageDirectory = properties.getProperty("imageDirectory");
+
+							File destino = new File(imageDirectory + selectedFile.getName());
+							Files.copy(selectedFile.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+						} 
+					} 
+					catch (Exception ex) 
+					{
+						ex.printStackTrace();
+
+					}
+
 					displayWindow("Éxito", "Se ha creado la actividad deportiva con éxito.", JOptionPane.INFORMATION_MESSAGE);
+
 					resetForm();
 				}
 			}
 		});
 	}
-	
+
 	private void resetForm() {
-        Component[] components = this.getComponents();
-        for (Component component : components) {
-            if (component instanceof JTextField) {
-                ((JTextField) component).setText("");
-            }else if(component instanceof JTextPane) {
-            	((JTextPane) component).setText(""); 
-            }
-        }
-        daySpinner.setValue(startDay);
-    	monthSpinner.setValue(startMonth);
-    	yearSpinner.setValue(startYear);
-    	durationSpinner.setValue(startDuration);
-    	
-    	instituteComboBox.setSelectedItem(nonSelectedOption);
-    	btnConfirm.setEnabled(false);
-    }
+		Component[] components = this.getComponents();
+		for (Component component : components) {
+			if (component instanceof JTextField) {
+				((JTextField) component).setText("");
+			}else if(component instanceof JTextPane) {
+				((JTextPane) component).setText(""); 
+			}
+		}
+		daySpinner.setValue(startDay);
+		monthSpinner.setValue(startMonth);
+		yearSpinner.setValue(startYear);
+		durationSpinner.setValue(startDuration);
+
+		instituteComboBox.setSelectedItem(nonSelectedOption);
+		btnConfirm.setEnabled(false);
+		lblImagenName.setText("");
+	}
 
 	private boolean verifyFloat(String floatValue) {
 		try {
 			if(floatValue.isEmpty()) {
 				return true;
 			}
-	        float parsedValue = Float.parseFloat(floatValue);
-	        return true; 
-	    } catch (NumberFormatException e) {
-	        return false; 
-	    }
+			float parsedValue = Float.parseFloat(floatValue);
+			return true; 
+		} catch (NumberFormatException e) {
+			return false; 
+		}
 	}
-	
+
 	private boolean verifyDate() {
 		SpinnerNumberModel model = (SpinnerNumberModel) daySpinner.getModel();
 		int day = (int) model.getNumber(); 
@@ -374,6 +453,13 @@ public class AddSportActivityPanel extends JPanel{
 		gbc_btnConfirm.gridy = 10;
 		add(btnConfirm, gbc_btnConfirm);
 		btnConfirm.setEnabled(false);
+
+		btnUpImg = new JButton("↑");
+		GridBagConstraints gbc_btnUpImg = new GridBagConstraints();
+		gbc_btnUpImg.insets = new Insets(0, 0, 5, 5);
+		gbc_btnUpImg.gridx = 7;
+		gbc_btnUpImg.gridy = 8;
+		add(btnUpImg, gbc_btnUpImg);
 	}
 
 	private void setGridLayout() {

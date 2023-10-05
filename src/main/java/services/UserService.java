@@ -22,7 +22,7 @@ public class UserService {
 	private final GenericRepository<User> userRepository;
 	private final GenericRepository<Professor> professorRepository;
 	private final GenericRepository<Member> memberRepository;
-	
+
 
 	public UserService(EntityManager entityManagers) {
 		this.entityManager = entityManagers;
@@ -30,7 +30,7 @@ public class UserService {
 		this.professorRepository = new GenericRepository<Professor>(entityManager,Professor.class);
 		this.memberRepository = new GenericRepository<Member>(entityManager,Member.class);
 	}
-	
+
 	public Map<String,DtClass> getMemberClasses(String nickname) {
 		Map<String, DtClass> classes = new TreeMap<String, DtClass>();
 		String[] joinProperties = new String[]{"enrollments"};
@@ -39,7 +39,7 @@ public class UserService {
 		if (member != null) {
 			// Get his enrollments
 			List<Enrollment> enrollments = member.getEnrollments();
-			
+
 			// If he has enrollments
 			if (enrollments != null) {
 				// Add the related class to the Map
@@ -61,7 +61,7 @@ public class UserService {
 			if (classToAdd == null) {
 				throw new Exception("Class is null");
 			}
-			
+
 			entityManager.getTransaction().begin();
 			Professor professor = professorRepository.findById(professorNickname, "nickname", new String[]{"classes.enrollments.user", "sportInstitution"});
 			professor.getClasses().put(classToAdd.getName(), classToAdd);
@@ -95,6 +95,7 @@ public class UserService {
 			updatedUser.setName(userUpdated.getName());
 			updatedUser.setBornDate(userUpdated.getBornDate());
 			updatedUser.setLastName(userUpdated.getLastName());
+			updatedUser.setPassword(userUpdated.getPassword());
 			userRepository.update(updatedUser);
 			entityManager.getTransaction().commit();
 			entityManager.close();
@@ -148,7 +149,7 @@ public class UserService {
 //		entityManager.close();
 //	}
 
-    public void addEnrollment(DtEnrollment enrollment, String className) {
+	public void addEnrollment(DtEnrollment enrollment, String className) {
 		// Crear la entidad enrollment con la clase de nombre className y persistirlo
 		Enrollment newEnrollment = new Enrollment();
 		GenericRepository<Member> memberRepo = new GenericRepository<>(entityManager, Member.class);
@@ -164,7 +165,7 @@ public class UserService {
 		userRepository.save(member);
 		entityManager.getTransaction().commit();
 		entityManager.close();
-    }
+	}
 
 	public boolean userExists(String userNickname) {
 		try{

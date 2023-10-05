@@ -12,12 +12,11 @@ import exceptions.NullPriceException;
 
 
 public interface InstituteInterface {
-	public boolean registerUserToClass(DtClass rclass, DtUser user);
+	public boolean checkClassNameAvailability(String className);
 	public boolean checkActivityAvialability(String name);
-	public DtClass showClassInfo(String className);
 	public DtClass chooseClassByName(String className);
 	public List<DtClass> listClassesDictationRanking();
-	public boolean createSportClass(DtClass newClass, Integer idSportActivity);
+	public void createSportClass(DtClass newClass, String idSportActivity, String idProfessor);
 	public Map<String, DtInstitute> listSportInstitutes();
 	public Map<String, DtActivity> selectInstitution(String institutionName);
 	public Map<String, DtClass> chooseActivity(String activity);
@@ -30,4 +29,6 @@ public interface InstituteInterface {
 	public DtInstitute chooseSportInstitute(String name);
 	public boolean checkInstitutionAvialability(String name);
     String[] listSportActivitiesByName();
+    public Map<String,DtActivity> getAllActivities();
+	DtActivity chooseActivityByName(String activity);
 }

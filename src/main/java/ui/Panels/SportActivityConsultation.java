@@ -1,51 +1,38 @@
 package ui.Panels;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.swing.JComboBox;
-
-import java.awt.Dimension;
-import java.awt.Font;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-
 import dataTypes.DtActivity;
 import dataTypes.DtClass;
 import dataTypes.DtInstitute;
 import interfaces.ControllerFactory;
 import interfaces.InstituteInterface;
 
-public class ClassTeachingConsultationPanel extends JPanel{
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+public class SportActivityConsultation extends JPanel{
 	private JTable classDataTable;
 	private JScrollPane tableScrollPane;
 	private JComboBox<String> institutesComboBox 	= new JComboBox<String>();
 	private JComboBox<String> activitiesComboBox 	= new JComboBox<String>();
-	private JComboBox<String> classesComboBox		= new JComboBox<String>();
 	private String[] tableHeaders 					= new String[] {"Atributo", "Valor"};
-	private final String nonSelectedOption			= "Sin seleccionar"; 
+	private final String nonSelectedOption			= "Sin seleccionar";
 	private String selectedInstitute 				= nonSelectedOption;
 	private String selectedActivity					= nonSelectedOption;
 	private String selectedClass					= nonSelectedOption;
 	private Map<String, DtInstitute> institutes 	= new TreeMap<String, DtInstitute>();
 	private Map<String, DtActivity> activities 		= new TreeMap<String, DtActivity>();
 	private Map<String, DtClass> classes 			= new TreeMap<String, DtClass>();
-	
+
 	private InstituteInterface instituteController 	= ControllerFactory.getInstance().getInstituteInterface();
 
-	public ClassTeachingConsultationPanel() {
+	public SportActivityConsultation() {
 		initialize();
 		setListeners();
 		addBaseElements();
@@ -57,12 +44,10 @@ public class ClassTeachingConsultationPanel extends JPanel{
 	
 	private void initialize() {
 		setPanelLayout();
-		setTitleLabel("Consulta de dictado de clase", "Calibri", Font.BOLD, 18);
+		setTitleLabel("Consulta de actividad deportiva", "Calibri", Font.BOLD, 18);
 		institutesComboBox 	= createLabelComboBox("Institutos", 1);
 		activitiesComboBox	= createLabelComboBox("Actividad deportiva", 2);
-		classesComboBox 	= createLabelComboBox("Clases", 3);
 		activitiesComboBox.setEnabled(false);
-		classesComboBox.setEnabled(false);
 		createDataTable();
 	}
 	
@@ -73,9 +58,7 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		activitiesComboBox.addItem(selectedActivity);
 		selectedActivity = nonSelectedOption;
 		activitiesComboBox.setSelectedItem(selectedActivity);
-		classesComboBox.addItem(selectedClass);
 		selectedClass = nonSelectedOption;
-		classesComboBox.setSelectedItem(selectedClass);
 	}
 	
 	private void resetComboBox(JComboBox<String> comboBox) {
@@ -89,25 +72,33 @@ public class ClassTeachingConsultationPanel extends JPanel{
 		}
 	}
 	
-	private void fillTable(DtClass data) {
+
+	private void fillTableActivity(DtActivity data) {
+		//(string name, String description, Integer duration, Float price, Date registryDate, int classesQuantity, Map<String, DtClass> classes)
 		DefaultTableModel model = (DefaultTableModel) this.classDataTable.getModel();
 		int actualRows = model.getRowCount();
 		for (int i = actualRows - 1; i >= 0; i--) {
-		    model.removeRow(i);
+			model.removeRow(i);
 		}
 		actualRows = model.getRowCount();
-		model.addRow(new String[] {"Nombre", data.getName()});
-		model.addRow(new String[] {"Fecha de registro", data.getRegisterDate().toString()});
-		model.addRow(new String[] {"Fecha y hora", data.getDateAndTime().toString()});
-		model.addRow(new String[] {"URL", data.getUrl()});
-		model.fireTableDataChanged(); 
-		
-		int numRows = model.getRowCount();
-        int rowHeight = classDataTable.getRowHeight();
-        int preferredHeight = rowHeight * Math.min(numRows, 4);
-        classDataTable.setPreferredScrollableViewportSize(new Dimension(classDataTable.getPreferredSize().width, preferredHeight));
+
+		model.addRow(new String[]{"Nombre", data.getName()});
+		model.addRow(new String[]{"Descripcion", data.getDescription()});
+		model.addRow(new String[]{"Duracion", data.getDuration().toString()});
+		model.addRow(new String[]{"Precio", data.getPrice().toString()});
+		model.addRow(new String[]{"Cantidad de clases", String.valueOf(data.getClassesQuantity())});
+
+		for (DtClass c : data.getClasses().values()) {
+		model.addRow(new String[]{"Fecha de registro", c.getRegisterDate().toString()});
+		model.addRow(new String[]{"Nombre de Clase", c.getName()});
+		model.addRow(new String[]{"Fecha y hora de Clase", c.getDateAndTime().toString()});
+		model.fireTableDataChanged();
 	}
-	
+		int numRows = model.getRowCount();
+		int rowHeight = classDataTable.getRowHeight();
+		int preferredHeight = rowHeight * numRows;
+		classDataTable.setPreferredScrollableViewportSize(new Dimension(classDataTable.getPreferredSize().width, preferredHeight));
+	}
 	private void setListeners() {
 		institutesComboBox.addActionListener(new ActionListener() {
             @Override
@@ -115,8 +106,6 @@ public class ClassTeachingConsultationPanel extends JPanel{
             	if(institutesComboBox.getSelectedItem() != null && !institutesComboBox.getSelectedItem().toString().equals(selectedInstitute)) {
             		if(institutesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
                 		activitiesComboBox.setEnabled(false);
-                		resetComboBox(classesComboBox);
-                		classesComboBox.setEnabled(false);
                 	}
                 	else {
                 		activities = instituteController.selectInstitution(institutesComboBox.getSelectedItem().toString());
@@ -125,56 +114,35 @@ public class ClassTeachingConsultationPanel extends JPanel{
                 			addItemsToComboBox(activitiesComboBox, activities.keySet());
                 		}
                 		activitiesComboBox.setEnabled(true);
-                		resetComboBox(classesComboBox);
-                		classesComboBox.setEnabled(false);
                 	}
             		selectedActivity = nonSelectedOption;
             		activitiesComboBox.setSelectedItem(selectedActivity);
             		selectedClass = nonSelectedOption;
-            		classesComboBox.setSelectedItem(selectedClass);
             		tableScrollPane.setVisible(false);
                 	selectedInstitute = institutesComboBox.getSelectedItem().toString();
             	}
             }
         });
-		
+		JPanel mainReference = this;
+
 		activitiesComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	if(activitiesComboBox.getSelectedItem() != null && !activitiesComboBox.getSelectedItem().toString().equals(selectedActivity)) {
-            		if(activitiesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
-                		classesComboBox.setEnabled(false);
-                	}
-                	else {
+            		if(!activitiesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
                 		classes = instituteController.chooseActivity((activitiesComboBox.getSelectedItem().toString()));
-                		resetComboBox(classesComboBox);
-                		if(classes != null) {
-                			addItemsToComboBox(classesComboBox, classes.keySet());
-                		}
-                		classesComboBox.setEnabled(true);
                 	}
             		selectedClass = nonSelectedOption;
-            		classesComboBox.setSelectedItem(selectedClass);
             		tableScrollPane.setVisible(false);
             		selectedActivity = activitiesComboBox.getSelectedItem().toString();
-            	}
-            }
-        });
-		JPanel mainReference = this;
-		classesComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	if(classesComboBox.getSelectedItem() != null &&!classesComboBox.getSelectedItem().toString().equals(selectedClass)) {
-            		if(classesComboBox.getSelectedItem().toString().equals(nonSelectedOption)) {
-            			tableScrollPane.setVisible(false);
-                	}
-                	else {
-                		DtClass selectedClass = instituteController.chooseClassByName(classesComboBox.getSelectedItem().toString());
-                		fillTable(selectedClass);
-                		tableScrollPane.setVisible(true);
-                		mainReference.revalidate();
-                	}
-            		selectedClass = classesComboBox.getSelectedItem().toString();
+					//==============================
+					DtActivity selectedActivityDT = instituteController.chooseActivityByName(activitiesComboBox.getSelectedItem().toString());
+					fillTableActivity(selectedActivityDT);
+	               	tableScrollPane.setVisible(true);
+					mainReference.revalidate();
+					selectedActivity = activitiesComboBox.getSelectedItem().toString();
+
+
             	}
             }
         });

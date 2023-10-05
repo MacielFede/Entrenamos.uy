@@ -15,6 +15,7 @@ import services.ActivityService;
 import services.ClassService;
 import services.InstituteService;
 import services.ServiceFactory;
+import services.UserService;
 
 public class InstituteController implements InstituteInterface {
 	private ServiceFactory serviceFactory = ServiceFactory.getInstance();
@@ -63,13 +64,26 @@ public class InstituteController implements InstituteInterface {
 		}
 		return null;
 	}
-
+	public DtActivity chooseActivityByName(String activity) {
+		if (activitiesCache == null) {
+			listSportInstitutesCache();
+		}
+		for (DtInstitute i : institutesCache.values()) {
+			for (DtActivity a : i.getActivities().values()) {
+				if (a.getName().equals(activity)) {
+					return a;
+				}
+			}
+		}
+		return null;
+	}
 	@Override
 	public DtClass chooseClassByName(String className) {
 		if (classesCache != null) {
 			return classesCache.get(className);
 		} else {
-			return null;
+			listClassesCache();
+			return classesCache.get(className);
 		}
 	}
 
@@ -83,6 +97,12 @@ public class InstituteController implements InstituteInterface {
 		activities.sort(Comparator.comparingInt(DtActivity::getClassesQuantity).reversed());
 		return activities;
 	}
+	
+	@Override
+	public Map<String,DtActivity> getAllActivities() {
+		ActivityService activityService = serviceFactory.getActivityService();
+		return activityService.getAllActivity();
+	}
 
 	@Override
 	public void addNewSportActivity(DtActivity sportActivity, String nameInstitute) {
@@ -92,8 +112,9 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public void modiFySportInstitute(DtInstitute institute) {
-		// TODO Auto-generated method stub
-		// return false;
+		serviceFactory.getInstituteService().updateInstitute(institute);;
+		//Update the cache
+		institutesCache.put(institute.getName(), institute);
 	}
 
 	@Override
@@ -110,7 +131,7 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public DtActivity getActivity(String activityName) {
-		if(activitiesCache.isEmpty()){
+		if(activitiesCache == null || activitiesCache.isEmpty()){
 			activitiesCache = serviceFactory.getActivityService().getAllActivity();
 		}
 		return activitiesCache.get(activityName);
@@ -131,20 +152,21 @@ public class InstituteController implements InstituteInterface {
 
 	@Override
 	public DtInstitute chooseSportInstitute(String name) {
-		// TODO Auto-generated method stub
+		if (institutesCache == null) {
+			listSportInstitutesCache();
+		}
+		
+		for (DtInstitute i : institutesCache.values()) {
+			if (i.getName().equals(name)) {
+				return i;
+			}
+		}
 		return null;
 	}
-
-	@Override
-	public boolean registerUserToClass(DtClass rclass, DtUser user) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public DtClass showClassInfo(String className) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public boolean checkClassNameAvailability(String className) {
+		ClassService classService = serviceFactory.getClassService();
+		return classService.checkClassAvailability(className);
 	}
 
 	@Override
@@ -159,14 +181,23 @@ public class InstituteController implements InstituteInterface {
 	}
 
 	@Override
-	public boolean createSportClass(DtClass newClass, Integer idSportActivity) {
-		// TODO Auto-generated method stub
-		return false;
+	public void createSportClass(DtClass newClass, String idSportActivity, String idProfessor) {
+		// Add it to the activity
+		ActivityService activityService = serviceFactory.getActivityService();
+		activityService.addClassToActivity(newClass, idSportActivity);
+		// Add it to the professor
+		UserService userService = serviceFactory.getUserService();
+		userService.addClassToProfessor(newClass, idProfessor);	
 	}
 
 	private void listSportInstitutesCache() {
 		InstituteService instituteService = serviceFactory.getInstituteService();
 		institutesCache = instituteService.getAllInstitutes();
+	}
+	
+	private void listClassesCache() {
+		ClassService classService = serviceFactory.getClassService();
+		classesCache = classService.getAllClasses();
 	}
 
 	@Override
