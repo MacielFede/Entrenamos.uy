@@ -17,7 +17,7 @@ public class UserController implements UserInterface {
 	public UserController() {
 		super();
 	}
-	
+
 	@Override
 	public DtUser chooseUser(String nickname) {
 		if (cachedUsers == null){
@@ -57,9 +57,9 @@ public class UserController implements UserInterface {
 	@Override
 	public void newMember(DtUser DtNewUser) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public Map<String,DtClass> getMemberEnrolledClasses(String nickname) {
 		return serviceFactory.getUserService().getMemberClasses(nickname);

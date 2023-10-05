@@ -30,8 +30,8 @@ public class Professor extends User {
 	}
 
 	public Professor(String description, String biography, String webPage, String nickname, String name,
-			String lastName, String email, Date bornDate, Institute sportInstitution) {
-		super(nickname, name, lastName, email, bornDate);
+					 String lastName, String email, Date bornDate, String password, Institute sportInstitution) {
+		super(nickname, name, lastName, email, bornDate, password);
 		this.description = description;
 		this.biography = biography;
 		this.webPage = webPage;
@@ -40,13 +40,32 @@ public class Professor extends User {
 	}
 
 	public Professor(String description, String biography, String webPage, String nickname, String name,
-					 String lastName, String email, Date bornDate) {
-		super(nickname, name, lastName, email, bornDate);
+					 String lastName, String email, Date bornDate, String password) {
+		super(nickname, name, lastName, email, bornDate, password);
 		this.description = description;
 		this.biography = biography;
 		this.webPage = webPage;
 		this.classes = new TreeMap<String,Class>();
 	}
+
+//	public Professor(String description, String biography, String webPage, String nickname, String name,
+//					 String lastName, String email, Date bornDate, Institute sportInstitution) {
+//		super(nickname, name, lastName, email, bornDate);
+//		this.description = description;
+//		this.biography = biography;
+//		this.webPage = webPage;
+//		this.sportInstitution = sportInstitution;
+//		this.classes = new TreeMap<String,Class>();
+//	}
+//
+//	public Professor(String description, String biography, String webPage, String nickname, String name,
+//					 String lastName, String email, Date bornDate) {
+//		super(nickname, name, lastName, email, bornDate);
+//		this.description = description;
+//		this.biography = biography;
+//		this.webPage = webPage;
+//		this.classes = new TreeMap<String,Class>();
+//	}
 
 	public Institute getSportInstitution() {
 		return sportInstitution;
@@ -88,6 +107,14 @@ public class Professor extends User {
 		this.classes = classes;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	@Override
 	public DtUser getData() {
 		Map<String,DtClass> profClasses = new TreeMap<String, DtClass>();
@@ -97,10 +124,11 @@ public class Professor extends User {
 				profClasses.put(currentClass.getName(), currentClass.getData());
 			}
 		}
-		
+
 		return new DtProfessor(profClasses, this.description, this.biography, this.webPage,
-				this.nickname, this.name, this.lastName, this.email, this.bornDate);
+				this.nickname, this.name, this.lastName, this.email, this.bornDate, this.password);
 	}
+
 
 	@Override
 	public Map<String, DtClass> getRelatedClasses() {

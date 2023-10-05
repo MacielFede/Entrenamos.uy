@@ -20,3 +20,6 @@ public interface UserInterface {
   public void addEnrollment(String className, DtUser user, Float price) throws Exception;
 	public String[] listMembersByNickname();
 }
+
+
+

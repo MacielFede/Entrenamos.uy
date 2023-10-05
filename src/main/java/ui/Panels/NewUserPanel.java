@@ -37,9 +37,13 @@ public class NewUserPanel extends JPanel {
 	private JButton saveButton;
 	private JLabel lblNewLabel;
 	private JComboBox instituteComboBox;
+	private JLabel lblPassword;
+	private JLabel lblConfirmPassword;
 
 	private final UserInterface uc = ControllerFactory.getInstance().getUserInterface();
 	private final InstituteInterface ic = ControllerFactory.getInstance().getInstituteInterface();
+	private JTextField confirmPassword;
+	private JTextField pwdPassword;
 
 	/**
 	 * Create the panel.
@@ -48,9 +52,9 @@ public class NewUserPanel extends JPanel {
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{49, 114, 212, 114, 0};
-		gridBagLayout.rowHeights = new int[]{19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 59, 122, 0};
+		gridBagLayout.rowHeights = new int[]{19, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 59, 122, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 
 		lblNickname = new JLabel("Nickname");
@@ -64,7 +68,8 @@ public class NewUserPanel extends JPanel {
 		nicknameTextField = new JTextField();
 		nicknameTextField.setText("JoeDoe");
 		GridBagConstraints gbc_nicknameTextField = new GridBagConstraints();
-		gbc_nicknameTextField.anchor = GridBagConstraints.NORTHWEST;
+		gbc_nicknameTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_nicknameTextField.anchor = GridBagConstraints.NORTH;
 		gbc_nicknameTextField.insets = new Insets(0, 0, 5, 5);
 		gbc_nicknameTextField.gridx = 2;
 		gbc_nicknameTextField.gridy = 2;
@@ -102,8 +107,9 @@ public class NewUserPanel extends JPanel {
 		nameTextField.setText("Joe");
 		nameTextField.setColumns(10);
 		GridBagConstraints gbc_nameTextField = new GridBagConstraints();
+		gbc_nameTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_nameTextField.insets = new Insets(0, 0, 5, 5);
-		gbc_nameTextField.anchor = GridBagConstraints.NORTHWEST;
+		gbc_nameTextField.anchor = GridBagConstraints.NORTH;
 		gbc_nameTextField.gridx = 2;
 		gbc_nameTextField.gridy = 4;
 		add(nameTextField, gbc_nameTextField);
@@ -120,54 +126,89 @@ public class NewUserPanel extends JPanel {
 		lastnameTextField.setText("Doe");
 		lastnameTextField.setColumns(10);
 		GridBagConstraints gbc_lastnameTextField = new GridBagConstraints();
-		gbc_lastnameTextField.anchor = GridBagConstraints.NORTHWEST;
+		gbc_lastnameTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lastnameTextField.anchor = GridBagConstraints.NORTH;
 		gbc_lastnameTextField.insets = new Insets(0, 0, 5, 5);
 		gbc_lastnameTextField.gridx = 2;
 		gbc_lastnameTextField.gridy = 5;
 		add(lastnameTextField, gbc_lastnameTextField);
+				
+						lblPassword = new JLabel("Password");
+						GridBagConstraints gbc_lblPassword = new GridBagConstraints();
+						gbc_lblPassword.insets = new Insets(0, 0, 5, 5);
+						gbc_lblPassword.anchor = GridBagConstraints.EAST;
+						gbc_lblPassword.gridx = 1;
+						gbc_lblPassword.gridy = 6;
+						add(lblPassword, gbc_lblPassword);
+				
+				pwdPassword = new JTextField();
+				GridBagConstraints gbc_pwdPassword = new GridBagConstraints();
+				gbc_pwdPassword.insets = new Insets(0, 0, 5, 5);
+				gbc_pwdPassword.fill = GridBagConstraints.HORIZONTAL;
+				gbc_pwdPassword.gridx = 2;
+				gbc_pwdPassword.gridy = 6;
+				add(pwdPassword, gbc_pwdPassword);
+				pwdPassword.setColumns(10);
+		
+				lblConfirmPassword = new JLabel("Cpnfirmar password");
+				GridBagConstraints gbc_lblConfirmPassword = new GridBagConstraints();
+				gbc_lblConfirmPassword.insets = new Insets(0, 0, 5, 5);
+				gbc_lblConfirmPassword.anchor = GridBagConstraints.EAST;
+				gbc_lblConfirmPassword.gridx = 1;
+				gbc_lblConfirmPassword.gridy = 7;
+				add(lblConfirmPassword, gbc_lblConfirmPassword);
+		
+		confirmPassword = new JTextField();
+		GridBagConstraints gbc_confirmPassword = new GridBagConstraints();
+		gbc_confirmPassword.insets = new Insets(0, 0, 5, 5);
+		gbc_confirmPassword.fill = GridBagConstraints.HORIZONTAL;
+		gbc_confirmPassword.gridx = 2;
+		gbc_confirmPassword.gridy = 7;
+		add(confirmPassword, gbc_confirmPassword);
+		confirmPassword.setColumns(10);
 
 		lblBirthDate = new JLabel("Fecha de nacimiento");
 		GridBagConstraints gbc_lblBirthDate = new GridBagConstraints();
 		gbc_lblBirthDate.insets = new Insets(0, 0, 5, 5);
 		gbc_lblBirthDate.anchor = GridBagConstraints.EAST;
 		gbc_lblBirthDate.gridx = 0;
-		gbc_lblBirthDate.gridy = 6;
+		gbc_lblBirthDate.gridy = 8;
 		add(lblBirthDate, gbc_lblBirthDate);
-
-		dayComboBox = new JComboBox<>(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31});
-		GridBagConstraints gbc_dayComboBox = new GridBagConstraints();
-		gbc_dayComboBox.insets = new Insets(0, 0, 5, 5);
-		gbc_dayComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_dayComboBox.gridx = 1;
-		gbc_dayComboBox.gridy = 6;
-		add(dayComboBox, gbc_dayComboBox);
-
-		monthComboBox = new JComboBox<>(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12});
-		GridBagConstraints gbc_monthComboBox = new GridBagConstraints();
-		gbc_monthComboBox.insets = new Insets(0, 0, 5, 5);
-		gbc_monthComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_monthComboBox.gridx = 2;
-		gbc_monthComboBox.gridy = 6;
-		add(monthComboBox, gbc_monthComboBox);
+		
+				dayComboBox = new JComboBox<>(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31});
+				GridBagConstraints gbc_dayComboBox = new GridBagConstraints();
+				gbc_dayComboBox.insets = new Insets(0, 0, 5, 5);
+				gbc_dayComboBox.fill = GridBagConstraints.HORIZONTAL;
+				gbc_dayComboBox.gridx = 1;
+				gbc_dayComboBox.gridy = 8;
+				add(dayComboBox, gbc_dayComboBox);
 
 		//CARGAR ANIOS
 		Integer[] years = new Integer[100];
 		for (int i = 0; i < 100; i++) {
 			years[i] = LocalDate.now().getYear() - i;
 		}
+		
+				monthComboBox = new JComboBox<>(new Integer[]{1,2,3,4,5,6,7,8,9,10,11,12});
+				GridBagConstraints gbc_monthComboBox = new GridBagConstraints();
+				gbc_monthComboBox.insets = new Insets(0, 0, 5, 5);
+				gbc_monthComboBox.fill = GridBagConstraints.HORIZONTAL;
+				gbc_monthComboBox.gridx = 2;
+				gbc_monthComboBox.gridy = 8;
+				add(monthComboBox, gbc_monthComboBox);
 		yearComboBox = new JComboBox<>(years);
 		GridBagConstraints gbc_yearComboBox = new GridBagConstraints();
 		gbc_yearComboBox.insets = new Insets(0, 0, 5, 5);
 		gbc_yearComboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_yearComboBox.gridx = 3;
-		gbc_yearComboBox.gridy = 6;
+		gbc_yearComboBox.gridy = 8;
 		add(yearComboBox, gbc_yearComboBox);
 
 		checkBoxIsTeacher = new JCheckBox("Es profesor?");
 		GridBagConstraints gbc_checkBoxIsTeacher = new GridBagConstraints();
 		gbc_checkBoxIsTeacher.insets = new Insets(0, 0, 5, 5);
 		gbc_checkBoxIsTeacher.gridx = 2;
-		gbc_checkBoxIsTeacher.gridy = 7;
+		gbc_checkBoxIsTeacher.gridy = 9;
 		add(checkBoxIsTeacher, gbc_checkBoxIsTeacher);
 		checkBoxIsTeacher.addActionListener(e -> {
 			changeCheckBoxState();
@@ -177,7 +218,7 @@ public class NewUserPanel extends JPanel {
 		GridBagConstraints gbc_lblDescription = new GridBagConstraints();
 		gbc_lblDescription.insets = new Insets(0, 0, 5, 5);
 		gbc_lblDescription.gridx = 1;
-		gbc_lblDescription.gridy = 8;
+		gbc_lblDescription.gridy = 10;
 		add(lblDescription, gbc_lblDescription);
 
 		descriptionTextArea = new JTextArea();
@@ -187,14 +228,14 @@ public class NewUserPanel extends JPanel {
 		gbc_descriptionTextArea.insets = new Insets(0, 0, 5, 5);
 		gbc_descriptionTextArea.fill = GridBagConstraints.BOTH;
 		gbc_descriptionTextArea.gridx = 2;
-		gbc_descriptionTextArea.gridy = 8;
+		gbc_descriptionTextArea.gridy = 10;
 		add(descriptionTextArea, gbc_descriptionTextArea);
 
 		lblBiography = new JLabel("Biografia");
 		GridBagConstraints gbc_lblBiography = new GridBagConstraints();
 		gbc_lblBiography.insets = new Insets(0, 0, 5, 5);
 		gbc_lblBiography.gridx = 1;
-		gbc_lblBiography.gridy = 9;
+		gbc_lblBiography.gridy = 11;
 		add(lblBiography, gbc_lblBiography);
 
 		biographyTextArea = new JTextArea();
@@ -204,14 +245,14 @@ public class NewUserPanel extends JPanel {
 		gbc_biographyTextArea.insets = new Insets(0, 0, 5, 5);
 		gbc_biographyTextArea.fill = GridBagConstraints.BOTH;
 		gbc_biographyTextArea.gridx = 2;
-		gbc_biographyTextArea.gridy = 9;
+		gbc_biographyTextArea.gridy = 11;
 		add(biographyTextArea, gbc_biographyTextArea);
 
 		lblWebPage = new JLabel("Pagina web");
 		GridBagConstraints gbc_lblWebPage = new GridBagConstraints();
 		gbc_lblWebPage.insets = new Insets(0, 0, 5, 5);
 		gbc_lblWebPage.gridx = 1;
-		gbc_lblWebPage.gridy = 10;
+		gbc_lblWebPage.gridy = 12;
 		add(lblWebPage, gbc_lblWebPage);
 
 		webPageTextField = new JTextField();
@@ -222,7 +263,7 @@ public class NewUserPanel extends JPanel {
 		gbc_webPageTextField.insets = new Insets(0, 0, 5, 5);
 		gbc_webPageTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_webPageTextField.gridx = 2;
-		gbc_webPageTextField.gridy = 10;
+		gbc_webPageTextField.gridy = 12;
 		add(webPageTextField, gbc_webPageTextField);
 
 		lblNewLabel = new JLabel("Instituto");
@@ -230,7 +271,7 @@ public class NewUserPanel extends JPanel {
 		gbc_lblNewLabel.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel.gridx = 1;
-		gbc_lblNewLabel.gridy = 11;
+		gbc_lblNewLabel.gridy = 13;
 		add(lblNewLabel, gbc_lblNewLabel);
 
 		instituteComboBox = new JComboBox();
@@ -238,7 +279,7 @@ public class NewUserPanel extends JPanel {
 		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
 		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBox.gridx = 2;
-		gbc_comboBox.gridy = 11;
+		gbc_comboBox.gridy = 13;
 		instituteComboBox.setEnabled(false);
 		add(instituteComboBox, gbc_comboBox);
 
@@ -248,7 +289,7 @@ public class NewUserPanel extends JPanel {
 		GridBagConstraints gbc_saveButton = new GridBagConstraints();
 		gbc_saveButton.insets = new Insets(0, 0, 0, 5);
 		gbc_saveButton.gridx = 3;
-		gbc_saveButton.gridy = 12;
+		gbc_saveButton.gridy = 14;
 		add(saveButton, gbc_saveButton);
 		saveButton.addActionListener(e -> {
 			addNewUser();
@@ -282,30 +323,38 @@ public class NewUserPanel extends JPanel {
 
 	private void addNewUser() {
 		// saves the use case (if no exception is thrown starts the use case again)
-		String nickname 	= (String) nicknameTextField.getText();
-		String name 		= nameTextField.getText();
-		String lastname 	= lastnameTextField.getText();
-		String email 		= emailTextField.getText();
-		int month 			= (int) monthComboBox.getSelectedItem();
-		int year 			= (int) yearComboBox.getSelectedItem();
-		int day 			= (int) dayComboBox.getSelectedItem();
-		Date bornDate 		= new Date(year-1900, month-1, day);
+		String nickname = (String) nicknameTextField.getText();
+		String name = nameTextField.getText();
+		String lastname = lastnameTextField.getText();
+		String email = emailTextField.getText();
+		String password = (String) pwdPassword.getText();
+		String confrimPass = (String) confirmPassword.getText();
+		int month = (int) monthComboBox.getSelectedItem();
+		int year = (int) yearComboBox.getSelectedItem();
+		int day = (int) dayComboBox.getSelectedItem();
+		Date bornDate = new Date(year - 1900, month - 1, day);
 //		LocalDate bornDate 		= LocalDate.of(year, month, day); DEBERIAMOS USAR ESTA LIBRERIA PERO HAY QUE CAMBIAR LA IMPLEMENTACION DE LOS DT Y LAS CLASES
-		boolean isTeacher 	= checkBoxIsTeacher.isSelected();
-		String description 	= (String) descriptionTextArea.getText();
-		String biography 	= (String) biographyTextArea.getText();
-		String webPage		= (String) webPageTextField.getText();
-		String institute 	= (String) instituteComboBox.getSelectedItem();
-		if (isTeacher && (institute == null || institute.isEmpty() || institute.equals("Sin seleccionar"))){
+		boolean isTeacher = checkBoxIsTeacher.isSelected();
+		String description = (String) descriptionTextArea.getText();
+		String biography = (String) biographyTextArea.getText();
+		String webPage = (String) webPageTextField.getText();
+		String institute = (String) instituteComboBox.getSelectedItem();
+		if (isTeacher && (institute == null || institute.isEmpty() || institute.equals("Sin seleccionar"))) {
 			JOptionPane.showMessageDialog(this, "Debes seleccionar un instituto para el profesor",
 					"Crear nuevo usuario", JOptionPane.ERROR_MESSAGE);
-			return ;
+			return;
 		}
+
+
 		try {
-			if(isTeacher)
-				uc.newUser(new DtProfessor(description, biography, webPage, nickname, name, lastname, email, bornDate), institute);
+
+			if (!confrimPass.equals(password)) {
+				throw new Exception("Password y confirmación no coinciden");
+			}
+			if (isTeacher)
+				uc.newUser(new DtProfessor(description, biography, webPage, nickname, name, lastname, email, bornDate, password), institute);
 			else
-				uc.newUser(new DtUser(nickname, name, lastname, email, bornDate), institute);
+				uc.newUser(new DtUser(nickname, name, lastname, email, bornDate, password), institute);
 
 			JOptionPane.showMessageDialog(this, "Usuario creado exitosamente.",
 					"Crear nuevo usuario", JOptionPane.INFORMATION_MESSAGE);
@@ -315,6 +364,7 @@ public class NewUserPanel extends JPanel {
 					"Crear nuevo usuario", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+
 	private void restartUseCase() {
 		// Restarts the use case
 		nameTextField.setText("Joe");
@@ -324,6 +374,8 @@ public class NewUserPanel extends JPanel {
 		biographyTextArea.setText("Hi, i'm Joe Doe. A developer...");
 		webPageTextField.setText("www.JoeDoe.com");
 		instituteComboBox.setSelectedIndex(0);
+		pwdPassword.setText("password");
+
 	}
 
 }

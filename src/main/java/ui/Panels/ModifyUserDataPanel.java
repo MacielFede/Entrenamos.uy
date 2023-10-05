@@ -31,6 +31,8 @@ public class ModifyUserDataPanel extends JPanel {
     private JComboBox<String> yearComboBox = new JComboBox<>(new String[]{});
     private final JLabel bornDateDetailLabel = new JLabel("dd / mm / aa");
     private final JLabel bornDateLabel = new JLabel("Fecha de nacimiento");
+    private JTextField passwordField;
+    private JTextField confirmPasswordField;
     public ModifyUserDataPanel(){
         addItemsToComboBox(selectUserComboBox, Set.of(uc.listUsersByNickname()));
         initialize();
@@ -66,6 +68,10 @@ public class ModifyUserDataPanel extends JPanel {
         changeYearComboBox("START");
         yearComboBox.setEnabled(true);
         saveButton.setEnabled(true);
+        passwordField.setEnabled(true);
+        passwordField.setEditable(true);
+        confirmPasswordField.setEnabled(true);
+        confirmPasswordField.setEditable(true);
         cancelButton.setEnabled(true);
     }
 
@@ -75,12 +81,18 @@ public class ModifyUserDataPanel extends JPanel {
         String name = nameTextField.getText();
         String lastname = lastnameTextField.getText();
         String email = emailTextField.getText();
+        String password = (String) passwordField.getText();
+        String confirmPass = (String) confirmPasswordField.getText();
         int year = Integer.parseInt(String.valueOf(yearComboBox.getSelectedItem()));
         int month = Integer.parseInt(String.valueOf(monthComboBox.getSelectedItem()));
         int day = Integer.parseInt(String.valueOf(dayComboBox.getSelectedItem()));
         Date bornDate = new Date(year, month, day);
+
         try{
-            uc.updateUserInfo(new DtUser(nickname, name, lastname, email, bornDate));
+            if (!confirmPass.equals(password)) {
+                throw new Exception("Password y confirmación no coinciden");
+            }
+            uc.updateUserInfo(new DtUser(nickname, name, lastname, email, bornDate, password));
             JOptionPane.showMessageDialog(this, "El usuario fue actualizado con éxito!",
                     "Modificar información de usuario", JOptionPane.INFORMATION_MESSAGE);
             restartUseCase();
@@ -103,6 +115,10 @@ public class ModifyUserDataPanel extends JPanel {
         monthComboBox.setEnabled(false);
         dayComboBox.setEnabled(false);
         selectUserComboBox.setSelectedIndex(0);
+        passwordField.enable(false);
+        passwordField.setText("");
+        confirmPasswordField.enable(false);
+        confirmPasswordField.setText("");
     }
 
     private void changeYearComboBox(String operation){
@@ -146,13 +162,13 @@ public class ModifyUserDataPanel extends JPanel {
 
         separator.setBounds(50, 104, 626, 2);
 
-        saveButton.setBounds(226, 374, 85, 21);
+        saveButton.setBounds(228, 413, 85, 21);
         saveButton.setEnabled(false);
         saveButton.addActionListener(e -> {
             updateUserInfo();
         });
 
-        cancelButton.setBounds(356, 374, 85, 21);
+        cancelButton.setBounds(349, 413, 85, 21);
         cancelButton.setEnabled(false);
         cancelButton.addActionListener(e -> {
             restartUseCase();
@@ -163,7 +179,7 @@ public class ModifyUserDataPanel extends JPanel {
         nameTextField.setColumns(10);
         nameTextField.setEditable(false);
 
-        emailTextField.setBounds(89, 272, 141, 19);
+        emailTextField.setBounds(89, 224, 141, 19);
         emailTextField.setEditable(false);
         emailTextField.setColumns(10);
 
@@ -177,16 +193,16 @@ public class ModifyUserDataPanel extends JPanel {
         lastnameLabel.setBounds(431, 116, 140, 13);
         lastnameLabel.setLabelFor(lastnameTextField);
 
-        emailLabel.setBounds(89, 249, 141, 13);
+        emailLabel.setBounds(89, 199, 141, 13);
         emailLabel.setLabelFor(emailTextField);
 
-        dayComboBox.setBounds(431, 272, 70, 21);
+        dayComboBox.setBounds(431, 223, 70, 21);
         dayComboBox.setEnabled(false);
 
-        monthComboBox.setBounds(511, 273, 70, 21);
+        monthComboBox.setBounds(513, 223, 70, 21);
         monthComboBox.setEnabled(false);
 
-        yearComboBox.setBounds(591, 273, 70, 21);
+        yearComboBox.setBounds(595, 223, 70, 21);
         yearComboBox.setEnabled(false);
         yearComboBox.addItemListener(e -> {
             if(Objects.equals(String.valueOf(yearComboBox.getSelectedItem()), "-10")) {
@@ -196,10 +212,10 @@ public class ModifyUserDataPanel extends JPanel {
             }
         });
 
-        bornDateDetailLabel.setBounds(431, 247, 94, 13);
+        bornDateDetailLabel.setBounds(431, 199, 94, 13);
         bornDateDetailLabel.setLabelFor(dayComboBox);
 
-        bornDateLabel.setBounds(431, 228, 94, 13);
+        bornDateLabel.setBounds(435, 170, 183, 13);
         bornDateLabel.setLabelFor(bornDateDetailLabel);
 
         add(separator);
@@ -219,5 +235,25 @@ public class ModifyUserDataPanel extends JPanel {
         add(yearComboBox);
         add(nameLabel);
         add(bornDateDetailLabel);
+
+        JLabel lblPassword = new JLabel("Password");
+        lblPassword.setBounds(89, 294, 70, 15);
+        add(lblPassword);
+
+        JLabel lblConfirmarPassword = new JLabel("Confirmar password");
+        lblConfirmarPassword.setBounds(431, 294, 174, 15);
+        add(lblConfirmarPassword);
+        
+        passwordField = new JTextField();
+        passwordField.setBounds(89, 321, 114, 19);
+        passwordField.setEditable(false);
+        add(passwordField);
+        passwordField.setColumns(10);
+        
+        confirmPasswordField = new JTextField();
+        confirmPasswordField.setEditable(false);
+        confirmPasswordField.setBounds(431, 321, 114, 19);
+        add(confirmPasswordField);
+        confirmPasswordField.setColumns(10);
     }
 }
