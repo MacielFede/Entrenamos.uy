@@ -24,7 +24,7 @@ public class ActivityService {
 
 	public void addClassToActivity(DtClass newClass, String activityName) {
 		try {
-			Class createdClass = new Class(newClass.getName(),newClass.getDateAndTime(), newClass.getRegisterDate(), newClass.getUrl(), "");
+			Class createdClass = new Class(newClass.getName(),newClass.getDateAndTime(), newClass.getRegisterDate(), newClass.getUrl(), newClass.getImgName());
 			entityManager.getTransaction().begin();
 			Activity activity = activityRepository.findById(activityName, "name", new String[]{"classes.enrollments.user"});
 			activity.getClasses().put(createdClass.getName(), createdClass);
