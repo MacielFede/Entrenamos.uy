@@ -6,14 +6,20 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,6 +39,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Component;
@@ -65,6 +72,10 @@ public class AddClassPanel extends JPanel {
 	private JSpinner upYearSpinner;
 
 	private JButton btnConfirm;
+	private JButton btnUpImg;
+	private JLabel lblImagenName;
+	private JLabel lblImagen;
+	private File selectedFile;
 
 	private final int startDay = 1;
 	private final int startMonth = 1;
@@ -168,6 +179,23 @@ public class AddClassPanel extends JPanel {
 	}
 
 	private void setListeners() {
+		JPanel thisPanel = this;
+		
+		btnUpImg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de imagen", "jpg", "jpeg", "png", "gif");
+				fileChooser.setFileFilter(filter);
+
+				int result = fileChooser.showOpenDialog(thisPanel);
+
+				if (result == JFileChooser.APPROVE_OPTION) {
+					selectedFile = fileChooser.getSelectedFile();
+					lblImagenName.setText(selectedFile.getName());;
+				}
+			}
+		});
+		
 		institutesComboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -263,10 +291,17 @@ public class AddClassPanel extends JPanel {
 
 					Date initDate = initCalendar.getTime();
 					Date upDate = upCalendar.getTime();
+					
+					// Manage image
+					String imgName = "";
+					if(selectedFile != null) {
+						imgName = selectedFile.getName();
+					}
+					
 
 					// Data for the controller method
 					DtClass newClass = new DtClass(className, initDate, upDate, url, 0,
-							new TreeMap<String, DtEnrollment>());
+							new TreeMap<String, DtEnrollment>(), imgName);
 					DtActivity dtA = activities.get(activitiesComboBox.getSelectedItem().toString());
 					String activityName = dtA.getName();
 					DtProfessor dtP = professors.get(professorsComboBox.getSelectedItem().toString());
@@ -274,6 +309,24 @@ public class AddClassPanel extends JPanel {
 
 					// Create class
 					instituteController.createSportClass(newClass, activityName, professorName);
+					
+					// Upload image
+					try {
+						InputStream configStream = AddClassPanel.class.getClassLoader().getResourceAsStream("config.properties");
+						if (configStream != null) {
+							Properties properties = new Properties();
+							properties.load(configStream);
+							String imageDirectory = properties.getProperty("imageDirectoryAxel");
+
+							File destino = new File(imageDirectory + selectedFile.getName());
+							Files.copy(selectedFile.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+						} 
+					} 
+					catch (Exception ex) 
+					{
+						ex.printStackTrace();
+					}
+					
 					displayWindow("Éxito", "Se ha creado la clase deportiva con éxito.", JOptionPane.INFORMATION_MESSAGE);
 					resetForm();
 				}
@@ -333,7 +386,7 @@ public class AddClassPanel extends JPanel {
 		SpinnerModel modelYearUp = new SpinnerNumberModel(startYear, 1900, LocalDate.now().getYear(), 1);
 		SpinnerModel modelHour = new SpinnerNumberModel(startHour, 0, 23, 1);
 		SpinnerModel modelMinute = new SpinnerNumberModel(startMinute, 0, 59, 1);
-
+	
 		JLabel dateTxt = new JLabel("Fecha de inicio");
 		GridBagConstraints gbc_dateTxt = new GridBagConstraints();
 		gbc_dateTxt.gridwidth = 4;
@@ -471,6 +524,29 @@ public class AddClassPanel extends JPanel {
 		gbc_btnConfirm.gridx = 3;
 		gbc_btnConfirm.gridy = 10;
 		add(btnConfirm, gbc_btnConfirm);
+		
+		
+		lblImagen= new JLabel("Imagen");
+		GridBagConstraints gbc_lblImagen = new GridBagConstraints();
+		gbc_lblImagen.insets = new Insets(0, 0, 5, 5);
+		gbc_lblImagen.gridx = 7;
+		gbc_lblImagen.gridy = 5;
+		add(lblImagen, gbc_lblImagen);
+		
+		btnUpImg = new JButton("↑");
+		GridBagConstraints gbc_btnUpImg = new GridBagConstraints();
+		gbc_btnUpImg.insets = new Insets(0, 0, 5, 0);
+		gbc_btnUpImg.gridx = 8;
+		gbc_btnUpImg.gridy = 5;
+		add(btnUpImg, gbc_btnUpImg);
+		
+		lblImagenName = new JLabel("");
+		GridBagConstraints gbc_lblImagenName = new GridBagConstraints();
+		gbc_lblImagenName.insets = new Insets(0, 0, 5, 0);
+		gbc_lblImagenName.gridx = 8;
+		gbc_lblImagenName.gridy = 6;
+		lblImagenName.setForeground(Color.RED);
+		add(lblImagenName, gbc_lblImagenName);
 	}
 
 	private void displayWindow(String titleLabel, String message, int messageType) {
@@ -517,5 +593,8 @@ public class AddClassPanel extends JPanel {
 		institutesComboBox.setSelectedItem(nonSelectedOption);
 		activitiesComboBox.setSelectedItem(nonSelectedOption);
 		professorsComboBox.setSelectedItem(nonSelectedOption);
+		
+		// Image label
+		lblImagenName.setText("");
 	}
 }

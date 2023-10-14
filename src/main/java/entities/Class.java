@@ -23,18 +23,21 @@ public class Class {
     private Date registerDate;
     @Column(name = "url")
 	private String url;
+    @Column(name = "imgName")
+	private String imgName;
     @OneToMany(mappedBy = "aClass",cascade = CascadeType.ALL)
     // The String in the map represent the users' id.
     private Map<String, Enrollment> enrollments;
 
     public Class() {}
 
-    public Class(String name, Date dateAndTime, Date registerDate, String url) {
+    public Class(String name, Date dateAndTime, Date registerDate, String url, String imgName) {
         this.name = name;
         this.dateAndTime = dateAndTime;
         this.registerDate = registerDate;
         this.url = url;
         this.enrollments = new TreeMap<String, Enrollment>();
+        this.imgName = imgName;
     }
 
     public Map<String, Enrollment> getEnrollments() {
@@ -72,8 +75,18 @@ public class Class {
     public String getUrl() {
         return url;
     }
+    
+    
 
-    public void setUrl(String url) {
+    public String getImgName() {
+		return imgName;
+	}
+
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
+	}
+
+	public void setUrl(String url) {
         this.url = url;
     }
 
@@ -88,6 +101,6 @@ public class Class {
         	}
         enrollmentQty = this.enrollments.size();
         }
-        return new DtClass(this.name, this.registerDate, this.dateAndTime,this.url,enrollmentQty, dtE);
+        return new DtClass(this.name, this.registerDate, this.dateAndTime,this.url,enrollmentQty, dtE, this.imgName);
     }
 }
