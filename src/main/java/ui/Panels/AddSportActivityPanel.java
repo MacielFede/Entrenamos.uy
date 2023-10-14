@@ -362,7 +362,7 @@ public class AddSportActivityPanel extends JPanel{
 						if (configStream != null) {
 							Properties properties = new Properties();
 							properties.load(configStream);
-							String imageDirectory = properties.getProperty("imageDirectory");
+							String imageDirectory = properties.getProperty("imageDirectoryAxel");
 
 							File destino = new File(imageDirectory + selectedFile.getName());
 							Files.copy(selectedFile.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);

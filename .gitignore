@@ -52,3 +52,8 @@ bin
 /src/main/resources/META-INF/persistence.xml
 **/persistence.xml
 src/main/resources/META-INF/persistence.xml
+
+### Tarea 1.jar ###
+Jar file/*
+### Images ###
+src/main/resources/images/*
