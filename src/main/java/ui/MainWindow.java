@@ -25,6 +25,8 @@ public class MainWindow extends JFrame {
 	private JPanel activePanel;
 	private String activePopUp;
 	private JPopupMenu currentPopupMenu;
+	private UserPublisher up = new UserPublisher();
+	private InstitutePublisher isp = new InstitutePublisher();
 	public MainWindow() {
 		/*
 		 * Here we create the main frame and set: - a title for the title bar - its
@@ -48,13 +50,15 @@ public class MainWindow extends JFrame {
 			public void windowClosed(WindowEvent e) {
 				dbConnection.shutDown();
 				super.windowClosed(e);
+				
+				// Close WebServices to clean the ports
+				up.stopPublishing();
+				isp.stopPublishing();
 			}
 		});
 		this.setVisible(true);
-		// Web services
-		UserPublisher up = new UserPublisher();
+		// Init WebServices
 		up.publish();
-		InstitutePublisher isp = new InstitutePublisher();
 		isp.publish();
 	}
 	private void initializePanels(){

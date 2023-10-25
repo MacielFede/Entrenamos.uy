@@ -54,6 +54,17 @@ public class InstitutePublisher {
         return endpoint;
 	}
 	
+	@WebMethod(exclude = true)
+	public void stopPublishing() {
+	    if (endpoint != null) {
+	        endpoint.stop();
+	        System.out.println("Webservice en " + baseUrl + "/instituteController" + " ha sido detenido.");
+	    } else {
+	        System.out.println("Webservice no estaba activo.");
+	    }
+	}
+
+	
 	@WebMethod
 	public boolean checkClassNameAvailability(String className) {
 		return icon.checkClassNameAvailability(className);

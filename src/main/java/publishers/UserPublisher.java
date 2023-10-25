@@ -51,6 +51,17 @@ public class UserPublisher {
 	}
 	
 	@WebMethod(exclude = true)
+	public void stopPublishing() {
+	    if (endpoint != null) {
+	        endpoint.stop();
+	        System.out.println("Webservice en " + baseUrl + "/userController" + " ha sido detenido.");
+	    } else {
+	        System.out.println("Webservice no estaba activo.");
+	    }
+	}
+
+	
+	@WebMethod(exclude = true)
 	public Endpoint getEndpoint() {
         return endpoint;
 	}
