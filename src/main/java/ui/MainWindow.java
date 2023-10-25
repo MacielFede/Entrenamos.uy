@@ -7,6 +7,8 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import publishers.UserPublisher;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
@@ -48,6 +50,9 @@ public class MainWindow extends JFrame {
 			}
 		});
 		this.setVisible(true);
+		// WS
+		UserPublisher up = new UserPublisher();
+		up.publish();
 	}
 	private void initializePanels(){
 		// In this method we should create and set every panel design and set the variables for easy access
