@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import publishers.InstitutePublisher;
 import publishers.UserPublisher;
 
 import java.awt.*;
@@ -50,9 +51,11 @@ public class MainWindow extends JFrame {
 			}
 		});
 		this.setVisible(true);
-		// WS
+		// Web services
 		UserPublisher up = new UserPublisher();
 		up.publish();
+		InstitutePublisher isp = new InstitutePublisher();
+		isp.publish();
 	}
 	private void initializePanels(){
 		// In this method we should create and set every panel design and set the variables for easy access

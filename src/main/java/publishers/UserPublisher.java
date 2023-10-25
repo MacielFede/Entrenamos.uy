@@ -46,7 +46,6 @@ public class UserPublisher {
 
 	@WebMethod(exclude = true)
 	public void publish() {
-		System.out.println(baseUrl + "/userController");
 		endpoint = Endpoint.publish(baseUrl + "/userController", this);
 		System.out.println(baseUrl + "/userController");
 	}
@@ -56,7 +55,6 @@ public class UserPublisher {
         return endpoint;
 	}
 	
-	//LOS MÉTODOS QUE VAMOS A PUBLICAR
 	@WebMethod
 	public void updateUserInfo(DtUser updatedUser) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException {
 		ucon.updateUserInfo(updatedUser);
