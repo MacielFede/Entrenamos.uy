@@ -7,6 +7,9 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import publishers.InstitutePublisher;
+import publishers.UserPublisher;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
@@ -22,6 +25,8 @@ public class MainWindow extends JFrame {
 	private JPanel activePanel;
 	private String activePopUp;
 	private JPopupMenu currentPopupMenu;
+	private UserPublisher up = new UserPublisher();
+	private InstitutePublisher isp = new InstitutePublisher();
 	public MainWindow() {
 		/*
 		 * Here we create the main frame and set: - a title for the title bar - its
@@ -45,9 +50,16 @@ public class MainWindow extends JFrame {
 			public void windowClosed(WindowEvent e) {
 				dbConnection.shutDown();
 				super.windowClosed(e);
+				
+				// Close WebServices to clean the ports
+				up.stopPublishing();
+				isp.stopPublishing();
 			}
 		});
 		this.setVisible(true);
+		// Init WebServices
+		up.publish();
+		isp.publish();
 	}
 	private void initializePanels(){
 		// In this method we should create and set every panel design and set the variables for easy access
