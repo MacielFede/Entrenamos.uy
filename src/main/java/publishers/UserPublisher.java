@@ -1,6 +1,7 @@
 package publishers;
 
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.jws.WebMethod;
@@ -111,13 +112,21 @@ public class UserPublisher {
 	
 	@WebMethod
 	public DtClass [] getMemberEnrolledClasses(String nickname) {
-		return (DtClass[]) ucon.getMemberEnrolledClasses(nickname).entrySet().toArray();
+		Map<String,DtClass> classes = ucon.getMemberEnrolledClasses(nickname);
+		DtClass[] classesArray = new DtClass[classes.size()];
+		int i = 0;
+		for (DtClass aClass: classes.values()) {
+			classesArray[i] = aClass;
+			i++;
+		}
+		return classesArray;
 	}
 	
 	@WebMethod
 	public void addEnrollment(String className, DtUser user, Float price) throws Exception {
 		ucon.addEnrollment(className, user, price);
 	}
+	
 	@WebMethod
 	public String[] listMembersByNickname() {
 		return ucon.listMembersByNickname();
