@@ -11,6 +11,8 @@ import javax.jws.soap.SOAPBinding.Style;
 import javax.xml.ws.Endpoint;
 
 import dataTypes.DtClass;
+import dataTypes.DtMember;
+import dataTypes.DtProfessor;
 import dataTypes.DtUser;
 import exceptions.AtributeAlreadyExists;
 import exceptions.EmptyRequiredFieldException;
@@ -67,6 +69,11 @@ public class UserPublisher {
 	}
 	
 	@WebMethod
+	public DtUser chooseUser(String nickname) {
+		return ucon.chooseUser(nickname);
+	}
+	
+	@WebMethod
 	public void updateUserInfo(DtUser updatedUser) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException {
 		ucon.updateUserInfo(updatedUser);
 	}
@@ -90,6 +97,17 @@ public class UserPublisher {
 	public void newUser(DtUser newUser, String institute) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException, AtributeAlreadyExists{
 		ucon.newUser(newUser, institute);
 	}
+	
+	@WebMethod
+	public void newUserMemberUnreachable(DtMember newUser, String institute) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException, AtributeAlreadyExists{
+		ucon.newUser(newUser, institute);
+	}
+	
+	@WebMethod
+	public void newUserProfessorUnreachable(DtProfessor newUser, String institute) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException, AtributeAlreadyExists{
+		ucon.newUser(newUser, institute);
+	}
+	
 	
 	@WebMethod
 	public DtClass [] getMemberEnrolledClasses(String nickname) {
