@@ -3,6 +3,11 @@ package dataTypes;
 import java.util.Date;
 import java.util.Map;
 
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DtProfessor extends DtUser {
 	private Map<String, DtClass> relatedClasses;
 	private final String description;

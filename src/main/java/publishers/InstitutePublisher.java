@@ -12,6 +12,8 @@ import javax.xml.ws.Endpoint;
 
 import dataTypes.DtActivity;
 import dataTypes.DtClass;
+import dataTypes.DtEnrollment;
+import dataTypes.DtEnrollment;
 import dataTypes.DtInstitute;
 import exceptions.EmptyRequiredFieldException;
 import exceptions.NullPriceException;
@@ -66,7 +68,7 @@ public class InstitutePublisher {
 
 	
 	@WebMethod
-	public boolean checkClassNameAvailability(String className) {
+	public boolean checkClassNameAvailability(String className, DtEnrollment testEnrollment) {
 		return icon.checkClassNameAvailability(className);
 	}
 	
