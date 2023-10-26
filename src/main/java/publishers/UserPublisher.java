@@ -69,6 +69,11 @@ public class UserPublisher {
 	}
 	
 	@WebMethod
+	public DtUser chooseUser(String nickname) {
+		return ucon.chooseUser(nickname);
+	}
+	
+	@WebMethod
 	public void updateUserInfo(DtUser updatedUser) throws EmptyRequiredFieldException, FebruaryDayException, SameYearException {
 		ucon.updateUserInfo(updatedUser);
 	}
