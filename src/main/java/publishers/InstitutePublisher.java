@@ -1,6 +1,9 @@
 package publishers;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.jws.WebMethod;
@@ -84,7 +87,14 @@ public class InstitutePublisher {
 	
 	@WebMethod
 	public DtClass [] listClassesDictationRanking() {
-		return (DtClass[]) icon.listClassesDictationRanking().toArray();
+		List<DtClass> lstClassDictationRanking = icon.listClassesDictationRanking();
+		DtClass[] ret = new DtClass[lstClassDictationRanking.size()];
+		int i = 0;
+  		for (DtClass dt : lstClassDictationRanking) {
+  			ret[i] = dt;
+  			i++;
+  		}
+		return ret;
 	}
 	
 	@WebMethod
@@ -94,22 +104,50 @@ public class InstitutePublisher {
 	
 	@WebMethod
 	public DtInstitute [] listSportInstitutes() {
-		return (DtInstitute[]) icon.listSportInstitutes().entrySet().toArray();
+		Map<String, DtInstitute> institutes = icon.listSportInstitutes();
+		DtInstitute[] instituteArray = new DtInstitute[institutes.size()];
+		int i = 0;
+		for (DtInstitute institute : institutes.values()) {
+		    instituteArray[i] = institute;
+		    i++;
+		}
+		return instituteArray;
 	}
 	
 	@WebMethod
 	public DtActivity [] selectInstitution(String institutionName) {
-		return (DtActivity[]) icon.selectInstitution(institutionName).entrySet().toArray();
+		Map<String,DtActivity> activities = icon.selectInstitution(institutionName);
+		DtActivity[] activitiesArray = new DtActivity[activities.size()];
+		int i = 0;
+		for (DtActivity activity : activities.values()) {
+		    activitiesArray[i] = activity;
+		    i++;
+		}
+		return activitiesArray;
 	}
 	
 	@WebMethod
 	public DtClass[] chooseActivity(String activity) {
-		return (DtClass[]) icon.chooseActivity(activity).entrySet().toArray();
+		Map<String,DtClass> classes = icon.chooseActivity(activity);
+		DtClass[] classesArray = new DtClass[classes.size()];
+		int i = 0;
+		for (DtClass aClass: classes.values()) {
+			classesArray[i] = aClass;
+			i++;
+		}
+		return classesArray;
 	}
 	
 	@WebMethod
 	public DtActivity [] listSportsActivitiesRanking() {
-		return (DtActivity[]) icon.listSportsActivitiesRanking().toArray();
+		List<DtActivity> lstSportActivitiesRanking = icon.listSportsActivitiesRanking();
+		DtActivity[] ret = new DtActivity[lstSportActivitiesRanking.size()];
+		int i = 0;
+  		for (DtActivity dt : lstSportActivitiesRanking) {
+  			ret[i] = dt;
+  			i++;
+  		}
+		return ret;
 	}
 	
 	@WebMethod
@@ -154,7 +192,14 @@ public class InstitutePublisher {
 	
 	@WebMethod
     public DtActivity[] getAllActivities() {
-		return (DtActivity[]) icon.getAllActivities().entrySet().toArray();
+		Map<String,DtActivity> activities = icon.getAllActivities();
+		DtActivity[] ret = new DtActivity[activities.size()];
+		int i = 0;
+  		for (DtActivity dt : activities.values()) {
+  			ret[i] = dt;
+  			i++;
+  		}
+		return ret;
 	}
 	
 	@WebMethod
