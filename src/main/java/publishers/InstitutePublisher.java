@@ -1,6 +1,8 @@
 package publishers;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.jws.WebMethod;
@@ -84,7 +86,14 @@ public class InstitutePublisher {
 	
 	@WebMethod
 	public DtClass [] listClassesDictationRanking() {
-		return (DtClass[]) icon.listClassesDictationRanking().toArray();
+		List<DtClass> lstClassDictationRanking = icon.listClassesDictationRanking();
+		DtClass [] ret = new DtClass[lstClassDictationRanking.size()];
+		int i = 0;
+  		for (DtClass dt : lstClassDictationRanking) {
+  			ret[i] = dt;
+  			i++;
+  		}
+		return ret;
 	}
 	
 	@WebMethod
@@ -109,7 +118,14 @@ public class InstitutePublisher {
 	
 	@WebMethod
 	public DtActivity [] listSportsActivitiesRanking() {
-		return (DtActivity[]) icon.listSportsActivitiesRanking().toArray();
+		List<DtActivity> lstSportActivitiesRanking = icon.listSportsActivitiesRanking();
+		DtActivity [] ret = new DtActivity[lstSportActivitiesRanking.size()];
+		int i = 0;
+  		for (DtActivity dt : lstSportActivitiesRanking) {
+  			ret[i] = dt;
+  			i++;
+  		}
+		return ret;
 	}
 	
 	@WebMethod
