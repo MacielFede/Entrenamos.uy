@@ -13,6 +13,15 @@ public class DtUser {
 	protected final Date bornDate;
 	protected final String password;
 
+	public DtUser() {
+		this.nickname = "";
+		this.name = "";
+		this.lastName = "";
+		this.email = "";
+		this.bornDate = new Date();
+		this.password = "";	
+	}
+	
 	public DtUser(String nickname, String name, String lastName, String email, Date bornDate, String password) {
 		super();
 		this.nickname = nickname;

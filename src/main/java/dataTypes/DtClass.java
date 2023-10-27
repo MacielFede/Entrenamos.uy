@@ -19,6 +19,16 @@ public class DtClass {
     private final int enrollmentsQuantity;
 	// The String in the map represent the users id.
     private final Map<String, DtEnrollment> enrollments;
+    
+    public DtClass() {
+		this.name = "";
+		this.dateAndTime = new Date();
+		this.registerDate = new Date();
+		this.url = "";
+		this.imgName = "";
+		this.enrollmentsQuantity = 0;
+		this.enrollments = null;
+	}
 
     public DtClass(String name, Date dateAndTime, Date registerDate, String url, int enrollmentsQuantity, Map<String, DtEnrollment> enrollments, String imgName) {
         this.name = name;

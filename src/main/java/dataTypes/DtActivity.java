@@ -19,6 +19,17 @@ public class DtActivity {
 	private final  Date registryDate;
 	private final int classesQuantity;
 	private final Map<String, DtClass> classes;
+	
+	public DtActivity() {
+		this.name = "";
+		this.description = "";
+		this.imgName = "";
+		this.duration = null;
+		this.price = null;
+		this.registryDate = new Date();
+		this.classesQuantity = 0;
+		this.classes = null;
+	}
 
 
 	public DtActivity(String name, String description, String imgName, Integer duration, Float price, Date registryDate, int classesQuantity, Map<String, DtClass> classes)

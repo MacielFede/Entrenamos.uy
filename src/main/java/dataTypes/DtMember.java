@@ -11,6 +11,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class DtMember extends DtUser {
 	private Map<String, DtClass> relatedClasses;
 
+	
+	public DtMember() {
+	}
+	
 	public DtMember(Map<String, DtClass> relatedClasses, String nickname, String name, String lastName, String email,
 					Date bornDate, String password) {
 		super(nickname, name, lastName, email, bornDate, password);
