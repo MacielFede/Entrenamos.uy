@@ -11,6 +11,12 @@ public class DtEnrollment {
 
     private final Float cost;
     private final Date enrollmentDate;
+    
+    public DtEnrollment() {
+		this.user = new DtUser();
+		this.cost = null;
+		this.enrollmentDate = new Date();	
+    }
 
     public DtEnrollment(DtUser user, Float cost, Date enrollmentDate) {
         this.user = user;

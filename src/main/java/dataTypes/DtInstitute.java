@@ -18,6 +18,14 @@ public class DtInstitute {
 	// New, added professors to the Datatype
 	private final Map<String,DtProfessor> professors;
 	
+	public DtInstitute() {
+		this.name = "";
+		this.description = "";
+		this.url = "";
+		this.activities = null;
+		this.professors = null;
+	}
+	
 	public DtInstitute(String name, String description, String url, Map<String, DtActivity> activities, Map<String,DtProfessor> professors) {
 		super();
 		this.name = name;

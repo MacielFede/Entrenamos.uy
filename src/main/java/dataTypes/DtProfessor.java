@@ -13,6 +13,12 @@ public class DtProfessor extends DtUser {
 	private final String description;
 	private final String biography;
 	private final String webPage;
+	
+	public DtProfessor() {
+		this.description = "";
+		this.biography = "";
+		this.webPage = "";
+	}
 
 	public DtProfessor(Map<String, DtClass> relatedClasses, String description, String biography, String webPage,
 			String nickname, String name, String lastName, String email, Date bornDate, String password) {
