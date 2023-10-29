@@ -82,8 +82,10 @@ public class InstitutePublisher {
 	
 	@WebMethod
 	public DtClass chooseClassByName(String className) {
-		return icon.chooseClassByName(className);
+	    DtClass aClass = icon.chooseClassByName(className);
+	    return aClass != null ? aClass : new DtClass();
 	}
+
 	
 	@WebMethod
 	public DtClass [] listClassesDictationRanking() {
